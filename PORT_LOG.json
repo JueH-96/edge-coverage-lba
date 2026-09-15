@@ -1,0 +1,269 @@
+{
+  "python_ports": [
+    {
+      "source": "workflow/guidance_engine.py",
+      "dest": "src/guidance_engine.py",
+      "bytes_in": 60568,
+      "bytes_out": 60568,
+      "edits": [],
+      "residual_session_paths": 0
+    },
+    {
+      "source": "workflow/energy_scheduler.py",
+      "dest": "src/energy_scheduler.py",
+      "bytes_in": 40596,
+      "bytes_out": 40596,
+      "edits": [],
+      "residual_session_paths": 0
+    },
+    {
+      "source": "workflow/fuzz_harness.py",
+      "dest": "src/fuzz_harness.py",
+      "bytes_in": 19355,
+      "bytes_out": 19746,
+      "edits": [
+        "anchor `SESSION_DIR = Path(<session>)` -> AE_ROOT bootstrap",
+        "2x `SESSION_DIR / \"workflow\"` -> `AE_ROOT / \"src\"`  (workflow/ split into src/ + targets/ (both on sys.path via ae_paths))"
+      ],
+      "residual_session_paths": 0
+    },
+    {
+      "source": "workflow/step2_harness.py",
+      "dest": "src/step2_harness.py",
+      "bytes_in": 17002,
+      "bytes_out": 17401,
+      "edits": [
+        "anchor `SESSION = Path(<session>)` -> AE_ROOT bootstrap",
+        "2x `SESSION / \"workflow\"` -> `AE_ROOT / \"src\"`  (workflow/ split into src/ + targets/ (both on sys.path via ae_paths))"
+      ],
+      "residual_session_paths": 0
+    },
+    {
+      "source": "workflow/stats_utils.py",
+      "dest": "src/stats_utils.py",
+      "bytes_in": 12385,
+      "bytes_out": 12385,
+      "edits": [],
+      "residual_session_paths": 0
+    },
+    {
+      "source": "workflow/stats_paired.py",
+      "dest": "src/stats_paired.py",
+      "bytes_in": 17928,
+      "bytes_out": 17928,
+      "edits": [],
+      "residual_session_paths": 0
+    },
+    {
+      "source": "workflow/test_targets.py",
+      "dest": "targets/test_targets.py",
+      "bytes_in": 39521,
+      "bytes_out": 39911,
+      "edits": [
+        "anchor `SESSION_DIR = Path(<session>)` -> AE_ROOT bootstrap",
+        "1x `SESSION_DIR / \"workflow\" / \"native\"` -> `AE_ROOT / \"native\"`  (native C sources now live in native/)",
+        "1x `SESSION_DIR / \"data\" / \"libtarget.so\"` -> `AE_ROOT / \"native\" / \"libtarget.so\"`  (compiled .so lives beside its source in native/)"
+      ],
+      "residual_session_paths": 0
+    },
+    {
+      "source": "workflow/trigram_targets.py",
+      "dest": "targets/trigram_targets.py",
+      "bytes_in": 38259,
+      "bytes_out": 38657,
+      "edits": [
+        "anchor `SESSION = Path(<session>)` -> AE_ROOT bootstrap",
+        "1x `SESSION / \"workflow\" / \"native\"` -> `AE_ROOT / \"native\"`  (native C sources now live in native/)",
+        "1x `SESSION / \"data\" / \"libtrigram_target.so\"` -> `AE_ROOT / \"native\" / \"libtrigram_target.so\"`  (compiled .so lives beside its source in native/)"
+      ],
+      "residual_session_paths": 0
+    },
+    {
+      "source": "workflow/test_step1_guidance.py",
+      "dest": "tests/_invariants_step1.py",
+      "bytes_in": 62768,
+      "bytes_out": 63153,
+      "edits": [
+        "anchor `SESSION_DIR = Path(<session>)` -> AE_ROOT bootstrap",
+        "2x `SESSION_DIR / \"workflow\"` -> `AE_ROOT / \"src\"`  (workflow/ split into src/ + targets/ (both on sys.path via ae_paths))",
+        "1x dataset rename \"bug_finding_trials.json\" -> \"step1_trials.json\""
+      ],
+      "residual_session_paths": 0
+    },
+    {
+      "source": "workflow/test_step2_scheduler.py",
+      "dest": "tests/_invariants_step2.py",
+      "bytes_in": 29936,
+      "bytes_out": 30340,
+      "edits": [
+        "anchor `SESSION = Path(<session>)` -> AE_ROOT bootstrap",
+        "1x `SESSION / \"workflow\"` -> `AE_ROOT / \"src\"`  (workflow/ split into src/ + targets/ (both on sys.path via ae_paths))"
+      ],
+      "residual_session_paths": 0
+    },
+    {
+      "source": "workflow/02_run_step2_experiments.py",
+      "dest": "experiments/_scheduler_matrix.py",
+      "bytes_in": 7283,
+      "bytes_out": 7687,
+      "edits": [
+        "anchor `SESSION = Path(<session>)` -> AE_ROOT bootstrap",
+        "1x `SESSION / \"workflow\"` -> `AE_ROOT / \"src\"`  (workflow/ split into src/ + targets/ (both on sys.path via ae_paths))"
+      ],
+      "residual_session_paths": 0
+    },
+    {
+      "source": "workflow/02_analyze_step2.py",
+      "dest": "experiments/_analysis_step2.py",
+      "bytes_in": 21958,
+      "bytes_out": 22362,
+      "edits": [
+        "anchor `SESSION = Path(<session>)` -> AE_ROOT bootstrap",
+        "1x `SESSION / \"workflow\"` -> `AE_ROOT / \"src\"`  (workflow/ split into src/ + targets/ (both on sys.path via ae_paths))"
+      ],
+      "residual_session_paths": 0
+    },
+    {
+      "source": "workflow/05_revision_experiments.py",
+      "dest": "experiments/_revision_experiments.py",
+      "bytes_in": 44045,
+      "bytes_out": 44425,
+      "edits": [
+        "anchor `SESSION_DIR = Path(<session>)` -> AE_ROOT bootstrap",
+        "1x `SESSION_DIR / \"workflow\"` -> `AE_ROOT / \"src\"`  (workflow/ split into src/ + targets/ (both on sys.path via ae_paths))",
+        "1x dataset rename \"bug_finding_trials.json\" -> \"step1_trials.json\"",
+        "2x dataset rename \"t4_order_sweep_trials.json\" -> \"t4_order_sweep.json\""
+      ],
+      "residual_session_paths": 0
+    },
+    {
+      "source": "fse_2027_compressed/corpus_cap_ablation.py",
+      "dest": "experiments/_corpus_cap.py",
+      "bytes_in": 12822,
+      "bytes_out": 13216,
+      "edits": [
+        "anchor `SESSION_DIR = Path(<session>)` -> AE_ROOT bootstrap",
+        "1x `SESSION_DIR / \"workflow\"` -> `AE_ROOT / \"src\"`  (workflow/ split into src/ + targets/ (both on sys.path via ae_paths))",
+        "output path -> AE tree: `OUT = Path(__file__).resolve().parent / \"corpus_...`",
+        "output path -> AE tree: `(HERE_TRIALS := OUT.parent / \"corpus_cap_trials....`"
+      ],
+      "residual_session_paths": 0
+    },
+    {
+      "source": "workflow/make_figures.py",
+      "dest": "plots/_figures_step1.py",
+      "bytes_in": 23938,
+      "bytes_out": 24341,
+      "edits": [
+        "anchor `SESSION_DIR = Path(<session>)` -> AE_ROOT bootstrap",
+        "1x dataset rename \"bug_finding_trials.json\" -> \"step1_trials.json\""
+      ],
+      "residual_session_paths": 0
+    },
+    {
+      "source": "workflow/make_figures2.py",
+      "dest": "plots/_figures_revision.py",
+      "bytes_in": 25428,
+      "bytes_out": 25830,
+      "edits": [
+        "anchor `SESSION_DIR = Path(<session>)` -> AE_ROOT bootstrap",
+        "1x dataset rename \"t4_order_sweep_trials.json\" -> \"t4_order_sweep.json\""
+      ],
+      "residual_session_paths": 0
+    },
+    {
+      "source": "fse_2027_compressed/make_figures.py",
+      "dest": "plots/_figures_paper.py",
+      "bytes_in": 19716,
+      "bytes_out": 20233,
+      "edits": [
+        "paper-figure path -> AE tree: `HERE = Path(__file__).resolve().parent...`",
+        "paper-figure path -> AE tree: `SESSION = HERE.parent...`",
+        "paper-figure path -> AE tree: `CAP_PATH = HERE / \"corpus_cap_ablation.json\"...`",
+        "paper-figure path -> AE tree: `FIGS = HERE / \"figures\"...`",
+        "paper-figure path -> AE tree: `FIGS.mkdir(exist_ok=True)...`",
+        "prepended AE_ROOT bootstrap (file had no session anchor)"
+      ],
+      "residual_session_paths": 0
+    }
+  ],
+  "c_ports": [
+    {
+      "source": "workflow/native/target_lib.c",
+      "dest": "native/target_lib.c"
+    },
+    {
+      "source": "workflow/native/trigram_target_lib.c",
+      "dest": "native/trigram_target_lib.c"
+    }
+  ],
+  "data_ports": [
+    {
+      "source": "data/bug_finding_trials.json",
+      "dest": "data/step1_trials.json",
+      "size_bytes": 714829,
+      "absolute_paths_sanitised": 0
+    },
+    {
+      "source": "data/context_depth_trials.json",
+      "dest": "data/context_depth_trials.json",
+      "size_bytes": 96250,
+      "absolute_paths_sanitised": 0
+    },
+    {
+      "source": "data/step2_trials.json",
+      "dest": "data/step2_trials.json",
+      "size_bytes": 1950932,
+      "absolute_paths_sanitised": 0
+    },
+    {
+      "source": "data/t4_order_sweep_trials.json",
+      "dest": "data/t4_order_sweep.json",
+      "size_bytes": 1754904,
+      "absolute_paths_sanitised": 0
+    },
+    {
+      "source": "fse_2027_compressed/corpus_cap_trials.json",
+      "dest": "data/corpus_cap_trials.json",
+      "size_bytes": 113766,
+      "absolute_paths_sanitised": 0
+    },
+    {
+      "source": "fse_2027_compressed/corpus_cap_ablation.json",
+      "dest": "data/precomputed/corpus_cap_ablation.json",
+      "size_bytes": 12814,
+      "absolute_paths_sanitised": 0
+    },
+    {
+      "source": "data/fidelity_report.json",
+      "dest": "data/precomputed/fidelity_report_step1.json",
+      "size_bytes": 864,
+      "absolute_paths_sanitised": 1
+    },
+    {
+      "source": "data/trigram_fidelity_report.json",
+      "dest": "data/precomputed/fidelity_report_trigram.json",
+      "size_bytes": 1254,
+      "absolute_paths_sanitised": 1
+    },
+    {
+      "source": "results/step1_guidance_validation.json",
+      "dest": "data/precomputed/step1_guidance_validation.json",
+      "size_bytes": 145393,
+      "absolute_paths_sanitised": 3
+    },
+    {
+      "source": "results/step2_scheduler_validation.json",
+      "dest": "data/precomputed/step2_scheduler_validation.json",
+      "size_bytes": 218277,
+      "absolute_paths_sanitised": 0
+    },
+    {
+      "source": "results/step2_revision.json",
+      "dest": "data/precomputed/step2_revision.json",
+      "size_bytes": 140743,
+      "absolute_paths_sanitised": 2
+    }
+  ],
+  "residual_session_path_files": []
+}

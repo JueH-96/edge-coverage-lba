@@ -1,0 +1,7 @@
+numpy>=1.26
+scipy>=1.11
+matplotlib>=3.8
+pytest>=7.4
+
+[full]
+tqdm>=4.66

@@ -1,0 +1,17 @@
+# Artifact-evaluation dependencies.
+#
+# Lower bounds are the oldest versions the artifact was checked against. The
+# versions actually used to produce the reported results were:
+#
+#     Python 3.12.10, numpy 2.5.1, scipy 1.18.0, matplotlib 3.11.1, pytest 9.1.1
+#
+# Any reasonably recent numeric stack works; the results are not sensitive to
+# these versions because all randomness is driven by seeded `random.Random` and
+# `numpy.random.Generator` instances rather than by library internals.
+#
+# Install with:  pip install -r requirements.txt
+
+numpy>=1.26
+scipy>=1.11
+matplotlib>=3.8
+pytest>=7.4

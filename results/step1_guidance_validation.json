@@ -1,0 +1,4381 @@
+{
+  "step": 1,
+  "title": "Multidimensional (3D) Guidance Engine - validation report",
+  "generated_utc": "2026-08-04T03:43:40Z",
+  "environment": {
+    "python": "3.12.10",
+    "platform": "Linux-6.12.85+-x86_64-with-glibc2.36",
+    "numpy": "2.5.1",
+    "scipy": "1.18.0",
+    "n_cpu_available": 32,
+    "workers_used": 12,
+    "master_seed": 20260804
+  },
+  "dimensions": {
+    "D0": "AFL-style edge coverage (control baseline)",
+    "D1": "Calling-context sensitivity (bounded N-depth context hashing)",
+    "D2": "Data-flow value-range sensitivity (magnitude / cmp distance / byte splitting)",
+    "D3": "Implicit state-machine transition tracking (abstract API state graph)"
+  },
+  "configurations": {
+    "blind_random": [
+      "D0"
+    ],
+    "edge_only": [
+      "D0"
+    ],
+    "d0_d1_context": [
+      "D0",
+      "D1"
+    ],
+    "d0_d2_valuerange": [
+      "D0",
+      "D2"
+    ],
+    "d0_d3_statemachine": [
+      "D0",
+      "D3"
+    ],
+    "full_3d": [
+      "D0",
+      "D1",
+      "D2",
+      "D3"
+    ]
+  },
+  "target_budgets": {
+    "T1_context": 60000,
+    "T2_value_range": 300000,
+    "T3_state_machine": 60000
+  },
+  "fidelity": {
+    "n_inputs_per_target": 5000,
+    "seed": 20260804,
+    "max_input_len": 96,
+    "compiler": "gcc (Debian 12.2.0-14+deb12u1) 12.2.0",
+    "native_lib": "data/libtarget.so",
+    "per_target": {
+      "T1_context": {
+        "n_mismatches": 0,
+        "mismatch_examples": [],
+        "random_bug_rate": 0.0,
+        "milestone_histogram": {
+          "0": 4841,
+          "1": 149,
+          "2": 10
+        }
+      },
+      "T2_value_range": {
+        "n_mismatches": 0,
+        "mismatch_examples": [],
+        "random_bug_rate": 0.0,
+        "milestone_histogram": {
+          "0": 5000
+        }
+      },
+      "T3_state_machine": {
+        "n_mismatches": 0,
+        "mismatch_examples": [],
+        "random_bug_rate": 0.0,
+        "milestone_histogram": {
+          "0": 2251,
+          "1": 2566,
+          "2": 106,
+          "3": 23,
+          "4": 54
+        }
+      }
+    },
+    "total_mismatches": 0,
+    "fidelity_ok": true
+  },
+  "refinement_witnesses": {
+    "chain_len": 6,
+    "n_chains_enumerated": 64,
+    "n_d0_edge_classes": 16,
+    "n_d0_counted_classes": 32,
+    "n_d1_classes": 64,
+    "n_distinct_milestones": 5,
+    "milestone_histogram": {
+      "2": 2,
+      "3": 30,
+      "4": 20,
+      "5": 10,
+      "7": 2
+    },
+    "n_conflated_groups": 16,
+    "n_chains_in_conflated_groups": 48,
+    "n_groups_with_mixed_milestone": 0,
+    "n_groups_mixing_bug_and_nonbug": 0,
+    "n_groups_with_identical_bigrams_and_different_trigrams": 14,
+    "conflated_group_examples": [
+      {
+        "chain_a": "SMSSSS",
+        "chain_b": "SSMSSS",
+        "milestone_a": 3,
+        "milestone_b": 3,
+        "group_size": 4,
+        "block_bigram_multiset_identical": true,
+        "block_trigram_multiset_differs": true,
+        "n_distinct_d1_signatures_in_group": 4
+      },
+      {
+        "chain_a": "MSMSSS",
+        "chain_b": "MSSMSS",
+        "milestone_a": 4,
+        "milestone_b": 4,
+        "group_size": 3,
+        "block_bigram_multiset_identical": true,
+        "block_trigram_multiset_differs": true,
+        "n_distinct_d1_signatures_in_group": 3
+      },
+      {
+        "chain_a": "SMMSSS",
+        "chain_b": "SSMMSS",
+        "milestone_a": 3,
+        "milestone_b": 3,
+        "group_size": 3,
+        "block_bigram_multiset_identical": true,
+        "block_trigram_multiset_differs": true,
+        "n_distinct_d1_signatures_in_group": 3
+      }
+    ],
+    "witness_pair": {
+      "chain_a": "SMSSSS",
+      "input_a_hex": "3e013f013e013e013e013e013d0141",
+      "chain_b": "SSMSSS",
+      "input_b_hex": "3e013e013f013e013e013e013d0141",
+      "milestone_a": 3,
+      "milestone_b": 3,
+      "bug_a": false,
+      "bug_b": false,
+      "d0_edge_identical": true,
+      "d0_counted_identical": true,
+      "d1_identical": false,
+      "n_d1_elements_a": 36,
+      "n_d1_elements_b": 36,
+      "block_bigram_multiset_identical": true,
+      "block_trigram_multiset_differs": true
+    },
+    "characterisation": "AFL's trace_bits counts occurrences of (prev_block, cur_block) pairs, so the map state - including saturating hit-count classes - is a function of the BIGRAM MULTISET of the executed basic-block sequence and of nothing else. Two consequences follow. (a) Any behaviour that is a function of those bigram counts is already visible to AFL, and calling-context sensitivity adds no bug-finding power over it. T1's scratch offset is a linear function of adjacent container-type pairs, hence a bigram function, which is why the edge-coverage baseline solves T1 and the D1 configurations gain nothing - a prediction this enumeration confirms and the bug-finding experiment independently reproduces. (b) Behaviour determined by 3-grams or longer is a structural blind spot: the witness pair below has identical block bigram multisets (so identical AFL state) but different trigram multisets, and only the calling-context dimension separates the two executions."
+  },
+  "partition_discrimination": {
+    "description": "Each dimension induces a partition of the input space via its exact (collision-free) element set. A finer partition means the fuzzer can distinguish more behaviours and therefore retain more distinct inputs. Partition entropy H(Pi) = -sum p_c log2 p_c over cell frequencies measures the information the metric extracts from the corpus.",
+    "per_target": {
+      "T1_context": {
+        "n_corpus_inputs": 1500,
+        "n_distinct_milestones": 7,
+        "milestone_histogram": {
+          "0": 40,
+          "1": 134,
+          "2": 225,
+          "3": 367,
+          "4": 384,
+          "5": 192,
+          "6": 158
+        },
+        "partitions": {
+          "D0": {
+            "n_classes": 708,
+            "partition_entropy_bits": 8.73596296807439,
+            "max_possible_entropy_bits": 10.550746785383243,
+            "largest_class_fraction": 0.02266666666666667
+          },
+          "D1": {
+            "n_classes": 1339,
+            "partition_entropy_bits": 10.222136748145385,
+            "max_possible_entropy_bits": 10.550746785383243,
+            "largest_class_fraction": 0.02266666666666667
+          },
+          "D2": {
+            "n_classes": 179,
+            "partition_entropy_bits": 5.561482164392744,
+            "max_possible_entropy_bits": 10.550746785383243,
+            "largest_class_fraction": 0.10933333333333334
+          },
+          "D3": {
+            "n_classes": 1,
+            "partition_entropy_bits": 0.0,
+            "max_possible_entropy_bits": 10.550746785383243,
+            "largest_class_fraction": 1.0
+          },
+          "composite_3d": {
+            "n_classes": 1344,
+            "partition_entropy_bits": 10.233819696673406,
+            "max_possible_entropy_bits": 10.550746785383243,
+            "largest_class_fraction": 0.02266666666666667
+          },
+          "D0_with_hit_counts": {
+            "n_classes": 1272,
+            "partition_entropy_bits": 10.120301076023514,
+            "max_possible_entropy_bits": 10.550746785383243,
+            "largest_class_fraction": 0.02266666666666667
+          }
+        },
+        "refinement_verified": {
+          "D1_refines_D0": true,
+          "composite_refines_D0": true,
+          "composite_refines_D1": true,
+          "composite_refines_D2": true,
+          "composite_refines_D3": true
+        },
+        "refinement_factor_D1_over_D0": 1.8912429378531073,
+        "refinement_factor_composite_over_D0": 1.8983050847457628,
+        "blindspots_D0": {
+          "n_classes_with_mixed_milestones": 116,
+          "n_inputs_in_mixed_classes": 653,
+          "n_classes_mixing_bug_and_nonbug": 0
+        },
+        "blindspots_D0_with_hit_counts": {
+          "n_classes_with_mixed_milestones": 6,
+          "n_inputs_in_mixed_classes": 13,
+          "n_classes_mixing_bug_and_nonbug": 0
+        },
+        "blindspots_composite_3d": {
+          "n_classes_with_mixed_milestones": 0,
+          "n_inputs_in_mixed_classes": 0,
+          "n_classes_mixing_bug_and_nonbug": 0
+        }
+      },
+      "T2_value_range": {
+        "n_corpus_inputs": 1500,
+        "n_distinct_milestones": 3,
+        "milestone_histogram": {
+          "0": 1233,
+          "1": 237,
+          "2": 30
+        },
+        "partitions": {
+          "D0": {
+            "n_classes": 4,
+            "partition_entropy_bits": 1.203050426560842,
+            "max_possible_entropy_bits": 10.550746785383243,
+            "largest_class_fraction": 0.7226666666666667
+          },
+          "D1": {
+            "n_classes": 4,
+            "partition_entropy_bits": 1.203050426560842,
+            "max_possible_entropy_bits": 10.550746785383243,
+            "largest_class_fraction": 0.7226666666666667
+          },
+          "D2": {
+            "n_classes": 119,
+            "partition_entropy_bits": 5.7018209257770796,
+            "max_possible_entropy_bits": 10.550746785383243,
+            "largest_class_fraction": 0.088
+          },
+          "D3": {
+            "n_classes": 3,
+            "partition_entropy_bits": 0.7659268167660143,
+            "max_possible_entropy_bits": 10.550746785383243,
+            "largest_class_fraction": 0.822
+          },
+          "composite_3d": {
+            "n_classes": 119,
+            "partition_entropy_bits": 5.7018209257770796,
+            "max_possible_entropy_bits": 10.550746785383243,
+            "largest_class_fraction": 0.088
+          },
+          "D0_with_hit_counts": {
+            "n_classes": 4,
+            "partition_entropy_bits": 1.203050426560842,
+            "max_possible_entropy_bits": 10.550746785383243,
+            "largest_class_fraction": 0.7226666666666667
+          }
+        },
+        "refinement_verified": {
+          "D1_refines_D0": true,
+          "composite_refines_D0": true,
+          "composite_refines_D1": true,
+          "composite_refines_D2": true,
+          "composite_refines_D3": true
+        },
+        "refinement_factor_D1_over_D0": 1.0,
+        "refinement_factor_composite_over_D0": 29.75,
+        "blindspots_D0": {
+          "n_classes_with_mixed_milestones": 0,
+          "n_inputs_in_mixed_classes": 0,
+          "n_classes_mixing_bug_and_nonbug": 0
+        },
+        "blindspots_D0_with_hit_counts": {
+          "n_classes_with_mixed_milestones": 0,
+          "n_inputs_in_mixed_classes": 0,
+          "n_classes_mixing_bug_and_nonbug": 0
+        },
+        "blindspots_composite_3d": {
+          "n_classes_with_mixed_milestones": 0,
+          "n_inputs_in_mixed_classes": 0,
+          "n_classes_mixing_bug_and_nonbug": 0
+        }
+      },
+      "T3_state_machine": {
+        "n_corpus_inputs": 1500,
+        "n_distinct_milestones": 6,
+        "milestone_histogram": {
+          "0": 27,
+          "1": 921,
+          "2": 86,
+          "3": 62,
+          "4": 401,
+          "5": 3
+        },
+        "partitions": {
+          "D0": {
+            "n_classes": 1398,
+            "partition_entropy_bits": 10.411400418710835,
+            "max_possible_entropy_bits": 10.550746785383243,
+            "largest_class_fraction": 0.0026666666666666666
+          },
+          "D1": {
+            "n_classes": 1398,
+            "partition_entropy_bits": 10.411400418710835,
+            "max_possible_entropy_bits": 10.550746785383243,
+            "largest_class_fraction": 0.0026666666666666666
+          },
+          "D2": {
+            "n_classes": 277,
+            "partition_entropy_bits": 6.897399241487943,
+            "max_possible_entropy_bits": 10.550746785383243,
+            "largest_class_fraction": 0.07266666666666667
+          },
+          "D3": {
+            "n_classes": 1434,
+            "partition_entropy_bits": 10.46224352704849,
+            "max_possible_entropy_bits": 10.550746785383243,
+            "largest_class_fraction": 0.002
+          },
+          "composite_3d": {
+            "n_classes": 1435,
+            "partition_entropy_bits": 10.463576860381822,
+            "max_possible_entropy_bits": 10.550746785383243,
+            "largest_class_fraction": 0.002
+          },
+          "D0_with_hit_counts": {
+            "n_classes": 1410,
+            "partition_entropy_bits": 10.427903677045613,
+            "max_possible_entropy_bits": 10.550746785383243,
+            "largest_class_fraction": 0.0026666666666666666
+          }
+        },
+        "refinement_verified": {
+          "D1_refines_D0": true,
+          "composite_refines_D0": true,
+          "composite_refines_D1": true,
+          "composite_refines_D2": true,
+          "composite_refines_D3": true
+        },
+        "refinement_factor_D1_over_D0": 1.0,
+        "refinement_factor_composite_over_D0": 1.0264663805436338,
+        "blindspots_D0": {
+          "n_classes_with_mixed_milestones": 4,
+          "n_inputs_in_mixed_classes": 9,
+          "n_classes_mixing_bug_and_nonbug": 0
+        },
+        "blindspots_D0_with_hit_counts": {
+          "n_classes_with_mixed_milestones": 3,
+          "n_inputs_in_mixed_classes": 7,
+          "n_classes_mixing_bug_and_nonbug": 0
+        },
+        "blindspots_composite_3d": {
+          "n_classes_with_mixed_milestones": 0,
+          "n_inputs_in_mixed_classes": 0,
+          "n_classes_mixing_bug_and_nonbug": 0
+        }
+      }
+    }
+  },
+  "bug_finding": {
+    "per_target": {
+      "T1_context": {
+        "targeted_dimension": "D1",
+        "max_milestone_possible": 7,
+        "budget_execs": 60000,
+        "configs": {
+          "blind_random": {
+            "n_trials": 30,
+            "budget_execs": 60000,
+            "n_bugs_found": 0,
+            "success_rate": 0.0,
+            "success_rate_ci95": [
+              0.0,
+              0.11570330822202778
+            ],
+            "execs_to_bug_among_successes": {
+              "n": 0
+            },
+            "max_milestone": {
+              "n": 30,
+              "mean": 3.066666666666667,
+              "sd": 0.8276819867946673,
+              "min": 2.0,
+              "q1": 3.0,
+              "median": 3.0,
+              "q3": 3.0,
+              "max": 6.0,
+              "median_ci95": [
+                3.0,
+                3.0
+              ]
+            },
+            "milestone_reached_max": 6,
+            "max_milestone_possible": 7,
+            "corpus_size": {
+              "n": 30,
+              "mean": 1.0,
+              "sd": 0.0,
+              "min": 1.0,
+              "q1": 1.0,
+              "median": 1.0,
+              "q3": 1.0,
+              "max": 1.0,
+              "median_ci95": [
+                1.0,
+                1.0
+              ]
+            },
+            "exact_elements": {
+              "n": 30,
+              "mean": 44.63333333333333,
+              "sd": 2.8705800607294463,
+              "min": 39.0,
+              "q1": 43.0,
+              "median": 44.0,
+              "q3": 46.75,
+              "max": 50.0,
+              "median_ci95": [
+                43.5,
+                46.0
+              ]
+            },
+            "mean_exec_per_second": 29020.878154986553,
+            "vs_edge_only": {
+              "fisher_success": {
+                "odds_ratio": 0.0,
+                "odds_ratio_undefined_zero_cell": false,
+                "odds_ratio_haldane_anscombe": 0.0008335648791330926,
+                "p_value": 5.242482506564867e-16,
+                "rate_1": 0.0,
+                "rate_1_ci95": [
+                  0.0,
+                  0.11570330822202778
+                ],
+                "rate_2": 0.9666666666666667,
+                "rate_2_ci95": [
+                  0.8278305443665873,
+                  0.9991564290733695
+                ]
+              },
+              "logrank_time_to_bug": {
+                "chi2": 65.1317387449644,
+                "p_value": 7.005463017878208e-16,
+                "observed_1": 0.0,
+                "expected_1": 19.57875652545653,
+                "n_events": 29
+              },
+              "milestone_mann_whitney": {
+                "U": 0.5,
+                "p_value": 4.952600735754439e-13,
+                "a12": 0.0005555555555555832,
+                "a12_magnitude": "large"
+              },
+              "milestone_wilcoxon_paired": {
+                "statistic": 0.0,
+                "p_value": 5.040837507523647e-07,
+                "n_pairs": 30,
+                "n_nonzero_pairs": 30
+              },
+              "censored_time_mann_whitney": {
+                "U": 885.0,
+                "p_value": 4.573588787811667e-12,
+                "a12": 0.9833333333333333,
+                "a12_magnitude": "large"
+              },
+              "note": "A12 on milestone: >0.5 favours this configuration. A12 on censored time: <0.5 favours this configuration (lower is better). Censored times are substituted at the budget, which makes the rank test conservative; the log-rank test handles censoring correctly and is the primary time-to-bug test.",
+              "fisher_success_q_value": 1.5762291790225967e-14,
+              "logrank_time_to_bug_q_value": 1.5762291790225967e-14,
+              "milestone_mann_whitney_q_value": 4.457340662178995e-12
+            }
+          },
+          "edge_only": {
+            "n_trials": 30,
+            "budget_execs": 60000,
+            "n_bugs_found": 29,
+            "success_rate": 0.9666666666666667,
+            "success_rate_ci95": [
+              0.8278305443665873,
+              0.9991564290733695
+            ],
+            "execs_to_bug_among_successes": {
+              "n": 29,
+              "mean": 11891.724137931034,
+              "sd": 10422.690949820395,
+              "min": 804.0,
+              "q1": 4546.0,
+              "median": 8912.0,
+              "q3": 16203.0,
+              "max": 44360.0,
+              "median_ci95": [
+                5991.0,
+                11340.0
+              ]
+            },
+            "max_milestone": {
+              "n": 30,
+              "mean": 6.966666666666667,
+              "sd": 0.18257418583505533,
+              "min": 6.0,
+              "q1": 7.0,
+              "median": 7.0,
+              "q3": 7.0,
+              "max": 7.0,
+              "median_ci95": [
+                7.0,
+                7.0
+              ]
+            },
+            "milestone_reached_max": 7,
+            "max_milestone_possible": 7,
+            "corpus_size": {
+              "n": 30,
+              "mean": 106.46666666666667,
+              "sd": 17.246155660247044,
+              "min": 62.0,
+              "q1": 97.0,
+              "median": 107.0,
+              "q3": 119.75,
+              "max": 140.0,
+              "median_ci95": [
+                99.5,
+                111.5
+              ]
+            },
+            "exact_elements": {
+              "n": 30,
+              "mean": 74.16666666666667,
+              "sd": 4.3556014932287015,
+              "min": 64.0,
+              "q1": 71.25,
+              "median": 76.0,
+              "q3": 77.0,
+              "max": 81.0,
+              "median_ci95": [
+                72.0,
+                77.0
+              ]
+            },
+            "mean_exec_per_second": 8171.581401894041
+          },
+          "d0_d1_context": {
+            "n_trials": 30,
+            "budget_execs": 60000,
+            "n_bugs_found": 30,
+            "success_rate": 1.0,
+            "success_rate_ci95": [
+              0.8842966917779722,
+              1.0
+            ],
+            "execs_to_bug_among_successes": {
+              "n": 30,
+              "mean": 15346.3,
+              "sd": 7638.66921136723,
+              "min": 2689.0,
+              "q1": 7774.0,
+              "median": 16147.5,
+              "q3": 20773.5,
+              "max": 28152.0,
+              "median_ci95": [
+                10749.5,
+                19429.0
+              ]
+            },
+            "max_milestone": {
+              "n": 30,
+              "mean": 7.0,
+              "sd": 0.0,
+              "min": 7.0,
+              "q1": 7.0,
+              "median": 7.0,
+              "q3": 7.0,
+              "max": 7.0,
+              "median_ci95": [
+                7.0,
+                7.0
+              ]
+            },
+            "milestone_reached_max": 7,
+            "max_milestone_possible": 7,
+            "corpus_size": {
+              "n": 30,
+              "mean": 2040.0,
+              "sd": 963.240042414322,
+              "min": 421.0,
+              "q1": 1432.75,
+              "median": 1979.0,
+              "q3": 2641.5,
+              "max": 4434.0,
+              "median_ci95": [
+                1639.0,
+                2497.5
+              ]
+            },
+            "exact_elements": {
+              "n": 30,
+              "mean": 7809.966666666666,
+              "sd": 3046.3384293995937,
+              "min": 1957.0,
+              "q1": 5623.5,
+              "median": 7951.0,
+              "q3": 10031.0,
+              "max": 14145.0,
+              "median_ci95": [
+                6881.5,
+                9820.5
+              ]
+            },
+            "mean_exec_per_second": 2268.6744956271955,
+            "vs_edge_only": {
+              "fisher_success": {
+                "odds_ratio": null,
+                "odds_ratio_undefined_zero_cell": true,
+                "odds_ratio_haldane_anscombe": 3.101694915254237,
+                "p_value": 1.0,
+                "rate_1": 1.0,
+                "rate_1_ci95": [
+                  0.8842966917779722,
+                  1.0
+                ],
+                "rate_2": 0.9666666666666667,
+                "rate_2_ci95": [
+                  0.8278305443665873,
+                  0.9991564290733695
+                ]
+              },
+              "logrank_time_to_bug": {
+                "chi2": 0.1317575348249851,
+                "p_value": 0.7166166815993441,
+                "observed_1": 30.0,
+                "expected_1": 31.31174522427997,
+                "n_events": 59
+              },
+              "milestone_mann_whitney": {
+                "U": 465.0,
+                "p_value": 0.33371069574356604,
+                "a12": 0.5166666666666667,
+                "a12_magnitude": "negligible"
+              },
+              "milestone_wilcoxon_paired": {
+                "statistic": 0.0,
+                "p_value": 0.31731050786291415,
+                "n_pairs": 30,
+                "n_nonzero_pairs": 1
+              },
+              "censored_time_mann_whitney": {
+                "U": 574.0,
+                "p_value": 0.06786886081944325,
+                "a12": 0.6377777777777778,
+                "a12_magnitude": "small"
+              },
+              "note": "A12 on milestone: >0.5 favours this configuration. A12 on censored time: <0.5 favours this configuration (lower is better). Censored times are substituted at the budget, which makes the rank test conservative; the log-rank test handles censoring correctly and is the primary time-to-bug test.",
+              "fisher_success_q_value": 1.0,
+              "logrank_time_to_bug_q_value": 1.0,
+              "milestone_mann_whitney_q_value": 0.682590059475476
+            }
+          },
+          "d0_d2_valuerange": {
+            "n_trials": 30,
+            "budget_execs": 60000,
+            "n_bugs_found": 30,
+            "success_rate": 1.0,
+            "success_rate_ci95": [
+              0.8842966917779722,
+              1.0
+            ],
+            "execs_to_bug_among_successes": {
+              "n": 30,
+              "mean": 6171.366666666667,
+              "sd": 4398.906976176863,
+              "min": 2064.0,
+              "q1": 3622.75,
+              "median": 5071.5,
+              "q3": 7231.25,
+              "max": 25096.0,
+              "median_ci95": [
+                3789.5,
+                6850.5
+              ]
+            },
+            "max_milestone": {
+              "n": 30,
+              "mean": 7.0,
+              "sd": 0.0,
+              "min": 7.0,
+              "q1": 7.0,
+              "median": 7.0,
+              "q3": 7.0,
+              "max": 7.0,
+              "median_ci95": [
+                7.0,
+                7.0
+              ]
+            },
+            "milestone_reached_max": 7,
+            "max_milestone_possible": 7,
+            "corpus_size": {
+              "n": 30,
+              "mean": 111.43333333333334,
+              "sd": 15.767017808536675,
+              "min": 86.0,
+              "q1": 100.25,
+              "median": 111.5,
+              "q3": 121.75,
+              "max": 154.0,
+              "median_ci95": [
+                102.5,
+                116.0
+              ]
+            },
+            "exact_elements": {
+              "n": 30,
+              "mean": 114.3,
+              "sd": 5.465566191448371,
+              "min": 104.0,
+              "q1": 111.0,
+              "median": 113.5,
+              "q3": 117.5,
+              "max": 126.0,
+              "median_ci95": [
+                112.0,
+                115.5
+              ]
+            },
+            "mean_exec_per_second": 4983.607908078572,
+            "vs_edge_only": {
+              "fisher_success": {
+                "odds_ratio": null,
+                "odds_ratio_undefined_zero_cell": true,
+                "odds_ratio_haldane_anscombe": 3.101694915254237,
+                "p_value": 1.0,
+                "rate_1": 1.0,
+                "rate_1_ci95": [
+                  0.8842966917779722,
+                  1.0
+                ],
+                "rate_2": 0.9666666666666667,
+                "rate_2_ci95": [
+                  0.8278305443665873,
+                  0.9991564290733695
+                ]
+              },
+              "logrank_time_to_bug": {
+                "chi2": 9.984308756450048,
+                "p_value": 0.0015787981142177982,
+                "observed_1": 30.0,
+                "expected_1": 19.231183544478263,
+                "n_events": 59
+              },
+              "milestone_mann_whitney": {
+                "U": 465.0,
+                "p_value": 0.33371069574356604,
+                "a12": 0.5166666666666667,
+                "a12_magnitude": "negligible"
+              },
+              "milestone_wilcoxon_paired": {
+                "statistic": 0.0,
+                "p_value": 0.31731050786291415,
+                "n_pairs": 30,
+                "n_nonzero_pairs": 1
+              },
+              "censored_time_mann_whitney": {
+                "U": 275.0,
+                "p_value": 0.009883401291685813,
+                "a12": 0.3055555555555556,
+                "a12_magnitude": "medium"
+              },
+              "note": "A12 on milestone: >0.5 favours this configuration. A12 on censored time: <0.5 favours this configuration (lower is better). Censored times are substituted at the budget, which makes the rank test conservative; the log-rank test handles censoring correctly and is the primary time-to-bug test.",
+              "fisher_success_q_value": 1.0,
+              "logrank_time_to_bug_q_value": 0.0037392586915684697,
+              "milestone_mann_whitney_q_value": 0.682590059475476
+            }
+          },
+          "d0_d3_statemachine": {
+            "n_trials": 30,
+            "budget_execs": 60000,
+            "n_bugs_found": 29,
+            "success_rate": 0.9666666666666667,
+            "success_rate_ci95": [
+              0.8278305443665873,
+              0.9991564290733695
+            ],
+            "execs_to_bug_among_successes": {
+              "n": 29,
+              "mean": 11891.724137931034,
+              "sd": 10422.690949820395,
+              "min": 804.0,
+              "q1": 4546.0,
+              "median": 8912.0,
+              "q3": 16203.0,
+              "max": 44360.0,
+              "median_ci95": [
+                5991.0,
+                11340.0
+              ]
+            },
+            "max_milestone": {
+              "n": 30,
+              "mean": 6.966666666666667,
+              "sd": 0.18257418583505533,
+              "min": 6.0,
+              "q1": 7.0,
+              "median": 7.0,
+              "q3": 7.0,
+              "max": 7.0,
+              "median_ci95": [
+                7.0,
+                7.0
+              ]
+            },
+            "milestone_reached_max": 7,
+            "max_milestone_possible": 7,
+            "corpus_size": {
+              "n": 30,
+              "mean": 106.46666666666667,
+              "sd": 17.246155660247044,
+              "min": 62.0,
+              "q1": 97.0,
+              "median": 107.0,
+              "q3": 119.75,
+              "max": 140.0,
+              "median_ci95": [
+                99.5,
+                111.5
+              ]
+            },
+            "exact_elements": {
+              "n": 30,
+              "mean": 74.16666666666667,
+              "sd": 4.3556014932287015,
+              "min": 64.0,
+              "q1": 71.25,
+              "median": 76.0,
+              "q3": 77.0,
+              "max": 81.0,
+              "median_ci95": [
+                72.0,
+                77.0
+              ]
+            },
+            "mean_exec_per_second": 7882.9677386659,
+            "vs_edge_only": {
+              "fisher_success": {
+                "odds_ratio": 1.0,
+                "odds_ratio_undefined_zero_cell": false,
+                "odds_ratio_haldane_anscombe": 1.0,
+                "p_value": 1.0,
+                "rate_1": 0.9666666666666667,
+                "rate_1_ci95": [
+                  0.8278305443665873,
+                  0.9991564290733695
+                ],
+                "rate_2": 0.9666666666666667,
+                "rate_2_ci95": [
+                  0.8278305443665873,
+                  0.9991564290733695
+                ]
+              },
+              "logrank_time_to_bug": {
+                "chi2": 0.0,
+                "p_value": 1.0,
+                "observed_1": 29.0,
+                "expected_1": 29.0,
+                "n_events": 58
+              },
+              "milestone_mann_whitney": {
+                "U": 450.0,
+                "p_value": 1.0,
+                "a12": 0.5,
+                "a12_magnitude": "negligible"
+              },
+              "milestone_wilcoxon_paired": {
+                "statistic": 0.0,
+                "p_value": 1.0,
+                "n_pairs": 30,
+                "n_nonzero_pairs": 0
+              },
+              "censored_time_mann_whitney": {
+                "U": 450.0,
+                "p_value": 1.0,
+                "a12": 0.5,
+                "a12_magnitude": "negligible"
+              },
+              "note": "A12 on milestone: >0.5 favours this configuration. A12 on censored time: <0.5 favours this configuration (lower is better). Censored times are substituted at the budget, which makes the rank test conservative; the log-rank test handles censoring correctly and is the primary time-to-bug test.",
+              "fisher_success_q_value": 1.0,
+              "logrank_time_to_bug_q_value": 1.0,
+              "milestone_mann_whitney_q_value": 1.0
+            }
+          },
+          "full_3d": {
+            "n_trials": 30,
+            "budget_execs": 60000,
+            "n_bugs_found": 30,
+            "success_rate": 1.0,
+            "success_rate_ci95": [
+              0.8842966917779722,
+              1.0
+            ],
+            "execs_to_bug_among_successes": {
+              "n": 30,
+              "mean": 15691.133333333333,
+              "sd": 9146.881966317656,
+              "min": 2710.0,
+              "q1": 8452.75,
+              "median": 13022.0,
+              "q3": 22272.5,
+              "max": 37256.0,
+              "median_ci95": [
+                9454.5,
+                18886.5
+              ]
+            },
+            "max_milestone": {
+              "n": 30,
+              "mean": 7.0,
+              "sd": 0.0,
+              "min": 7.0,
+              "q1": 7.0,
+              "median": 7.0,
+              "q3": 7.0,
+              "max": 7.0,
+              "median_ci95": [
+                7.0,
+                7.0
+              ]
+            },
+            "milestone_reached_max": 7,
+            "max_milestone_possible": 7,
+            "corpus_size": {
+              "n": 30,
+              "mean": 2229.633333333333,
+              "sd": 1219.4975076909209,
+              "min": 404.0,
+              "q1": 1255.25,
+              "median": 2103.5,
+              "q3": 2765.25,
+              "max": 5124.0,
+              "median_ci95": [
+                1501.0,
+                2695.5
+              ]
+            },
+            "exact_elements": {
+              "n": 30,
+              "mean": 8431.633333333333,
+              "sd": 3666.8561511645553,
+              "min": 1824.0,
+              "q1": 5678.25,
+              "median": 8349.5,
+              "q3": 10829.5,
+              "max": 15754.0,
+              "median_ci95": [
+                6281.5,
+                10239.5
+              ]
+            },
+            "mean_exec_per_second": 1814.3866066600772,
+            "vs_edge_only": {
+              "fisher_success": {
+                "odds_ratio": null,
+                "odds_ratio_undefined_zero_cell": true,
+                "odds_ratio_haldane_anscombe": 3.101694915254237,
+                "p_value": 1.0,
+                "rate_1": 1.0,
+                "rate_1_ci95": [
+                  0.8842966917779722,
+                  1.0
+                ],
+                "rate_2": 0.9666666666666667,
+                "rate_2_ci95": [
+                  0.8278305443665873,
+                  0.9991564290733695
+                ]
+              },
+              "logrank_time_to_bug": {
+                "chi2": 0.5308378296997979,
+                "p_value": 0.46625483135984525,
+                "observed_1": 30.0,
+                "expected_1": 32.726572026151395,
+                "n_events": 59
+              },
+              "milestone_mann_whitney": {
+                "U": 465.0,
+                "p_value": 0.33371069574356604,
+                "a12": 0.5166666666666667,
+                "a12_magnitude": "negligible"
+              },
+              "milestone_wilcoxon_paired": {
+                "statistic": 0.0,
+                "p_value": 0.31731050786291415,
+                "n_pairs": 30,
+                "n_nonzero_pairs": 1
+              },
+              "censored_time_mann_whitney": {
+                "U": 577.0,
+                "p_value": 0.061451911011256986,
+                "a12": 0.6411111111111112,
+                "a12_magnitude": "medium"
+              },
+              "note": "A12 on milestone: >0.5 favours this configuration. A12 on censored time: <0.5 favours this configuration (lower is better). Censored times are substituted at the budget, which makes the rank test conservative; the log-rank test handles censoring correctly and is the primary time-to-bug test.",
+              "fisher_success_q_value": 1.0,
+              "logrank_time_to_bug_q_value": 0.912237713530132,
+              "milestone_mann_whitney_q_value": 0.682590059475476
+            }
+          }
+        }
+      },
+      "T2_value_range": {
+        "targeted_dimension": "D2",
+        "max_milestone_possible": 4,
+        "budget_execs": 300000,
+        "configs": {
+          "blind_random": {
+            "n_trials": 30,
+            "budget_execs": 300000,
+            "n_bugs_found": 0,
+            "success_rate": 0.0,
+            "success_rate_ci95": [
+              0.0,
+              0.11570330822202778
+            ],
+            "execs_to_bug_among_successes": {
+              "n": 0
+            },
+            "max_milestone": {
+              "n": 30,
+              "mean": 0.13333333333333333,
+              "sd": 0.34574590364176044,
+              "min": 0.0,
+              "q1": 0.0,
+              "median": 0.0,
+              "q3": 0.0,
+              "max": 1.0,
+              "median_ci95": [
+                0.0,
+                0.0
+              ]
+            },
+            "milestone_reached_max": 1,
+            "max_milestone_possible": 4,
+            "corpus_size": {
+              "n": 30,
+              "mean": 1.0,
+              "sd": 0.0,
+              "min": 1.0,
+              "q1": 1.0,
+              "median": 1.0,
+              "q3": 1.0,
+              "max": 1.0,
+              "median_ci95": [
+                1.0,
+                1.0
+              ]
+            },
+            "exact_elements": {
+              "n": 30,
+              "mean": 3.2666666666666666,
+              "sd": 0.6914918072835209,
+              "min": 3.0,
+              "q1": 3.0,
+              "median": 3.0,
+              "q3": 3.0,
+              "max": 5.0,
+              "median_ci95": [
+                3.0,
+                3.0
+              ]
+            },
+            "mean_exec_per_second": 32151.73988833914,
+            "vs_edge_only": {
+              "fisher_success": {
+                "odds_ratio": null,
+                "odds_ratio_undefined_zero_cell": true,
+                "odds_ratio_haldane_anscombe": 1.0,
+                "p_value": 1.0,
+                "rate_1": 0.0,
+                "rate_1_ci95": [
+                  0.0,
+                  0.11570330822202778
+                ],
+                "rate_2": 0.0,
+                "rate_2_ci95": [
+                  0.0,
+                  0.11570330822202778
+                ]
+              },
+              "logrank_time_to_bug": {
+                "chi2": 0.0,
+                "p_value": 1.0,
+                "observed_1": 0.0,
+                "expected_1": 0.0,
+                "n_events": 0
+              },
+              "milestone_mann_whitney": {
+                "U": 465.0,
+                "p_value": 0.6998726533461359,
+                "a12": 0.5166666666666667,
+                "a12_magnitude": "negligible"
+              },
+              "milestone_wilcoxon_paired": {
+                "statistic": 2.0,
+                "p_value": 0.5637028616507731,
+                "n_pairs": 30,
+                "n_nonzero_pairs": 3
+              },
+              "censored_time_mann_whitney": {
+                "U": 450.0,
+                "p_value": 1.0,
+                "a12": 0.5,
+                "a12_magnitude": "negligible"
+              },
+              "note": "A12 on milestone: >0.5 favours this configuration. A12 on censored time: <0.5 favours this configuration (lower is better). Censored times are substituted at the budget, which makes the rank test conservative; the log-rank test handles censoring correctly and is the primary time-to-bug test.",
+              "fisher_success_q_value": 1.0,
+              "logrank_time_to_bug_q_value": 1.0,
+              "milestone_mann_whitney_q_value": 1.0
+            }
+          },
+          "edge_only": {
+            "n_trials": 30,
+            "budget_execs": 300000,
+            "n_bugs_found": 0,
+            "success_rate": 0.0,
+            "success_rate_ci95": [
+              0.0,
+              0.11570330822202778
+            ],
+            "execs_to_bug_among_successes": {
+              "n": 0
+            },
+            "max_milestone": {
+              "n": 30,
+              "mean": 0.1,
+              "sd": 0.30512857662936466,
+              "min": 0.0,
+              "q1": 0.0,
+              "median": 0.0,
+              "q3": 0.0,
+              "max": 1.0,
+              "median_ci95": [
+                0.0,
+                0.0
+              ]
+            },
+            "milestone_reached_max": 1,
+            "max_milestone_possible": 4,
+            "corpus_size": {
+              "n": 30,
+              "mean": 2.1,
+              "sd": 0.3051285766293647,
+              "min": 2.0,
+              "q1": 2.0,
+              "median": 2.0,
+              "q3": 2.0,
+              "max": 3.0,
+              "median_ci95": [
+                2.0,
+                2.0
+              ]
+            },
+            "exact_elements": {
+              "n": 30,
+              "mean": 3.2,
+              "sd": 0.6102571532587294,
+              "min": 3.0,
+              "q1": 3.0,
+              "median": 3.0,
+              "q3": 3.0,
+              "max": 5.0,
+              "median_ci95": [
+                3.0,
+                3.0
+              ]
+            },
+            "mean_exec_per_second": 32105.398598432534
+          },
+          "d0_d1_context": {
+            "n_trials": 30,
+            "budget_execs": 300000,
+            "n_bugs_found": 0,
+            "success_rate": 0.0,
+            "success_rate_ci95": [
+              0.0,
+              0.11570330822202778
+            ],
+            "execs_to_bug_among_successes": {
+              "n": 0
+            },
+            "max_milestone": {
+              "n": 30,
+              "mean": 0.1,
+              "sd": 0.30512857662936466,
+              "min": 0.0,
+              "q1": 0.0,
+              "median": 0.0,
+              "q3": 0.0,
+              "max": 1.0,
+              "median_ci95": [
+                0.0,
+                0.0
+              ]
+            },
+            "milestone_reached_max": 1,
+            "max_milestone_possible": 4,
+            "corpus_size": {
+              "n": 30,
+              "mean": 2.1,
+              "sd": 0.3051285766293647,
+              "min": 2.0,
+              "q1": 2.0,
+              "median": 2.0,
+              "q3": 2.0,
+              "max": 3.0,
+              "median_ci95": [
+                2.0,
+                2.0
+              ]
+            },
+            "exact_elements": {
+              "n": 30,
+              "mean": 6.4,
+              "sd": 1.2205143065174588,
+              "min": 6.0,
+              "q1": 6.0,
+              "median": 6.0,
+              "q3": 6.0,
+              "max": 10.0,
+              "median_ci95": [
+                6.0,
+                6.0
+              ]
+            },
+            "mean_exec_per_second": 20628.47123388779,
+            "vs_edge_only": {
+              "fisher_success": {
+                "odds_ratio": null,
+                "odds_ratio_undefined_zero_cell": true,
+                "odds_ratio_haldane_anscombe": 1.0,
+                "p_value": 1.0,
+                "rate_1": 0.0,
+                "rate_1_ci95": [
+                  0.0,
+                  0.11570330822202778
+                ],
+                "rate_2": 0.0,
+                "rate_2_ci95": [
+                  0.0,
+                  0.11570330822202778
+                ]
+              },
+              "logrank_time_to_bug": {
+                "chi2": 0.0,
+                "p_value": 1.0,
+                "observed_1": 0.0,
+                "expected_1": 0.0,
+                "n_events": 0
+              },
+              "milestone_mann_whitney": {
+                "U": 450.0,
+                "p_value": 1.0,
+                "a12": 0.5,
+                "a12_magnitude": "negligible"
+              },
+              "milestone_wilcoxon_paired": {
+                "statistic": 0.0,
+                "p_value": 1.0,
+                "n_pairs": 30,
+                "n_nonzero_pairs": 0
+              },
+              "censored_time_mann_whitney": {
+                "U": 450.0,
+                "p_value": 1.0,
+                "a12": 0.5,
+                "a12_magnitude": "negligible"
+              },
+              "note": "A12 on milestone: >0.5 favours this configuration. A12 on censored time: <0.5 favours this configuration (lower is better). Censored times are substituted at the budget, which makes the rank test conservative; the log-rank test handles censoring correctly and is the primary time-to-bug test.",
+              "fisher_success_q_value": 1.0,
+              "logrank_time_to_bug_q_value": 1.0,
+              "milestone_mann_whitney_q_value": 1.0
+            }
+          },
+          "d0_d2_valuerange": {
+            "n_trials": 30,
+            "budget_execs": 300000,
+            "n_bugs_found": 24,
+            "success_rate": 0.8,
+            "success_rate_ci95": [
+              0.6143334890033929,
+              0.9228644879989344
+            ],
+            "execs_to_bug_among_successes": {
+              "n": 24,
+              "mean": 166444.79166666666,
+              "sd": 61890.061403426706,
+              "min": 82419.0,
+              "q1": 109357.75,
+              "median": 159638.5,
+              "q3": 218584.5,
+              "max": 293307.0,
+              "median_ci95": [
+                128231.0,
+                195370.5
+              ]
+            },
+            "max_milestone": {
+              "n": 30,
+              "mean": 3.6,
+              "sd": 0.8136762043449726,
+              "min": 2.0,
+              "q1": 4.0,
+              "median": 4.0,
+              "q3": 4.0,
+              "max": 4.0,
+              "median_ci95": [
+                4.0,
+                4.0
+              ]
+            },
+            "milestone_reached_max": 4,
+            "max_milestone_possible": 4,
+            "corpus_size": {
+              "n": 30,
+              "mean": 78.96666666666667,
+              "sd": 7.836621955802189,
+              "min": 65.0,
+              "q1": 73.0,
+              "median": 79.0,
+              "q3": 85.75,
+              "max": 93.0,
+              "median_ci95": [
+                75.0,
+                83.0
+              ]
+            },
+            "exact_elements": {
+              "n": 30,
+              "mean": 101.36666666666666,
+              "sd": 9.371576003085563,
+              "min": 82.0,
+              "q1": 94.0,
+              "median": 104.0,
+              "q3": 107.75,
+              "max": 113.0,
+              "median_ci95": [
+                102.5,
+                107.0
+              ]
+            },
+            "mean_exec_per_second": 15097.038090182197,
+            "vs_edge_only": {
+              "fisher_success": {
+                "odds_ratio": null,
+                "odds_ratio_undefined_zero_cell": true,
+                "odds_ratio_haldane_anscombe": 229.9230769230769,
+                "p_value": 3.293956608524839e-11,
+                "rate_1": 0.8,
+                "rate_1_ci95": [
+                  0.6143334890033929,
+                  0.9228644879989344
+                ],
+                "rate_2": 0.0,
+                "rate_2_ci95": [
+                  0.0,
+                  0.11570330822202778
+                ]
+              },
+              "logrank_time_to_bug": {
+                "chi2": 42.72240826920675,
+                "p_value": 6.308546464871397e-11,
+                "observed_1": 24.0,
+                "expected_1": 8.840663515287039,
+                "n_events": 24
+              },
+              "milestone_mann_whitney": {
+                "U": 900.0,
+                "p_value": 4.696385299550918e-13,
+                "a12": 1.0,
+                "a12_magnitude": "large"
+              },
+              "milestone_wilcoxon_paired": {
+                "statistic": 0.0,
+                "p_value": 5.876341175424552e-07,
+                "n_pairs": 30,
+                "n_nonzero_pairs": 30
+              },
+              "censored_time_mann_whitney": {
+                "U": 90.0,
+                "p_value": 1.9457385836390854e-09,
+                "a12": 0.1,
+                "a12_magnitude": "large"
+              },
+              "note": "A12 on milestone: >0.5 favours this configuration. A12 on censored time: <0.5 favours this configuration (lower is better). Censored times are substituted at the budget, which makes the rank test conservative; the log-rank test handles censoring correctly and is the primary time-to-bug test.",
+              "fisher_success_q_value": 1.6469783042624194e-10,
+              "logrank_time_to_bug_q_value": 2.5807690083564804e-10,
+              "milestone_mann_whitney_q_value": 4.457340662178995e-12
+            }
+          },
+          "d0_d3_statemachine": {
+            "n_trials": 30,
+            "budget_execs": 300000,
+            "n_bugs_found": 0,
+            "success_rate": 0.0,
+            "success_rate_ci95": [
+              0.0,
+              0.11570330822202778
+            ],
+            "execs_to_bug_among_successes": {
+              "n": 0
+            },
+            "max_milestone": {
+              "n": 30,
+              "mean": 0.1,
+              "sd": 0.30512857662936466,
+              "min": 0.0,
+              "q1": 0.0,
+              "median": 0.0,
+              "q3": 0.0,
+              "max": 1.0,
+              "median_ci95": [
+                0.0,
+                0.0
+              ]
+            },
+            "milestone_reached_max": 1,
+            "max_milestone_possible": 4,
+            "corpus_size": {
+              "n": 30,
+              "mean": 2.1,
+              "sd": 0.3051285766293647,
+              "min": 2.0,
+              "q1": 2.0,
+              "median": 2.0,
+              "q3": 2.0,
+              "max": 3.0,
+              "median_ci95": [
+                2.0,
+                2.0
+              ]
+            },
+            "exact_elements": {
+              "n": 30,
+              "mean": 4.3,
+              "sd": 0.915385729888094,
+              "min": 4.0,
+              "q1": 4.0,
+              "median": 4.0,
+              "q3": 4.0,
+              "max": 7.0,
+              "median_ci95": [
+                4.0,
+                4.0
+              ]
+            },
+            "mean_exec_per_second": 21491.402147646357,
+            "vs_edge_only": {
+              "fisher_success": {
+                "odds_ratio": null,
+                "odds_ratio_undefined_zero_cell": true,
+                "odds_ratio_haldane_anscombe": 1.0,
+                "p_value": 1.0,
+                "rate_1": 0.0,
+                "rate_1_ci95": [
+                  0.0,
+                  0.11570330822202778
+                ],
+                "rate_2": 0.0,
+                "rate_2_ci95": [
+                  0.0,
+                  0.11570330822202778
+                ]
+              },
+              "logrank_time_to_bug": {
+                "chi2": 0.0,
+                "p_value": 1.0,
+                "observed_1": 0.0,
+                "expected_1": 0.0,
+                "n_events": 0
+              },
+              "milestone_mann_whitney": {
+                "U": 450.0,
+                "p_value": 1.0,
+                "a12": 0.5,
+                "a12_magnitude": "negligible"
+              },
+              "milestone_wilcoxon_paired": {
+                "statistic": 0.0,
+                "p_value": 1.0,
+                "n_pairs": 30,
+                "n_nonzero_pairs": 0
+              },
+              "censored_time_mann_whitney": {
+                "U": 450.0,
+                "p_value": 1.0,
+                "a12": 0.5,
+                "a12_magnitude": "negligible"
+              },
+              "note": "A12 on milestone: >0.5 favours this configuration. A12 on censored time: <0.5 favours this configuration (lower is better). Censored times are substituted at the budget, which makes the rank test conservative; the log-rank test handles censoring correctly and is the primary time-to-bug test.",
+              "fisher_success_q_value": 1.0,
+              "logrank_time_to_bug_q_value": 1.0,
+              "milestone_mann_whitney_q_value": 1.0
+            }
+          },
+          "full_3d": {
+            "n_trials": 30,
+            "budget_execs": 300000,
+            "n_bugs_found": 24,
+            "success_rate": 0.8,
+            "success_rate_ci95": [
+              0.6143334890033929,
+              0.9228644879989344
+            ],
+            "execs_to_bug_among_successes": {
+              "n": 24,
+              "mean": 166444.79166666666,
+              "sd": 61890.061403426706,
+              "min": 82419.0,
+              "q1": 109357.75,
+              "median": 159638.5,
+              "q3": 218584.5,
+              "max": 293307.0,
+              "median_ci95": [
+                128231.0,
+                195370.5
+              ]
+            },
+            "max_milestone": {
+              "n": 30,
+              "mean": 3.6,
+              "sd": 0.8136762043449726,
+              "min": 2.0,
+              "q1": 4.0,
+              "median": 4.0,
+              "q3": 4.0,
+              "max": 4.0,
+              "median_ci95": [
+                4.0,
+                4.0
+              ]
+            },
+            "milestone_reached_max": 4,
+            "max_milestone_possible": 4,
+            "corpus_size": {
+              "n": 30,
+              "mean": 78.96666666666667,
+              "sd": 7.836621955802189,
+              "min": 65.0,
+              "q1": 73.0,
+              "median": 79.0,
+              "q3": 85.75,
+              "max": 93.0,
+              "median_ci95": [
+                75.0,
+                83.0
+              ]
+            },
+            "exact_elements": {
+              "n": 30,
+              "mean": 117.9,
+              "sd": 11.960711546126976,
+              "min": 93.0,
+              "q1": 111.25,
+              "median": 122.0,
+              "q3": 125.75,
+              "max": 131.0,
+              "median_ci95": [
+                120.5,
+                125.0
+              ]
+            },
+            "mean_exec_per_second": 9614.367645730767,
+            "vs_edge_only": {
+              "fisher_success": {
+                "odds_ratio": null,
+                "odds_ratio_undefined_zero_cell": true,
+                "odds_ratio_haldane_anscombe": 229.9230769230769,
+                "p_value": 3.293956608524839e-11,
+                "rate_1": 0.8,
+                "rate_1_ci95": [
+                  0.6143334890033929,
+                  0.9228644879989344
+                ],
+                "rate_2": 0.0,
+                "rate_2_ci95": [
+                  0.0,
+                  0.11570330822202778
+                ]
+              },
+              "logrank_time_to_bug": {
+                "chi2": 42.72240826920675,
+                "p_value": 6.308546464871397e-11,
+                "observed_1": 24.0,
+                "expected_1": 8.840663515287039,
+                "n_events": 24
+              },
+              "milestone_mann_whitney": {
+                "U": 900.0,
+                "p_value": 4.696385299550918e-13,
+                "a12": 1.0,
+                "a12_magnitude": "large"
+              },
+              "milestone_wilcoxon_paired": {
+                "statistic": 0.0,
+                "p_value": 5.876341175424552e-07,
+                "n_pairs": 30,
+                "n_nonzero_pairs": 30
+              },
+              "censored_time_mann_whitney": {
+                "U": 90.0,
+                "p_value": 1.9457385836390854e-09,
+                "a12": 0.1,
+                "a12_magnitude": "large"
+              },
+              "note": "A12 on milestone: >0.5 favours this configuration. A12 on censored time: <0.5 favours this configuration (lower is better). Censored times are substituted at the budget, which makes the rank test conservative; the log-rank test handles censoring correctly and is the primary time-to-bug test.",
+              "fisher_success_q_value": 1.6469783042624194e-10,
+              "logrank_time_to_bug_q_value": 2.5807690083564804e-10,
+              "milestone_mann_whitney_q_value": 4.457340662178995e-12
+            }
+          }
+        }
+      },
+      "T3_state_machine": {
+        "targeted_dimension": "D3",
+        "max_milestone_possible": 5,
+        "budget_execs": 60000,
+        "configs": {
+          "blind_random": {
+            "n_trials": 30,
+            "budget_execs": 60000,
+            "n_bugs_found": 3,
+            "success_rate": 0.1,
+            "success_rate_ci95": [
+              0.02111713702972257,
+              0.2652884504742081
+            ],
+            "execs_to_bug_among_successes": {
+              "n": 3,
+              "mean": 35774.0,
+              "sd": 6724.700811188554,
+              "min": 28009.0,
+              "q1": 33826.0,
+              "median": 39643.0,
+              "q3": 39656.5,
+              "max": 39670.0,
+              "median_ci95": [
+                28009.0,
+                39670.0
+              ]
+            },
+            "max_milestone": {
+              "n": 30,
+              "mean": 4.1,
+              "sd": 0.3051285766293646,
+              "min": 4.0,
+              "q1": 4.0,
+              "median": 4.0,
+              "q3": 4.0,
+              "max": 5.0,
+              "median_ci95": [
+                4.0,
+                4.0
+              ]
+            },
+            "milestone_reached_max": 5,
+            "max_milestone_possible": 5,
+            "corpus_size": {
+              "n": 30,
+              "mean": 1.0,
+              "sd": 0.0,
+              "min": 1.0,
+              "q1": 1.0,
+              "median": 1.0,
+              "q3": 1.0,
+              "max": 1.0,
+              "median_ci95": [
+                1.0,
+                1.0
+              ]
+            },
+            "exact_elements": {
+              "n": 30,
+              "mean": 196.2,
+              "sd": 0.6102571532587294,
+              "min": 196.0,
+              "q1": 196.0,
+              "median": 196.0,
+              "q3": 196.0,
+              "max": 198.0,
+              "median_ci95": [
+                196.0,
+                196.0
+              ]
+            },
+            "mean_exec_per_second": 11935.52080435302,
+            "vs_edge_only": {
+              "fisher_success": {
+                "odds_ratio": 0.05555555555555555,
+                "odds_ratio_undefined_zero_cell": false,
+                "odds_ratio_haldane_anscombe": 0.06518847006651884,
+                "p_value": 1.0979873400083272e-05,
+                "rate_1": 0.1,
+                "rate_1_ci95": [
+                  0.02111713702972257,
+                  0.2652884504742081
+                ],
+                "rate_2": 0.6666666666666666,
+                "rate_2_ci95": [
+                  0.47187995521011944,
+                  0.8271257784739607
+                ]
+              },
+              "logrank_time_to_bug": {
+                "chi2": 21.851782943865786,
+                "p_value": 2.94542788402569e-06,
+                "observed_1": 3.0,
+                "expected_1": 13.872602685262532,
+                "n_events": 23
+              },
+              "milestone_mann_whitney": {
+                "U": 195.0,
+                "p_value": 7.916491407047915e-06,
+                "a12": 0.21666666666666667,
+                "a12_magnitude": "large"
+              },
+              "milestone_wilcoxon_paired": {
+                "statistic": 0.0,
+                "p_value": 3.737981840170154e-05,
+                "n_pairs": 30,
+                "n_nonzero_pairs": 17
+              },
+              "censored_time_mann_whitney": {
+                "U": 718.0,
+                "p_value": 6.187490994908088e-06,
+                "a12": 0.7977777777777777,
+                "a12_magnitude": "large"
+              },
+              "note": "A12 on milestone: >0.5 favours this configuration. A12 on censored time: <0.5 favours this configuration (lower is better). Censored times are substituted at the budget, which makes the rank test conservative; the log-rank test handles censoring correctly and is the primary time-to-bug test.",
+              "fisher_success_q_value": 3.5292450214553376e-05,
+              "logrank_time_to_bug_q_value": 1.1045354565096337e-05,
+              "milestone_mann_whitney_q_value": 2.740323948593509e-05
+            }
+          },
+          "edge_only": {
+            "n_trials": 30,
+            "budget_execs": 60000,
+            "n_bugs_found": 20,
+            "success_rate": 0.6666666666666666,
+            "success_rate_ci95": [
+              0.47187995521011944,
+              0.8271257784739607
+            ],
+            "execs_to_bug_among_successes": {
+              "n": 20,
+              "mean": 26698.05,
+              "sd": 16457.656485580457,
+              "min": 1706.0,
+              "q1": 13757.5,
+              "median": 29152.5,
+              "q3": 35577.75,
+              "max": 57183.0,
+              "median_ci95": [
+                15640.0,
+                34251.0
+              ]
+            },
+            "max_milestone": {
+              "n": 30,
+              "mean": 4.666666666666667,
+              "sd": 0.47946330148538413,
+              "min": 4.0,
+              "q1": 4.0,
+              "median": 5.0,
+              "q3": 5.0,
+              "max": 5.0,
+              "median_ci95": [
+                4.5,
+                5.0
+              ]
+            },
+            "milestone_reached_max": 5,
+            "max_milestone_possible": 5,
+            "corpus_size": {
+              "n": 30,
+              "mean": 404.3333333333333,
+              "sd": 65.00150307722777,
+              "min": 209.0,
+              "q1": 377.5,
+              "median": 427.5,
+              "q3": 452.25,
+              "max": 467.0,
+              "median_ci95": [
+                394.0,
+                445.5
+              ]
+            },
+            "exact_elements": {
+              "n": 30,
+              "mean": 197.33333333333334,
+              "sd": 0.9589266029707683,
+              "min": 196.0,
+              "q1": 196.0,
+              "median": 198.0,
+              "q3": 198.0,
+              "max": 198.0,
+              "median_ci95": [
+                197.0,
+                198.0
+              ]
+            },
+            "mean_exec_per_second": 10483.603513484662
+          },
+          "d0_d1_context": {
+            "n_trials": 30,
+            "budget_execs": 60000,
+            "n_bugs_found": 20,
+            "success_rate": 0.6666666666666666,
+            "success_rate_ci95": [
+              0.47187995521011944,
+              0.8271257784739607
+            ],
+            "execs_to_bug_among_successes": {
+              "n": 20,
+              "mean": 26698.05,
+              "sd": 16457.656485580457,
+              "min": 1706.0,
+              "q1": 13757.5,
+              "median": 29152.5,
+              "q3": 35577.75,
+              "max": 57183.0,
+              "median_ci95": [
+                15640.0,
+                34251.0
+              ]
+            },
+            "max_milestone": {
+              "n": 30,
+              "mean": 4.666666666666667,
+              "sd": 0.47946330148538413,
+              "min": 4.0,
+              "q1": 4.0,
+              "median": 5.0,
+              "q3": 5.0,
+              "max": 5.0,
+              "median_ci95": [
+                4.5,
+                5.0
+              ]
+            },
+            "milestone_reached_max": 5,
+            "max_milestone_possible": 5,
+            "corpus_size": {
+              "n": 30,
+              "mean": 404.3333333333333,
+              "sd": 65.00150307722777,
+              "min": 209.0,
+              "q1": 377.5,
+              "median": 427.5,
+              "q3": 452.25,
+              "max": 467.0,
+              "median_ci95": [
+                394.0,
+                445.5
+              ]
+            },
+            "exact_elements": {
+              "n": 30,
+              "mean": 394.6666666666667,
+              "sd": 1.9178532059415365,
+              "min": 392.0,
+              "q1": 392.0,
+              "median": 396.0,
+              "q3": 396.0,
+              "max": 396.0,
+              "median_ci95": [
+                394.0,
+                396.0
+              ]
+            },
+            "mean_exec_per_second": 4121.1033976349745,
+            "vs_edge_only": {
+              "fisher_success": {
+                "odds_ratio": 1.0,
+                "odds_ratio_undefined_zero_cell": false,
+                "odds_ratio_haldane_anscombe": 1.0,
+                "p_value": 1.0,
+                "rate_1": 0.6666666666666666,
+                "rate_1_ci95": [
+                  0.47187995521011944,
+                  0.8271257784739607
+                ],
+                "rate_2": 0.6666666666666666,
+                "rate_2_ci95": [
+                  0.47187995521011944,
+                  0.8271257784739607
+                ]
+              },
+              "logrank_time_to_bug": {
+                "chi2": 0.0,
+                "p_value": 1.0,
+                "observed_1": 20.0,
+                "expected_1": 20.0,
+                "n_events": 40
+              },
+              "milestone_mann_whitney": {
+                "U": 450.0,
+                "p_value": 1.0,
+                "a12": 0.5,
+                "a12_magnitude": "negligible"
+              },
+              "milestone_wilcoxon_paired": {
+                "statistic": 0.0,
+                "p_value": 1.0,
+                "n_pairs": 30,
+                "n_nonzero_pairs": 0
+              },
+              "censored_time_mann_whitney": {
+                "U": 450.0,
+                "p_value": 1.0,
+                "a12": 0.5,
+                "a12_magnitude": "negligible"
+              },
+              "note": "A12 on milestone: >0.5 favours this configuration. A12 on censored time: <0.5 favours this configuration (lower is better). Censored times are substituted at the budget, which makes the rank test conservative; the log-rank test handles censoring correctly and is the primary time-to-bug test.",
+              "fisher_success_q_value": 1.0,
+              "logrank_time_to_bug_q_value": 1.0,
+              "milestone_mann_whitney_q_value": 1.0
+            }
+          },
+          "d0_d2_valuerange": {
+            "n_trials": 30,
+            "budget_execs": 60000,
+            "n_bugs_found": 20,
+            "success_rate": 0.6666666666666666,
+            "success_rate_ci95": [
+              0.47187995521011944,
+              0.8271257784739607
+            ],
+            "execs_to_bug_among_successes": {
+              "n": 20,
+              "mean": 22187.05,
+              "sd": 15878.899980046344,
+              "min": 642.0,
+              "q1": 8725.0,
+              "median": 22316.5,
+              "q3": 31758.0,
+              "max": 57127.0,
+              "median_ci95": [
+                9888.5,
+                30057.0
+              ]
+            },
+            "max_milestone": {
+              "n": 30,
+              "mean": 4.666666666666667,
+              "sd": 0.47946330148538413,
+              "min": 4.0,
+              "q1": 4.0,
+              "median": 5.0,
+              "q3": 5.0,
+              "max": 5.0,
+              "median_ci95": [
+                4.5,
+                5.0
+              ]
+            },
+            "milestone_reached_max": 5,
+            "max_milestone_possible": 5,
+            "corpus_size": {
+              "n": 30,
+              "mean": 395.96666666666664,
+              "sd": 72.38950358916034,
+              "min": 166.0,
+              "q1": 369.25,
+              "median": 417.0,
+              "q3": 441.5,
+              "max": 473.0,
+              "median_ci95": [
+                398.0,
+                439.5
+              ]
+            },
+            "exact_elements": {
+              "n": 30,
+              "mean": 223.06666666666666,
+              "sd": 1.3373502709187437,
+              "min": 218.0,
+              "q1": 222.0,
+              "median": 224.0,
+              "q3": 224.0,
+              "max": 224.0,
+              "median_ci95": [
+                222.0,
+                224.0
+              ]
+            },
+            "mean_exec_per_second": 5899.533073647182,
+            "vs_edge_only": {
+              "fisher_success": {
+                "odds_ratio": 1.0,
+                "odds_ratio_undefined_zero_cell": false,
+                "odds_ratio_haldane_anscombe": 1.0,
+                "p_value": 1.0,
+                "rate_1": 0.6666666666666666,
+                "rate_1_ci95": [
+                  0.47187995521011944,
+                  0.8271257784739607
+                ],
+                "rate_2": 0.6666666666666666,
+                "rate_2_ci95": [
+                  0.47187995521011944,
+                  0.8271257784739607
+                ]
+              },
+              "logrank_time_to_bug": {
+                "chi2": 0.06861435252453807,
+                "p_value": 0.7933650677231255,
+                "observed_1": 20.0,
+                "expected_1": 19.17278385700775,
+                "n_events": 40
+              },
+              "milestone_mann_whitney": {
+                "U": 450.0,
+                "p_value": 1.0,
+                "a12": 0.5,
+                "a12_magnitude": "negligible"
+              },
+              "milestone_wilcoxon_paired": {
+                "statistic": 68.0,
+                "p_value": 1.0,
+                "n_pairs": 30,
+                "n_nonzero_pairs": 16
+              },
+              "censored_time_mann_whitney": {
+                "U": 418.0,
+                "p_value": 0.6351002179377447,
+                "a12": 0.46444444444444444,
+                "a12_magnitude": "negligible"
+              },
+              "note": "A12 on milestone: >0.5 favours this configuration. A12 on censored time: <0.5 favours this configuration (lower is better). Censored times are substituted at the budget, which makes the rank test conservative; the log-rank test handles censoring correctly and is the primary time-to-bug test.",
+              "fisher_success_q_value": 1.0,
+              "logrank_time_to_bug_q_value": 1.0,
+              "milestone_mann_whitney_q_value": 1.0
+            }
+          },
+          "d0_d3_statemachine": {
+            "n_trials": 30,
+            "budget_execs": 60000,
+            "n_bugs_found": 30,
+            "success_rate": 1.0,
+            "success_rate_ci95": [
+              0.8842966917779722,
+              1.0
+            ],
+            "execs_to_bug_among_successes": {
+              "n": 30,
+              "mean": 6686.8,
+              "sd": 3969.2631071513892,
+              "min": 992.0,
+              "q1": 3729.75,
+              "median": 5583.5,
+              "q3": 8237.0,
+              "max": 16997.0,
+              "median_ci95": [
+                4191.5,
+                7774.0
+              ]
+            },
+            "max_milestone": {
+              "n": 30,
+              "mean": 5.0,
+              "sd": 0.0,
+              "min": 5.0,
+              "q1": 5.0,
+              "median": 5.0,
+              "q3": 5.0,
+              "max": 5.0,
+              "median_ci95": [
+                5.0,
+                5.0
+              ]
+            },
+            "milestone_reached_max": 5,
+            "max_milestone_possible": 5,
+            "corpus_size": {
+              "n": 30,
+              "mean": 935.6666666666666,
+              "sd": 276.1845127038648,
+              "min": 346.0,
+              "q1": 754.5,
+              "median": 874.0,
+              "q3": 1115.0,
+              "max": 1561.0,
+              "median_ci95": [
+                777.5,
+                1041.0249999999996
+              ]
+            },
+            "exact_elements": {
+              "n": 30,
+              "mean": 1777.7333333333333,
+              "sd": 403.2468169772687,
+              "min": 918.0,
+              "q1": 1493.75,
+              "median": 1736.0,
+              "q3": 1975.25,
+              "max": 2685.0,
+              "median_ci95": [
+                1558.0,
+                1901.5
+              ]
+            },
+            "mean_exec_per_second": 3328.8827351925825,
+            "vs_edge_only": {
+              "fisher_success": {
+                "odds_ratio": null,
+                "odds_ratio_undefined_zero_cell": true,
+                "odds_ratio_haldane_anscombe": 31.243902439024392,
+                "p_value": 0.0007970131314101389,
+                "rate_1": 1.0,
+                "rate_1_ci95": [
+                  0.8842966917779722,
+                  1.0
+                ],
+                "rate_2": 0.6666666666666666,
+                "rate_2_ci95": [
+                  0.47187995521011944,
+                  0.8271257784739607
+                ]
+              },
+              "logrank_time_to_bug": {
+                "chi2": 48.80804978183036,
+                "p_value": 2.8227887927840766e-12,
+                "observed_1": 30.0,
+                "expected_1": 11.40369880950247,
+                "n_events": 50
+              },
+              "milestone_mann_whitney": {
+                "U": 600.0,
+                "p_value": 0.0006178331602029783,
+                "a12": 0.6666666666666666,
+                "a12_magnitude": "medium"
+              },
+              "milestone_wilcoxon_paired": {
+                "statistic": 0.0,
+                "p_value": 0.001565402258002548,
+                "n_pairs": 30,
+                "n_nonzero_pairs": 10
+              },
+              "censored_time_mann_whitney": {
+                "U": 71.0,
+                "p_value": 2.0376159350986565e-08,
+                "a12": 0.07888888888888891,
+                "a12_magnitude": "large"
+              },
+              "note": "A12 on milestone: >0.5 favours this configuration. A12 on censored time: <0.5 favours this configuration (lower is better). Censored times are substituted at the budget, which makes the rank test conservative; the log-rank test handles censoring correctly and is the primary time-to-bug test.",
+              "fisher_success_q_value": 0.0019925328285253473,
+              "logrank_time_to_bug_q_value": 2.1170915945880573e-11,
+              "milestone_mann_whitney_q_value": 0.0017376557630708765
+            }
+          },
+          "full_3d": {
+            "n_trials": 30,
+            "budget_execs": 60000,
+            "n_bugs_found": 30,
+            "success_rate": 1.0,
+            "success_rate_ci95": [
+              0.8842966917779722,
+              1.0
+            ],
+            "execs_to_bug_among_successes": {
+              "n": 30,
+              "mean": 7611.966666666666,
+              "sd": 5014.906672101192,
+              "min": 992.0,
+              "q1": 4194.75,
+              "median": 6094.0,
+              "q3": 9662.5,
+              "max": 20843.0,
+              "median_ci95": [
+                4975.5,
+                7827.5
+              ]
+            },
+            "max_milestone": {
+              "n": 30,
+              "mean": 5.0,
+              "sd": 0.0,
+              "min": 5.0,
+              "q1": 5.0,
+              "median": 5.0,
+              "q3": 5.0,
+              "max": 5.0,
+              "median_ci95": [
+                5.0,
+                5.0
+              ]
+            },
+            "milestone_reached_max": 5,
+            "max_milestone_possible": 5,
+            "corpus_size": {
+              "n": 30,
+              "mean": 990.6666666666666,
+              "sd": 341.13131593661063,
+              "min": 346.0,
+              "q1": 761.75,
+              "median": 908.0,
+              "q3": 1183.75,
+              "max": 1781.0,
+              "median_ci95": [
+                839.5,
+                1119.5
+              ]
+            },
+            "exact_elements": {
+              "n": 30,
+              "mean": 2071.8333333333335,
+              "sd": 470.28729908233856,
+              "min": 1139.0,
+              "q1": 1777.5,
+              "median": 1922.5,
+              "q3": 2330.75,
+              "max": 3085.0,
+              "median_ci95": [
+                1827.5,
+                2262.5
+              ]
+            },
+            "mean_exec_per_second": 1801.8079738389267,
+            "vs_edge_only": {
+              "fisher_success": {
+                "odds_ratio": null,
+                "odds_ratio_undefined_zero_cell": true,
+                "odds_ratio_haldane_anscombe": 31.243902439024392,
+                "p_value": 0.0007970131314101389,
+                "rate_1": 1.0,
+                "rate_1_ci95": [
+                  0.8842966917779722,
+                  1.0
+                ],
+                "rate_2": 0.6666666666666666,
+                "rate_2_ci95": [
+                  0.47187995521011944,
+                  0.8271257784739607
+                ]
+              },
+              "logrank_time_to_bug": {
+                "chi2": 44.56259582676834,
+                "p_value": 2.4635346966134257e-11,
+                "observed_1": 30.0,
+                "expected_1": 11.864686440731095,
+                "n_events": 50
+              },
+              "milestone_mann_whitney": {
+                "U": 600.0,
+                "p_value": 0.0006178331602029783,
+                "a12": 0.6666666666666666,
+                "a12_magnitude": "medium"
+              },
+              "milestone_wilcoxon_paired": {
+                "statistic": 0.0,
+                "p_value": 0.001565402258002548,
+                "n_pairs": 30,
+                "n_nonzero_pairs": 10
+              },
+              "censored_time_mann_whitney": {
+                "U": 86.0,
+                "p_value": 7.184280244349925e-08,
+                "a12": 0.09555555555555557,
+                "a12_magnitude": "large"
+              },
+              "note": "A12 on milestone: >0.5 favours this configuration. A12 on censored time: <0.5 favours this configuration (lower is better). Censored times are substituted at the budget, which makes the rank test conservative; the log-rank test handles censoring correctly and is the primary time-to-bug test.",
+              "fisher_success_q_value": 0.0019925328285253473,
+              "logrank_time_to_bug_q_value": 1.583700876394345e-10,
+              "milestone_mann_whitney_q_value": 0.0017376557630708765
+            }
+          }
+        }
+      }
+    },
+    "multiple_testing_correction": {
+      "alpha": 0.05,
+      "n_tests": 45,
+      "tests": [
+        {
+          "target": "T1_context",
+          "config": "blind_random",
+          "test": "fisher_success",
+          "p_value": 5.242482506564867e-16,
+          "q_value": 1.5762291790225967e-14,
+          "significant_at_fdr_5pct": true
+        },
+        {
+          "target": "T1_context",
+          "config": "blind_random",
+          "test": "logrank_time_to_bug",
+          "p_value": 7.005463017878208e-16,
+          "q_value": 1.5762291790225967e-14,
+          "significant_at_fdr_5pct": true
+        },
+        {
+          "target": "T1_context",
+          "config": "blind_random",
+          "test": "milestone_mann_whitney",
+          "p_value": 4.952600735754439e-13,
+          "q_value": 4.457340662178995e-12,
+          "significant_at_fdr_5pct": true
+        },
+        {
+          "target": "T1_context",
+          "config": "d0_d1_context",
+          "test": "fisher_success",
+          "p_value": 1.0,
+          "q_value": 1.0,
+          "significant_at_fdr_5pct": false
+        },
+        {
+          "target": "T1_context",
+          "config": "d0_d1_context",
+          "test": "logrank_time_to_bug",
+          "p_value": 0.7166166815993441,
+          "q_value": 1.0,
+          "significant_at_fdr_5pct": false
+        },
+        {
+          "target": "T1_context",
+          "config": "d0_d1_context",
+          "test": "milestone_mann_whitney",
+          "p_value": 0.33371069574356604,
+          "q_value": 0.682590059475476,
+          "significant_at_fdr_5pct": false
+        },
+        {
+          "target": "T1_context",
+          "config": "d0_d2_valuerange",
+          "test": "fisher_success",
+          "p_value": 1.0,
+          "q_value": 1.0,
+          "significant_at_fdr_5pct": false
+        },
+        {
+          "target": "T1_context",
+          "config": "d0_d2_valuerange",
+          "test": "logrank_time_to_bug",
+          "p_value": 0.0015787981142177982,
+          "q_value": 0.0037392586915684697,
+          "significant_at_fdr_5pct": true
+        },
+        {
+          "target": "T1_context",
+          "config": "d0_d2_valuerange",
+          "test": "milestone_mann_whitney",
+          "p_value": 0.33371069574356604,
+          "q_value": 0.682590059475476,
+          "significant_at_fdr_5pct": false
+        },
+        {
+          "target": "T1_context",
+          "config": "d0_d3_statemachine",
+          "test": "fisher_success",
+          "p_value": 1.0,
+          "q_value": 1.0,
+          "significant_at_fdr_5pct": false
+        },
+        {
+          "target": "T1_context",
+          "config": "d0_d3_statemachine",
+          "test": "logrank_time_to_bug",
+          "p_value": 1.0,
+          "q_value": 1.0,
+          "significant_at_fdr_5pct": false
+        },
+        {
+          "target": "T1_context",
+          "config": "d0_d3_statemachine",
+          "test": "milestone_mann_whitney",
+          "p_value": 1.0,
+          "q_value": 1.0,
+          "significant_at_fdr_5pct": false
+        },
+        {
+          "target": "T1_context",
+          "config": "full_3d",
+          "test": "fisher_success",
+          "p_value": 1.0,
+          "q_value": 1.0,
+          "significant_at_fdr_5pct": false
+        },
+        {
+          "target": "T1_context",
+          "config": "full_3d",
+          "test": "logrank_time_to_bug",
+          "p_value": 0.46625483135984525,
+          "q_value": 0.912237713530132,
+          "significant_at_fdr_5pct": false
+        },
+        {
+          "target": "T1_context",
+          "config": "full_3d",
+          "test": "milestone_mann_whitney",
+          "p_value": 0.33371069574356604,
+          "q_value": 0.682590059475476,
+          "significant_at_fdr_5pct": false
+        },
+        {
+          "target": "T2_value_range",
+          "config": "blind_random",
+          "test": "fisher_success",
+          "p_value": 1.0,
+          "q_value": 1.0,
+          "significant_at_fdr_5pct": false
+        },
+        {
+          "target": "T2_value_range",
+          "config": "blind_random",
+          "test": "logrank_time_to_bug",
+          "p_value": 1.0,
+          "q_value": 1.0,
+          "significant_at_fdr_5pct": false
+        },
+        {
+          "target": "T2_value_range",
+          "config": "blind_random",
+          "test": "milestone_mann_whitney",
+          "p_value": 0.6998726533461359,
+          "q_value": 1.0,
+          "significant_at_fdr_5pct": false
+        },
+        {
+          "target": "T2_value_range",
+          "config": "d0_d1_context",
+          "test": "fisher_success",
+          "p_value": 1.0,
+          "q_value": 1.0,
+          "significant_at_fdr_5pct": false
+        },
+        {
+          "target": "T2_value_range",
+          "config": "d0_d1_context",
+          "test": "logrank_time_to_bug",
+          "p_value": 1.0,
+          "q_value": 1.0,
+          "significant_at_fdr_5pct": false
+        },
+        {
+          "target": "T2_value_range",
+          "config": "d0_d1_context",
+          "test": "milestone_mann_whitney",
+          "p_value": 1.0,
+          "q_value": 1.0,
+          "significant_at_fdr_5pct": false
+        },
+        {
+          "target": "T2_value_range",
+          "config": "d0_d2_valuerange",
+          "test": "fisher_success",
+          "p_value": 3.293956608524839e-11,
+          "q_value": 1.6469783042624194e-10,
+          "significant_at_fdr_5pct": true
+        },
+        {
+          "target": "T2_value_range",
+          "config": "d0_d2_valuerange",
+          "test": "logrank_time_to_bug",
+          "p_value": 6.308546464871397e-11,
+          "q_value": 2.5807690083564804e-10,
+          "significant_at_fdr_5pct": true
+        },
+        {
+          "target": "T2_value_range",
+          "config": "d0_d2_valuerange",
+          "test": "milestone_mann_whitney",
+          "p_value": 4.696385299550918e-13,
+          "q_value": 4.457340662178995e-12,
+          "significant_at_fdr_5pct": true
+        },
+        {
+          "target": "T2_value_range",
+          "config": "d0_d3_statemachine",
+          "test": "fisher_success",
+          "p_value": 1.0,
+          "q_value": 1.0,
+          "significant_at_fdr_5pct": false
+        },
+        {
+          "target": "T2_value_range",
+          "config": "d0_d3_statemachine",
+          "test": "logrank_time_to_bug",
+          "p_value": 1.0,
+          "q_value": 1.0,
+          "significant_at_fdr_5pct": false
+        },
+        {
+          "target": "T2_value_range",
+          "config": "d0_d3_statemachine",
+          "test": "milestone_mann_whitney",
+          "p_value": 1.0,
+          "q_value": 1.0,
+          "significant_at_fdr_5pct": false
+        },
+        {
+          "target": "T2_value_range",
+          "config": "full_3d",
+          "test": "fisher_success",
+          "p_value": 3.293956608524839e-11,
+          "q_value": 1.6469783042624194e-10,
+          "significant_at_fdr_5pct": true
+        },
+        {
+          "target": "T2_value_range",
+          "config": "full_3d",
+          "test": "logrank_time_to_bug",
+          "p_value": 6.308546464871397e-11,
+          "q_value": 2.5807690083564804e-10,
+          "significant_at_fdr_5pct": true
+        },
+        {
+          "target": "T2_value_range",
+          "config": "full_3d",
+          "test": "milestone_mann_whitney",
+          "p_value": 4.696385299550918e-13,
+          "q_value": 4.457340662178995e-12,
+          "significant_at_fdr_5pct": true
+        },
+        {
+          "target": "T3_state_machine",
+          "config": "blind_random",
+          "test": "fisher_success",
+          "p_value": 1.0979873400083272e-05,
+          "q_value": 3.5292450214553376e-05,
+          "significant_at_fdr_5pct": true
+        },
+        {
+          "target": "T3_state_machine",
+          "config": "blind_random",
+          "test": "logrank_time_to_bug",
+          "p_value": 2.94542788402569e-06,
+          "q_value": 1.1045354565096337e-05,
+          "significant_at_fdr_5pct": true
+        },
+        {
+          "target": "T3_state_machine",
+          "config": "blind_random",
+          "test": "milestone_mann_whitney",
+          "p_value": 7.916491407047915e-06,
+          "q_value": 2.740323948593509e-05,
+          "significant_at_fdr_5pct": true
+        },
+        {
+          "target": "T3_state_machine",
+          "config": "d0_d1_context",
+          "test": "fisher_success",
+          "p_value": 1.0,
+          "q_value": 1.0,
+          "significant_at_fdr_5pct": false
+        },
+        {
+          "target": "T3_state_machine",
+          "config": "d0_d1_context",
+          "test": "logrank_time_to_bug",
+          "p_value": 1.0,
+          "q_value": 1.0,
+          "significant_at_fdr_5pct": false
+        },
+        {
+          "target": "T3_state_machine",
+          "config": "d0_d1_context",
+          "test": "milestone_mann_whitney",
+          "p_value": 1.0,
+          "q_value": 1.0,
+          "significant_at_fdr_5pct": false
+        },
+        {
+          "target": "T3_state_machine",
+          "config": "d0_d2_valuerange",
+          "test": "fisher_success",
+          "p_value": 1.0,
+          "q_value": 1.0,
+          "significant_at_fdr_5pct": false
+        },
+        {
+          "target": "T3_state_machine",
+          "config": "d0_d2_valuerange",
+          "test": "logrank_time_to_bug",
+          "p_value": 0.7933650677231255,
+          "q_value": 1.0,
+          "significant_at_fdr_5pct": false
+        },
+        {
+          "target": "T3_state_machine",
+          "config": "d0_d2_valuerange",
+          "test": "milestone_mann_whitney",
+          "p_value": 1.0,
+          "q_value": 1.0,
+          "significant_at_fdr_5pct": false
+        },
+        {
+          "target": "T3_state_machine",
+          "config": "d0_d3_statemachine",
+          "test": "fisher_success",
+          "p_value": 0.0007970131314101389,
+          "q_value": 0.0019925328285253473,
+          "significant_at_fdr_5pct": true
+        },
+        {
+          "target": "T3_state_machine",
+          "config": "d0_d3_statemachine",
+          "test": "logrank_time_to_bug",
+          "p_value": 2.8227887927840766e-12,
+          "q_value": 2.1170915945880573e-11,
+          "significant_at_fdr_5pct": true
+        },
+        {
+          "target": "T3_state_machine",
+          "config": "d0_d3_statemachine",
+          "test": "milestone_mann_whitney",
+          "p_value": 0.0006178331602029783,
+          "q_value": 0.0017376557630708765,
+          "significant_at_fdr_5pct": true
+        },
+        {
+          "target": "T3_state_machine",
+          "config": "full_3d",
+          "test": "fisher_success",
+          "p_value": 0.0007970131314101389,
+          "q_value": 0.0019925328285253473,
+          "significant_at_fdr_5pct": true
+        },
+        {
+          "target": "T3_state_machine",
+          "config": "full_3d",
+          "test": "logrank_time_to_bug",
+          "p_value": 2.4635346966134257e-11,
+          "q_value": 1.583700876394345e-10,
+          "significant_at_fdr_5pct": true
+        },
+        {
+          "target": "T3_state_machine",
+          "config": "full_3d",
+          "test": "milestone_mann_whitney",
+          "p_value": 0.0006178331602029783,
+          "q_value": 0.0017376557630708765,
+          "significant_at_fdr_5pct": true
+        }
+      ]
+    },
+    "wall_seconds": 338.0595698140096,
+    "n_trials_per_cell": 30,
+    "raw_trials_path": "data/bug_finding_trials.json"
+  },
+  "context_depth_sweep": {
+    "target": "T1_context",
+    "budget_execs": 60000,
+    "n_trials_per_depth": 30,
+    "description": "Context window depth N versus effectiveness and cost. The T1 bug needs a five-switch container path; a window shorter than that path prefix aliases distinct paths and yields no gradient, while a deeper window inflates the context space and dilutes the corpus.",
+    "per_depth": {
+      "1": {
+        "n_trials": 30,
+        "n_bugs_found": 30,
+        "success_rate": 1.0,
+        "success_rate_ci95": [
+          0.8842966917779722,
+          1.0
+        ],
+        "execs_to_bug_among_successes": {
+          "n": 30,
+          "mean": 11591.366666666667,
+          "sd": 8059.245718463652,
+          "min": 1083.0,
+          "q1": 6121.75,
+          "median": 9320.0,
+          "q3": 16341.0,
+          "max": 33077.0,
+          "median_ci95": [
+            7164.0,
+            13309.0
+          ]
+        },
+        "max_milestone": {
+          "n": 30,
+          "mean": 7.0,
+          "sd": 0.0,
+          "min": 7.0,
+          "q1": 7.0,
+          "median": 7.0,
+          "q3": 7.0,
+          "max": 7.0,
+          "median_ci95": [
+            7.0,
+            7.0
+          ]
+        },
+        "corpus_size": {
+          "n": 30,
+          "mean": 133.1,
+          "sd": 24.833722900593223,
+          "min": 64.0,
+          "q1": 122.0,
+          "median": 140.5,
+          "q3": 147.5,
+          "max": 176.0,
+          "median_ci95": [
+            127.5,
+            145.5
+          ]
+        },
+        "distinct_contexts_exact": {
+          "n": 30,
+          "mean": 8.0,
+          "sd": 0.0,
+          "min": 8.0,
+          "q1": 8.0,
+          "median": 8.0,
+          "q3": 8.0,
+          "max": 8.0,
+          "median_ci95": [
+            8.0,
+            8.0
+          ]
+        },
+        "exact_elements": {
+          "n": 30,
+          "mean": 164.86666666666667,
+          "sd": 12.007851837324043,
+          "min": 131.0,
+          "q1": 161.5,
+          "median": 167.0,
+          "q3": 173.0,
+          "max": 179.0,
+          "median_ci95": [
+            164.0,
+            173.0
+          ]
+        },
+        "mean_exec_per_second": 2780.200882060758,
+        "vs_edge_only_baseline": {
+          "logrank_time_to_bug": {
+            "chi2": 0.18446510589438955,
+            "p_value": 0.6675637510345971,
+            "observed_1": 30.0,
+            "expected_1": 28.37944568470563,
+            "n_events": 59
+          },
+          "censored_time_mann_whitney": {
+            "U": 467.0,
+            "p_value": 0.8072749507289148,
+            "a12": 0.5188888888888888,
+            "a12_magnitude": "negligible"
+          },
+          "seed_paired_wilcoxon_time": {
+            "statistic": 223.0,
+            "p_value": 0.8552717231214046,
+            "n_pairs": 30,
+            "n_nonzero_pairs": 30
+          },
+          "median_execs_ratio_vs_baseline": 1.0457809694793536,
+          "note": "A12 on censored time < 0.5 favours this depth (lower time is better). Seeds are blocked across arms, so the paired test is valid; the log-rank test is the primary test because it handles right-censoring correctly.",
+          "logrank_time_to_bug_q_value": 0.7962407573326046,
+          "seed_paired_wilcoxon_time_q_value": 0.8552717231214046
+        }
+      },
+      "2": {
+        "n_trials": 30,
+        "n_bugs_found": 30,
+        "success_rate": 1.0,
+        "success_rate_ci95": [
+          0.8842966917779722,
+          1.0
+        ],
+        "execs_to_bug_among_successes": {
+          "n": 30,
+          "mean": 10176.3,
+          "sd": 8329.905613365989,
+          "min": 1748.0,
+          "q1": 4166.75,
+          "median": 8251.5,
+          "q3": 12610.0,
+          "max": 36959.0,
+          "median_ci95": [
+            4323.0,
+            11867.5
+          ]
+        },
+        "max_milestone": {
+          "n": 30,
+          "mean": 7.0,
+          "sd": 0.0,
+          "min": 7.0,
+          "q1": 7.0,
+          "median": 7.0,
+          "q3": 7.0,
+          "max": 7.0,
+          "median_ci95": [
+            7.0,
+            7.0
+          ]
+        },
+        "corpus_size": {
+          "n": 30,
+          "mean": 206.8,
+          "sd": 40.31890118918729,
+          "min": 116.0,
+          "q1": 174.0,
+          "median": 218.5,
+          "q3": 229.25,
+          "max": 276.0,
+          "median_ci95": [
+            187.5,
+            226.5
+          ]
+        },
+        "distinct_contexts_exact": {
+          "n": 30,
+          "mean": 16.0,
+          "sd": 0.0,
+          "min": 16.0,
+          "q1": 16.0,
+          "median": 16.0,
+          "q3": 16.0,
+          "max": 16.0,
+          "median_ci95": [
+            16.0,
+            16.0
+          ]
+        },
+        "exact_elements": {
+          "n": 30,
+          "mean": 264.93333333333334,
+          "sd": 15.876535132581413,
+          "min": 224.0,
+          "q1": 256.25,
+          "median": 265.5,
+          "q3": 275.75,
+          "max": 291.0,
+          "median_ci95": [
+            259.0,
+            275.0
+          ]
+        },
+        "mean_exec_per_second": 2822.7652057493947,
+        "vs_edge_only_baseline": {
+          "logrank_time_to_bug": {
+            "chi2": 1.0553742387440936,
+            "p_value": 0.3042725899832524,
+            "observed_1": 30.0,
+            "expected_1": 26.143801435428188,
+            "n_events": 59
+          },
+          "censored_time_mann_whitney": {
+            "U": 403.0,
+            "p_value": 0.491782956953405,
+            "a12": 0.4477777777777778,
+            "a12_magnitude": "negligible"
+          },
+          "seed_paired_wilcoxon_time": {
+            "statistic": 202.0,
+            "p_value": 0.5425279382616282,
+            "n_pairs": 30,
+            "n_nonzero_pairs": 30
+          },
+          "median_execs_ratio_vs_baseline": 0.9258864452423698,
+          "note": "A12 on censored time < 0.5 favours this depth (lower time is better). Seeds are blocked across arms, so the paired test is valid; the log-rank test is the primary test because it handles right-censoring correctly.",
+          "logrank_time_to_bug_q_value": 0.6085451799665048,
+          "seed_paired_wilcoxon_time_q_value": 0.7962407573326046
+        }
+      },
+      "4": {
+        "n_trials": 30,
+        "n_bugs_found": 30,
+        "success_rate": 1.0,
+        "success_rate_ci95": [
+          0.8842966917779722,
+          1.0
+        ],
+        "execs_to_bug_among_successes": {
+          "n": 30,
+          "mean": 6703.033333333334,
+          "sd": 3618.6199358636554,
+          "min": 1827.0,
+          "q1": 3871.0,
+          "median": 6379.0,
+          "q3": 9147.25,
+          "max": 15145.0,
+          "median_ci95": [
+            4020.0,
+            7995.5
+          ]
+        },
+        "max_milestone": {
+          "n": 30,
+          "mean": 7.0,
+          "sd": 0.0,
+          "min": 7.0,
+          "q1": 7.0,
+          "median": 7.0,
+          "q3": 7.0,
+          "max": 7.0,
+          "median_ci95": [
+            7.0,
+            7.0
+          ]
+        },
+        "corpus_size": {
+          "n": 30,
+          "mean": 334.76666666666665,
+          "sd": 70.0087104596984,
+          "min": 205.0,
+          "q1": 283.75,
+          "median": 347.0,
+          "q3": 377.25,
+          "max": 452.0,
+          "median_ci95": [
+            298.5,
+            360.5
+          ]
+        },
+        "distinct_contexts_exact": {
+          "n": 30,
+          "mean": 35.96666666666667,
+          "sd": 0.18257418583505536,
+          "min": 35.0,
+          "q1": 36.0,
+          "median": 36.0,
+          "q3": 36.0,
+          "max": 36.0,
+          "median_ci95": [
+            36.0,
+            36.0
+          ]
+        },
+        "exact_elements": {
+          "n": 30,
+          "mean": 490.3333333333333,
+          "sd": 39.77118462450901,
+          "min": 400.0,
+          "q1": 464.5,
+          "median": 494.0,
+          "q3": 516.25,
+          "max": 557.0,
+          "median_ci95": [
+            475.0,
+            510.5
+          ]
+        },
+        "mean_exec_per_second": 2841.895081598779,
+        "vs_edge_only_baseline": {
+          "logrank_time_to_bug": {
+            "chi2": 8.026448786300252,
+            "p_value": 0.004609913589626833,
+            "observed_1": 30.0,
+            "expected_1": 20.27205987295675,
+            "n_events": 59
+          },
+          "censored_time_mann_whitney": {
+            "U": 305.0,
+            "p_value": 0.03265093917842125,
+            "a12": 0.3388888888888889,
+            "a12_magnitude": "medium"
+          },
+          "seed_paired_wilcoxon_time": {
+            "statistic": 130.5,
+            "p_value": 0.03590284081166453,
+            "n_pairs": 30,
+            "n_nonzero_pairs": 30
+          },
+          "median_execs_ratio_vs_baseline": 0.7157764811490126,
+          "note": "A12 on censored time < 0.5 favours this depth (lower time is better). Seeds are blocked across arms, so the paired test is valid; the log-rank test is the primary test because it handles right-censoring correctly.",
+          "logrank_time_to_bug_q_value": 0.04609913589626833,
+          "seed_paired_wilcoxon_time_q_value": 0.17951420405832266
+        }
+      },
+      "8": {
+        "n_trials": 30,
+        "n_bugs_found": 30,
+        "success_rate": 1.0,
+        "success_rate_ci95": [
+          0.8842966917779722,
+          1.0
+        ],
+        "execs_to_bug_among_successes": {
+          "n": 30,
+          "mean": 9257.966666666667,
+          "sd": 4380.533485722969,
+          "min": 940.0,
+          "q1": 5830.75,
+          "median": 9161.5,
+          "q3": 12103.0,
+          "max": 18193.0,
+          "median_ci95": [
+            7548.0,
+            11241.5
+          ]
+        },
+        "max_milestone": {
+          "n": 30,
+          "mean": 7.0,
+          "sd": 0.0,
+          "min": 7.0,
+          "q1": 7.0,
+          "median": 7.0,
+          "q3": 7.0,
+          "max": 7.0,
+          "median_ci95": [
+            7.0,
+            7.0
+          ]
+        },
+        "corpus_size": {
+          "n": 30,
+          "mean": 889.1,
+          "sd": 287.48617358057413,
+          "min": 164.0,
+          "q1": 735.75,
+          "median": 935.5,
+          "q3": 1107.0,
+          "max": 1304.0,
+          "median_ci95": [
+            799.0,
+            1057.5
+          ]
+        },
+        "distinct_contexts_exact": {
+          "n": 30,
+          "mean": 149.43333333333334,
+          "sd": 16.47921016966808,
+          "min": 76.0,
+          "q1": 151.0,
+          "median": 156.0,
+          "q3": 156.0,
+          "max": 156.0,
+          "median_ci95": [
+            155.0,
+            156.0
+          ]
+        },
+        "exact_elements": {
+          "n": 30,
+          "mean": 1698.0666666666666,
+          "sd": 339.97382590259883,
+          "min": 548.0,
+          "q1": 1587.5,
+          "median": 1815.5,
+          "q3": 1912.5,
+          "max": 2080.0,
+          "median_ci95": [
+            1666.0,
+            1898.0
+          ]
+        },
+        "mean_exec_per_second": 2531.567286206847,
+        "vs_edge_only_baseline": {
+          "logrank_time_to_bug": {
+            "chi2": 2.0007623470676754,
+            "p_value": 0.15722011566627767,
+            "observed_1": 30.0,
+            "expected_1": 24.970850582826614,
+            "n_events": 59
+          },
+          "censored_time_mann_whitney": {
+            "U": 441.0,
+            "p_value": 0.8999950372363642,
+            "a12": 0.49,
+            "a12_magnitude": "negligible"
+          },
+          "seed_paired_wilcoxon_time": {
+            "statistic": 207.0,
+            "p_value": 0.6120056137442589,
+            "n_pairs": 30,
+            "n_nonzero_pairs": 30
+          },
+          "median_execs_ratio_vs_baseline": 1.027995960502693,
+          "note": "A12 on censored time < 0.5 favours this depth (lower time is better). Seeds are blocked across arms, so the paired test is valid; the log-rank test is the primary test because it handles right-censoring correctly.",
+          "logrank_time_to_bug_q_value": 0.5240670522209255,
+          "seed_paired_wilcoxon_time_q_value": 0.7962407573326046
+        }
+      },
+      "16": {
+        "n_trials": 30,
+        "n_bugs_found": 30,
+        "success_rate": 1.0,
+        "success_rate_ci95": [
+          0.8842966917779722,
+          1.0
+        ],
+        "execs_to_bug_among_successes": {
+          "n": 30,
+          "mean": 15346.3,
+          "sd": 7638.669211367231,
+          "min": 2689.0,
+          "q1": 7774.0,
+          "median": 16147.5,
+          "q3": 20773.5,
+          "max": 28152.0,
+          "median_ci95": [
+            10749.5,
+            19429.0
+          ]
+        },
+        "max_milestone": {
+          "n": 30,
+          "mean": 7.0,
+          "sd": 0.0,
+          "min": 7.0,
+          "q1": 7.0,
+          "median": 7.0,
+          "q3": 7.0,
+          "max": 7.0,
+          "median_ci95": [
+            7.0,
+            7.0
+          ]
+        },
+        "corpus_size": {
+          "n": 30,
+          "mean": 2040.0,
+          "sd": 963.240042414322,
+          "min": 421.0,
+          "q1": 1432.75,
+          "median": 1979.0,
+          "q3": 2641.5,
+          "max": 4434.0,
+          "median_ci95": [
+            1639.0,
+            2497.5
+          ]
+        },
+        "distinct_contexts_exact": {
+          "n": 30,
+          "mean": 1273.5666666666666,
+          "sd": 444.69227510743866,
+          "min": 358.0,
+          "q1": 1009.0,
+          "median": 1338.5,
+          "q3": 1598.0,
+          "max": 2061.0,
+          "median_ci95": [
+            1142.0,
+            1581.5
+          ]
+        },
+        "exact_elements": {
+          "n": 30,
+          "mean": 7809.966666666666,
+          "sd": 3046.338429399593,
+          "min": 1957.0,
+          "q1": 5623.5,
+          "median": 7951.0,
+          "q3": 10031.0,
+          "max": 14145.0,
+          "median_ci95": [
+            6881.5,
+            9820.5
+          ]
+        },
+        "mean_exec_per_second": 2368.065216994334,
+        "vs_edge_only_baseline": {
+          "logrank_time_to_bug": {
+            "chi2": 0.1317575348249851,
+            "p_value": 0.7166166815993441,
+            "observed_1": 30.0,
+            "expected_1": 31.31174522427997,
+            "n_events": 59
+          },
+          "censored_time_mann_whitney": {
+            "U": 574.0,
+            "p_value": 0.06786886081944325,
+            "a12": 0.6377777777777778,
+            "a12_magnitude": "small"
+          },
+          "seed_paired_wilcoxon_time": {
+            "statistic": 177.0,
+            "p_value": 0.2621222734451294,
+            "n_pairs": 30,
+            "n_nonzero_pairs": 30
+          },
+          "median_execs_ratio_vs_baseline": 1.811882854578097,
+          "note": "A12 on censored time < 0.5 favours this depth (lower time is better). Seeds are blocked across arms, so the paired test is valid; the log-rank test is the primary test because it handles right-censoring correctly.",
+          "logrank_time_to_bug_q_value": 0.7962407573326046,
+          "seed_paired_wilcoxon_time_q_value": 0.6085451799665048
+        }
+      }
+    },
+    "multiple_testing_correction": {
+      "alpha": 0.05,
+      "n_tests": 10,
+      "tests": [
+        {
+          "depth": "1",
+          "test": "logrank_time_to_bug",
+          "p_value": 0.6675637510345971,
+          "q_value": 0.7962407573326046,
+          "significant_at_fdr_5pct": false
+        },
+        {
+          "depth": "1",
+          "test": "seed_paired_wilcoxon_time",
+          "p_value": 0.8552717231214046,
+          "q_value": 0.8552717231214046,
+          "significant_at_fdr_5pct": false
+        },
+        {
+          "depth": "2",
+          "test": "logrank_time_to_bug",
+          "p_value": 0.3042725899832524,
+          "q_value": 0.6085451799665048,
+          "significant_at_fdr_5pct": false
+        },
+        {
+          "depth": "2",
+          "test": "seed_paired_wilcoxon_time",
+          "p_value": 0.5425279382616282,
+          "q_value": 0.7962407573326046,
+          "significant_at_fdr_5pct": false
+        },
+        {
+          "depth": "4",
+          "test": "logrank_time_to_bug",
+          "p_value": 0.004609913589626833,
+          "q_value": 0.04609913589626833,
+          "significant_at_fdr_5pct": true
+        },
+        {
+          "depth": "4",
+          "test": "seed_paired_wilcoxon_time",
+          "p_value": 0.03590284081166453,
+          "q_value": 0.17951420405832266,
+          "significant_at_fdr_5pct": false
+        },
+        {
+          "depth": "8",
+          "test": "logrank_time_to_bug",
+          "p_value": 0.15722011566627767,
+          "q_value": 0.5240670522209255,
+          "significant_at_fdr_5pct": false
+        },
+        {
+          "depth": "8",
+          "test": "seed_paired_wilcoxon_time",
+          "p_value": 0.6120056137442589,
+          "q_value": 0.7962407573326046,
+          "significant_at_fdr_5pct": false
+        },
+        {
+          "depth": "16",
+          "test": "logrank_time_to_bug",
+          "p_value": 0.7166166815993441,
+          "q_value": 0.7962407573326046,
+          "significant_at_fdr_5pct": false
+        },
+        {
+          "depth": "16",
+          "test": "seed_paired_wilcoxon_time",
+          "p_value": 0.2621222734451294,
+          "q_value": 0.6085451799665048,
+          "significant_at_fdr_5pct": false
+        }
+      ]
+    },
+    "baseline": "edge_only from the bug-finding experiment (same seeds/budget)",
+    "raw_trials_path": "data/context_depth_trials.json"
+  },
+  "overhead": {
+    "n_inputs_per_pass": 1200,
+    "repeats": 7,
+    "note": "us/exec is wall-clock time per target execution including all probe calls and the novelty evaluation, in a pure-Python reference implementation. Absolute values are dominated by Python interpreter cost; the RATIO to the D0 baseline is the transferable quantity.",
+    "per_target": {
+      "T1_context": {
+        "uninstrumented": {
+          "us_per_exec_median": 3.998707494853685,
+          "us_per_exec_iqr": [
+            3.8840091535045453,
+            4.152112524025142
+          ],
+          "us_per_exec_min": 3.819112510730823,
+          "ratio_vs_D0_deployment": 0.3150828691301321,
+          "ratio_vs_uninstrumented": 1.0
+        },
+        "D0|deployment": {
+          "us_per_exec_median": 12.690970809975017,
+          "us_per_exec_iqr": [
+            12.553636673449848,
+            12.930840845607843
+          ],
+          "us_per_exec_min": 12.466235008711616,
+          "ratio_vs_D0_deployment": 1.0,
+          "ratio_vs_uninstrumented": 3.1737682304365165
+        },
+        "D0|analysis": {
+          "us_per_exec_median": 14.98958745893712,
+          "us_per_exec_iqr": [
+            14.890494203427806,
+            15.475634572794661
+          ],
+          "us_per_exec_min": 14.756462478544563,
+          "ratio_vs_D0_deployment": 1.1811222075426575,
+          "ratio_vs_uninstrumented": 3.748608138561932
+        },
+        "D1|deployment": {
+          "us_per_exec_median": 26.574865041766316,
+          "us_per_exec_iqr": [
+            26.229091260271765,
+            26.74918704239341
+          ],
+          "us_per_exec_min": 26.088212519728888,
+          "ratio_vs_D0_deployment": 2.093997806761848,
+          "ratio_vs_uninstrumented": 6.645863713704497
+        },
+        "D1|analysis": {
+          "us_per_exec_median": 31.459768360946324,
+          "us_per_exec_iqr": [
+            31.164146688145898,
+            31.64046628323073
+          ],
+          "us_per_exec_min": 30.70778582089891,
+          "ratio_vs_D0_deployment": 2.478909520162095,
+          "ratio_vs_uninstrumented": 7.867484281217087
+        },
+        "D2|deployment": {
+          "us_per_exec_median": 16.415664188874263,
+          "us_per_exec_iqr": [
+            16.32371000596322,
+            16.469890397274867
+          ],
+          "us_per_exec_min": 16.257954218114417,
+          "ratio_vs_D0_deployment": 1.2934916039655266,
+          "ratio_vs_uninstrumented": 4.1052425590021615
+        },
+        "D2|analysis": {
+          "us_per_exec_median": 16.329532469778012,
+          "us_per_exec_iqr": [
+            16.08108830017348,
+            16.386560018872842
+          ],
+          "us_per_exec_min": 15.913649986032397,
+          "ratio_vs_D0_deployment": 1.286704753661801,
+          "ratio_vs_uninstrumented": 4.083702669123468
+        },
+        "D3|deployment": {
+          "us_per_exec_median": 8.229005907196552,
+          "us_per_exec_iqr": [
+            8.152043786443148,
+            8.388374165709441
+          ],
+          "us_per_exec_min": 7.916866646458706,
+          "ratio_vs_D0_deployment": 0.6484142175103428,
+          "ratio_vs_uninstrumented": 2.057916443697679
+        },
+        "D3|analysis": {
+          "us_per_exec_median": 8.188973394377777,
+          "us_per_exec_iqr": [
+            8.111455438969035,
+            8.286806648053851
+          ],
+          "us_per_exec_min": 7.844971648106973,
+          "ratio_vs_D0_deployment": 0.6452598084885122,
+          "ratio_vs_uninstrumented": 2.0479050805583907
+        },
+        "D0+D1|deployment": {
+          "us_per_exec_median": 36.33384330896661,
+          "us_per_exec_iqr": [
+            35.80503708993395,
+            36.59328746531779
+          ],
+          "us_per_exec_min": 34.91092172528928,
+          "ratio_vs_D0_deployment": 2.8629679992966697,
+          "ratio_vs_uninstrumented": 9.086396880924164
+        },
+        "D0+D1|analysis": {
+          "us_per_exec_median": 43.73141418909654,
+          "us_per_exec_iqr": [
+            43.38164129876532,
+            45.22468540623474
+          ],
+          "us_per_exec_min": 42.88318169225628,
+          "ratio_vs_D0_deployment": 3.4458683140870474,
+          "ratio_vs_uninstrumented": 10.936387381517312
+        },
+        "D0+D2|deployment": {
+          "us_per_exec_median": 24.784279133503635,
+          "us_per_exec_iqr": [
+            24.12395246210508,
+            26.774230015386518
+          ],
+          "us_per_exec_min": 23.614652454853058,
+          "ratio_vs_D0_deployment": 1.9529064800955462,
+          "ratio_vs_uninstrumented": 6.198072543540849
+        },
+        "D0+D2|analysis": {
+          "us_per_exec_median": 27.817059211277716,
+          "us_per_exec_iqr": [
+            27.423839637776837,
+            27.971292486957587
+          ],
+          "us_per_exec_min": 26.545883253371965,
+          "ratio_vs_D0_deployment": 2.191877960148935,
+          "ratio_vs_uninstrumented": 6.956512634914687
+        },
+        "D0+D3|deployment": {
+          "us_per_exec_median": 16.093864105641842,
+          "us_per_exec_iqr": [
+            15.959680798308302,
+            16.235253375877317
+          ],
+          "us_per_exec_min": 15.867184168503929,
+          "ratio_vs_D0_deployment": 1.2681349871983139,
+          "ratio_vs_uninstrumented": 4.024766534275027
+        },
+        "D0+D3|analysis": {
+          "us_per_exec_median": 18.37958339213704,
+          "us_per_exec_iqr": [
+            17.977216193685308,
+            19.103676216521613
+          ],
+          "us_per_exec_min": 17.920846682197105,
+          "ratio_vs_D0_deployment": 1.4482409318671516,
+          "ratio_vs_uninstrumented": 4.596381059577742
+        },
+        "D0+D1+D2+D3|deployment": {
+          "us_per_exec_median": 52.8828533909594,
+          "us_per_exec_iqr": [
+            52.72051372836965,
+            54.129890825909875
+          ],
+          "us_per_exec_min": 52.386212531321995,
+          "ratio_vs_D0_deployment": 4.166966750045145,
+          "ratio_vs_uninstrumented": 13.224986688578582
+        },
+        "D0+D1+D2+D3|analysis": {
+          "us_per_exec_median": 61.750848350736,
+          "us_per_exec_iqr": [
+            60.97756083666657,
+            62.29327545346071
+          ],
+          "us_per_exec_min": 60.78325667961811,
+          "ratio_vs_D0_deployment": 4.865730862937629,
+          "ratio_vs_uninstrumented": 15.442702030645904
+        }
+      },
+      "T2_value_range": {
+        "uninstrumented": {
+          "us_per_exec_median": 1.5376508235931396,
+          "us_per_exec_iqr": [
+            1.4767491181070604,
+            1.6032128769438714
+          ],
+          "us_per_exec_min": 1.4298475192238889,
+          "ratio_vs_D0_deployment": 0.24603193932427142,
+          "ratio_vs_uninstrumented": 1.0
+        },
+        "D0|deployment": {
+          "us_per_exec_median": 6.2498016632162035,
+          "us_per_exec_iqr": [
+            6.126997517033791,
+            6.40984003742536
+          ],
+          "us_per_exec_min": 5.962059173422555,
+          "ratio_vs_D0_deployment": 1.0,
+          "ratio_vs_uninstrumented": 4.064512935785928
+        },
+        "D0|analysis": {
+          "us_per_exec_median": 7.14441577050214,
+          "us_per_exec_iqr": [
+            7.100913741548235,
+            7.43322457613734
+          ],
+          "us_per_exec_min": 7.025336672086269,
+          "ratio_vs_D0_deployment": 1.1431427996429506,
+          "ratio_vs_uninstrumented": 4.646318696599315
+        },
+        "D1|deployment": {
+          "us_per_exec_median": 11.611829201380411,
+          "us_per_exec_iqr": [
+            11.45178209602212,
+            11.68615495165189
+          ],
+          "us_per_exec_min": 11.186178404993067,
+          "ratio_vs_D0_deployment": 1.857951632245056,
+          "ratio_vs_uninstrumented": 7.551668443324611
+        },
+        "D1|analysis": {
+          "us_per_exec_median": 13.241573372700561,
+          "us_per_exec_iqr": [
+            13.124639614640426,
+            13.273050814556578
+          ],
+          "us_per_exec_min": 13.044490769971162,
+          "ratio_vs_D0_deployment": 2.1187189748172472,
+          "ratio_vs_uninstrumented": 8.611560680439803
+        },
+        "D2|deployment": {
+          "us_per_exec_median": 19.67012998647988,
+          "us_per_exec_iqr": [
+            19.379576648740716,
+            19.95169285995265
+          ],
+          "us_per_exec_min": 18.92373247149711,
+          "ratio_vs_D0_deployment": 3.147320674550407,
+          "ratio_vs_uninstrumented": 12.792325594776626
+        },
+        "D2|analysis": {
+          "us_per_exec_median": 19.48218501638621,
+          "us_per_exec_iqr": [
+            19.25040953210555,
+            20.05451873022442
+          ],
+          "us_per_exec_min": 18.809049991735566,
+          "ratio_vs_D0_deployment": 3.1172485250292734,
+          "ratio_vs_uninstrumented": 12.670096954041089
+        },
+        "D3|deployment": {
+          "us_per_exec_median": 11.157130841941884,
+          "us_per_exec_iqr": [
+            10.9841774974484,
+            11.258699135699619
+          ],
+          "us_per_exec_min": 10.757660008190822,
+          "ratio_vs_D0_deployment": 1.785197585966324,
+          "ratio_vs_uninstrumented": 7.255958681093937
+        },
+        "D3|analysis": {
+          "us_per_exec_median": 10.633825052840013,
+          "us_per_exec_iqr": [
+            10.567000863375142,
+            10.655074584065005
+          ],
+          "us_per_exec_min": 10.152076720260084,
+          "ratio_vs_D0_deployment": 1.7014660025815527,
+          "ratio_vs_uninstrumented": 6.915630577292696
+        },
+        "D0+D1|deployment": {
+          "us_per_exec_median": 15.302655034853768,
+          "us_per_exec_iqr": [
+            15.214880453034613,
+            16.45875207032077
+          ],
+          "us_per_exec_min": 14.841285010334104,
+          "ratio_vs_D0_deployment": 2.4485025060745502,
+          "ratio_vs_uninstrumented": 9.951970109244275
+        },
+        "D0+D1|analysis": {
+          "us_per_exec_median": 18.740379988836747,
+          "us_per_exec_iqr": [
+            18.517894107693184,
+            18.954547898223
+          ],
+          "us_per_exec_min": 18.051429942715913,
+          "ratio_vs_D0_deployment": 2.998555954044913,
+          "ratio_vs_uninstrumented": 12.187669463893466
+        },
+        "D0+D2|deployment": {
+          "us_per_exec_median": 24.212057469412684,
+          "us_per_exec_iqr": [
+            23.96510618079143,
+            24.345946294488385
+          ],
+          "us_per_exec_min": 23.780869184217106,
+          "ratio_vs_D0_deployment": 3.874052133832507,
+          "ratio_vs_uninstrumented": 15.746135011871305
+        },
+        "D0+D2|analysis": {
+          "us_per_exec_median": 26.18099834459523,
+          "us_per_exec_iqr": [
+            25.953993754228577,
+            26.478814979782328
+          ],
+          "us_per_exec_min": 25.732387536360573,
+          "ratio_vs_D0_deployment": 4.18909267132203,
+          "ratio_vs_uninstrumented": 17.02662135179442
+        },
+        "D0+D3|deployment": {
+          "us_per_exec_median": 15.372199995908886,
+          "us_per_exec_iqr": [
+            15.055775390161823,
+            15.712369155759614
+          ],
+          "us_per_exec_min": 14.76918919555222,
+          "ratio_vs_D0_deployment": 2.4596300529636674,
+          "ratio_vs_uninstrumented": 9.997198167518654
+        },
+        "D0+D3|analysis": {
+          "us_per_exec_median": 16.68514586829891,
+          "us_per_exec_iqr": [
+            16.585212045659624,
+            17.15307002693104
+          ],
+          "us_per_exec_min": 16.408814990427345,
+          "ratio_vs_D0_deployment": 2.6697080591374456,
+          "ratio_vs_uninstrumented": 10.851062941136094
+        },
+        "D0+D1+D2+D3|deployment": {
+          "us_per_exec_median": 49.84149330994114,
+          "us_per_exec_iqr": [
+            49.60648123718177,
+            50.82532040736017
+          ],
+          "us_per_exec_min": 49.091951708154134,
+          "ratio_vs_D0_deployment": 7.974892003899571,
+          "ratio_vs_uninstrumented": 32.41405171134558
+        },
+        "D0+D1+D2+D3|analysis": {
+          "us_per_exec_median": 53.31550162130346,
+          "us_per_exec_iqr": [
+            52.97100622556172,
+            53.733633734130606
+          ],
+          "us_per_exec_min": 52.8092974370035,
+          "ratio_vs_D0_deployment": 8.53075097328238,
+          "ratio_vs_uninstrumented": 34.673347682874635
+        }
+      },
+      "T3_state_machine": {
+        "uninstrumented": {
+          "us_per_exec_median": 15.109747473616153,
+          "us_per_exec_iqr": [
+            14.793457085033879,
+            15.25559084257111
+          ],
+          "us_per_exec_min": 14.316018302148828,
+          "ratio_vs_D0_deployment": 0.31421495966038077,
+          "ratio_vs_uninstrumented": 1.0
+        },
+        "D0|deployment": {
+          "us_per_exec_median": 48.087295047783606,
+          "us_per_exec_iqr": [
+            47.7908733591903,
+            48.24100086504283
+          ],
+          "us_per_exec_min": 47.32747251788775,
+          "ratio_vs_D0_deployment": 1.0,
+          "ratio_vs_uninstrumented": 3.1825346606057523
+        },
+        "D0|analysis": {
+          "us_per_exec_median": 61.31042920363446,
+          "us_per_exec_iqr": [
+            60.38144124128545,
+            61.98730246978812
+          ],
+          "us_per_exec_min": 59.61117829428986,
+          "ratio_vs_D0_deployment": 1.2749818666804034,
+          "ratio_vs_uninstrumented": 4.057673982354206
+        },
+        "D1|deployment": {
+          "us_per_exec_median": 118.58716587691256,
+          "us_per_exec_iqr": [
+            115.36297247706293,
+            119.13280662459631
+          ],
+          "us_per_exec_min": 114.5383117060798,
+          "ratio_vs_D0_deployment": 2.466081025332665,
+          "ratio_vs_uninstrumented": 7.848388338983377
+        },
+        "D1|analysis": {
+          "us_per_exec_median": 133.57218665381274,
+          "us_per_exec_iqr": [
+            132.9054858069867,
+            134.3161496333778
+          ],
+          "us_per_exec_min": 131.55097588120648,
+          "ratio_vs_D0_deployment": 2.7777022292704157,
+          "ratio_vs_uninstrumented": 8.840133621494964
+        },
+        "D2|deployment": {
+          "us_per_exec_median": 77.56351338078579,
+          "us_per_exec_iqr": [
+            76.58538083584669,
+            77.8717796492856
+          ],
+          "us_per_exec_min": 76.13624504301697,
+          "ratio_vs_D0_deployment": 1.6129731003524346,
+          "ratio_vs_uninstrumented": 5.133342798496343
+        },
+        "D2|analysis": {
+          "us_per_exec_median": 77.02770836961766,
+          "us_per_exec_iqr": [
+            76.60044958659758,
+            77.73653041416159
+          ],
+          "us_per_exec_min": 75.8458774847289,
+          "ratio_vs_D0_deployment": 1.601830759935164,
+          "ratio_vs_uninstrumented": 5.097881913918111
+        },
+        "D3|deployment": {
+          "us_per_exec_median": 150.61533000941077,
+          "us_per_exec_iqr": [
+            149.28415791170363,
+            152.02321083052084
+          ],
+          "us_per_exec_min": 134.84443916240707,
+          "ratio_vs_D0_deployment": 3.132123149362979,
+          "ratio_vs_uninstrumented": 9.968090484133327
+        },
+        "D3|analysis": {
+          "us_per_exec_median": 148.54874413382882,
+          "us_per_exec_iqr": [
+            148.4316449689989,
+            149.40019624191336
+          ],
+          "us_per_exec_min": 136.6099191363901,
+          "ratio_vs_D0_deployment": 3.0891474346023875,
+          "ratio_vs_uninstrumented": 9.83131878234344
+        },
+        "D0+D1|deployment": {
+          "us_per_exec_median": 149.18793671919656,
+          "us_per_exec_iqr": [
+            148.53955251358758,
+            152.97079167794436
+          ],
+          "us_per_exec_min": 148.17613749376807,
+          "ratio_vs_D0_deployment": 3.102439772728967,
+          "ratio_vs_uninstrumented": 9.873622109151771
+        },
+        "D0+D1|analysis": {
+          "us_per_exec_median": 185.91202087312314,
+          "us_per_exec_iqr": [
+            184.79009420843795,
+            186.67078543027552
+          ],
+          "us_per_exec_min": 184.34086416770393,
+          "ratio_vs_D0_deployment": 3.866135965609736,
+          "ratio_vs_uninstrumented": 12.304111713167472
+        },
+        "D0+D2|deployment": {
+          "us_per_exec_median": 110.38977002802615,
+          "us_per_exec_iqr": [
+            110.11767792903507,
+            110.91911166052645
+          ],
+          "us_per_exec_min": 106.98411914442356,
+          "ratio_vs_D0_deployment": 2.295611968157775,
+          "ratio_vs_uninstrumented": 7.305864655963507
+        },
+        "D0+D2|analysis": {
+          "us_per_exec_median": 125.21854165242985,
+          "us_per_exec_iqr": [
+            124.26015629898757,
+            125.99417294647233
+          ],
+          "us_per_exec_min": 123.0491016758606,
+          "ratio_vs_D0_deployment": 2.603983890713797,
+          "ratio_vs_uninstrumented": 8.28726898785568
+        },
+        "D0+D3|deployment": {
+          "us_per_exec_median": 189.5159658549043,
+          "us_per_exec_iqr": [
+            187.62677083335194,
+            190.86655918120715
+          ],
+          "us_per_exec_min": 175.30269581281271,
+          "ratio_vs_D0_deployment": 3.941081852630413,
+          "ratio_vs_uninstrumented": 12.542629596280621
+        },
+        "D0+D3|analysis": {
+          "us_per_exec_median": 200.03108171901357,
+          "us_per_exec_iqr": [
+            199.63075372894917,
+            205.24549540520334
+          ],
+          "us_per_exec_min": 188.94412671215832,
+          "ratio_vs_D0_deployment": 4.159749087991865,
+          "ratio_vs_uninstrumented": 13.238545651957276
+        },
+        "D0+D1+D2+D3|deployment": {
+          "us_per_exec_median": 362.49761081611115,
+          "us_per_exec_iqr": [
+            361.24207045456086,
+            368.9749145996757
+          ],
+          "us_per_exec_min": 359.46579999290407,
+          "ratio_vs_D0_deployment": 7.538324009614241,
+          "ratio_vs_uninstrumented": 23.990977443473852
+        },
+        "D0+D1+D2+D3|analysis": {
+          "us_per_exec_median": 412.99178750099,
+          "us_per_exec_iqr": [
+            410.92434791304794,
+            418.7829295794169
+          ],
+          "us_per_exec_min": 402.47029915917665,
+          "ratio_vs_D0_deployment": 8.588376349524472,
+          "ratio_vs_uninstrumented": 27.332805410688334
+        }
+      }
+    }
+  },
+  "dimensionality_and_collisions": {
+    "description": "Exact element counts are collision-free ground truth; mapped_slots is what a bounded 2^b bitmap actually resolves. collision_rate = (exact - mapped) / exact, compared against the birthday expectation k^2 / 2^(b+1).",
+    "per_target": {
+      "T1_context": {
+        "n_corpus_inputs": 1500,
+        "by_map_bits": {
+          "10": {
+            "D0": {
+              "exact_elements": 76,
+              "mapped_slots_covered": 74,
+              "collision_rate": 0.02631578947368421,
+              "expected_collisions_birthday": 2.8203125,
+              "map_saturation": 0.072265625
+            },
+            "D1": {
+              "exact_elements": 4637,
+              "mapped_slots_covered": 1012,
+              "collision_rate": 0.781755445331033,
+              "expected_collisions_birthday": 10498.91064453125,
+              "map_saturation": 0.98828125,
+              "distinct_contexts_exact": 834,
+              "max_effective_stack_depth": 19
+            },
+            "D2": {
+              "exact_elements": 42,
+              "mapped_slots_covered": 41,
+              "collision_rate": 0.023809523809523808,
+              "map_saturation": 0.0400390625,
+              "n_value_nodes": 6,
+              "mean_node_entropy_bits": 1.6984637838891408
+            },
+            "D3": {
+              "exact_elements": 0,
+              "mapped_slots_covered": 0,
+              "collision_rate": 0.0,
+              "map_saturation": 0.0,
+              "n_abstract_states": 0,
+              "n_transitions": 0,
+              "n_kgrams": 0,
+              "transition_entropy_bits": 0.0
+            }
+          },
+          "12": {
+            "D0": {
+              "exact_elements": 76,
+              "mapped_slots_covered": 76,
+              "collision_rate": 0.0,
+              "expected_collisions_birthday": 0.705078125,
+              "map_saturation": 0.0185546875
+            },
+            "D1": {
+              "exact_elements": 4637,
+              "mapped_slots_covered": 2784,
+              "collision_rate": 0.39961181798576667,
+              "expected_collisions_birthday": 2624.7276611328125,
+              "map_saturation": 0.6796875,
+              "distinct_contexts_exact": 834,
+              "max_effective_stack_depth": 19
+            },
+            "D2": {
+              "exact_elements": 42,
+              "mapped_slots_covered": 42,
+              "collision_rate": 0.0,
+              "map_saturation": 0.01025390625,
+              "n_value_nodes": 6,
+              "mean_node_entropy_bits": 1.6984637838891408
+            },
+            "D3": {
+              "exact_elements": 0,
+              "mapped_slots_covered": 0,
+              "collision_rate": 0.0,
+              "map_saturation": 0.0,
+              "n_abstract_states": 0,
+              "n_transitions": 0,
+              "n_kgrams": 0,
+              "transition_entropy_bits": 0.0
+            }
+          },
+          "14": {
+            "D0": {
+              "exact_elements": 76,
+              "mapped_slots_covered": 76,
+              "collision_rate": 0.0,
+              "expected_collisions_birthday": 0.17626953125,
+              "map_saturation": 0.004638671875
+            },
+            "D1": {
+              "exact_elements": 4637,
+              "mapped_slots_covered": 4052,
+              "collision_rate": 0.12615915462583566,
+              "expected_collisions_birthday": 656.1819152832031,
+              "map_saturation": 0.247314453125,
+              "distinct_contexts_exact": 834,
+              "max_effective_stack_depth": 19
+            },
+            "D2": {
+              "exact_elements": 42,
+              "mapped_slots_covered": 42,
+              "collision_rate": 0.0,
+              "map_saturation": 0.0025634765625,
+              "n_value_nodes": 6,
+              "mean_node_entropy_bits": 1.6984637838891408
+            },
+            "D3": {
+              "exact_elements": 0,
+              "mapped_slots_covered": 0,
+              "collision_rate": 0.0,
+              "map_saturation": 0.0,
+              "n_abstract_states": 0,
+              "n_transitions": 0,
+              "n_kgrams": 0,
+              "transition_entropy_bits": 0.0
+            }
+          },
+          "16": {
+            "D0": {
+              "exact_elements": 76,
+              "mapped_slots_covered": 76,
+              "collision_rate": 0.0,
+              "expected_collisions_birthday": 0.0440673828125,
+              "map_saturation": 0.00115966796875
+            },
+            "D1": {
+              "exact_elements": 4637,
+              "mapped_slots_covered": 4489,
+              "collision_rate": 0.031917187836963554,
+              "expected_collisions_birthday": 164.04547882080078,
+              "map_saturation": 0.0684967041015625,
+              "distinct_contexts_exact": 834,
+              "max_effective_stack_depth": 19
+            },
+            "D2": {
+              "exact_elements": 42,
+              "mapped_slots_covered": 42,
+              "collision_rate": 0.0,
+              "map_saturation": 0.000640869140625,
+              "n_value_nodes": 6,
+              "mean_node_entropy_bits": 1.6984637838891408
+            },
+            "D3": {
+              "exact_elements": 0,
+              "mapped_slots_covered": 0,
+              "collision_rate": 0.0,
+              "map_saturation": 0.0,
+              "n_abstract_states": 0,
+              "n_transitions": 0,
+              "n_kgrams": 0,
+              "transition_entropy_bits": 0.0
+            }
+          },
+          "18": {
+            "D0": {
+              "exact_elements": 76,
+              "mapped_slots_covered": 76,
+              "collision_rate": 0.0,
+              "expected_collisions_birthday": 0.011016845703125,
+              "map_saturation": 0.0002899169921875
+            },
+            "D1": {
+              "exact_elements": 4637,
+              "mapped_slots_covered": 4598,
+              "collision_rate": 0.008410610308389044,
+              "expected_collisions_birthday": 41.011369705200195,
+              "map_saturation": 0.01753997802734375,
+              "distinct_contexts_exact": 834,
+              "max_effective_stack_depth": 19
+            },
+            "D2": {
+              "exact_elements": 42,
+              "mapped_slots_covered": 42,
+              "collision_rate": 0.0,
+              "map_saturation": 0.00016021728515625,
+              "n_value_nodes": 6,
+              "mean_node_entropy_bits": 1.6984637838891408
+            },
+            "D3": {
+              "exact_elements": 0,
+              "mapped_slots_covered": 0,
+              "collision_rate": 0.0,
+              "map_saturation": 0.0,
+              "n_abstract_states": 0,
+              "n_transitions": 0,
+              "n_kgrams": 0,
+              "transition_entropy_bits": 0.0
+            }
+          }
+        }
+      },
+      "T2_value_range": {
+        "n_corpus_inputs": 1500,
+        "by_map_bits": {
+          "10": {
+            "D0": {
+              "exact_elements": 5,
+              "mapped_slots_covered": 5,
+              "collision_rate": 0.0,
+              "expected_collisions_birthday": 0.01220703125,
+              "map_saturation": 0.0048828125
+            },
+            "D1": {
+              "exact_elements": 5,
+              "mapped_slots_covered": 5,
+              "collision_rate": 0.0,
+              "expected_collisions_birthday": 0.01220703125,
+              "map_saturation": 0.0048828125,
+              "distinct_contexts_exact": 1,
+              "max_effective_stack_depth": 1
+            },
+            "D2": {
+              "exact_elements": 51,
+              "mapped_slots_covered": 51,
+              "collision_rate": 0.0,
+              "map_saturation": 0.0498046875,
+              "n_value_nodes": 3,
+              "mean_node_entropy_bits": 2.986496480893376
+            },
+            "D3": {
+              "exact_elements": 2,
+              "mapped_slots_covered": 2,
+              "collision_rate": 0.0,
+              "map_saturation": 0.001953125,
+              "n_abstract_states": 3,
+              "n_transitions": 2,
+              "n_kgrams": 0,
+              "transition_entropy_bits": 0.37885917153264
+            }
+          },
+          "12": {
+            "D0": {
+              "exact_elements": 5,
+              "mapped_slots_covered": 5,
+              "collision_rate": 0.0,
+              "expected_collisions_birthday": 0.0030517578125,
+              "map_saturation": 0.001220703125
+            },
+            "D1": {
+              "exact_elements": 5,
+              "mapped_slots_covered": 5,
+              "collision_rate": 0.0,
+              "expected_collisions_birthday": 0.0030517578125,
+              "map_saturation": 0.001220703125,
+              "distinct_contexts_exact": 1,
+              "max_effective_stack_depth": 1
+            },
+            "D2": {
+              "exact_elements": 51,
+              "mapped_slots_covered": 51,
+              "collision_rate": 0.0,
+              "map_saturation": 0.012451171875,
+              "n_value_nodes": 3,
+              "mean_node_entropy_bits": 2.986496480893376
+            },
+            "D3": {
+              "exact_elements": 2,
+              "mapped_slots_covered": 2,
+              "collision_rate": 0.0,
+              "map_saturation": 0.00048828125,
+              "n_abstract_states": 3,
+              "n_transitions": 2,
+              "n_kgrams": 0,
+              "transition_entropy_bits": 0.37885917153264
+            }
+          },
+          "14": {
+            "D0": {
+              "exact_elements": 5,
+              "mapped_slots_covered": 5,
+              "collision_rate": 0.0,
+              "expected_collisions_birthday": 0.000762939453125,
+              "map_saturation": 0.00030517578125
+            },
+            "D1": {
+              "exact_elements": 5,
+              "mapped_slots_covered": 5,
+              "collision_rate": 0.0,
+              "expected_collisions_birthday": 0.000762939453125,
+              "map_saturation": 0.00030517578125,
+              "distinct_contexts_exact": 1,
+              "max_effective_stack_depth": 1
+            },
+            "D2": {
+              "exact_elements": 51,
+              "mapped_slots_covered": 51,
+              "collision_rate": 0.0,
+              "map_saturation": 0.00311279296875,
+              "n_value_nodes": 3,
+              "mean_node_entropy_bits": 2.986496480893376
+            },
+            "D3": {
+              "exact_elements": 2,
+              "mapped_slots_covered": 2,
+              "collision_rate": 0.0,
+              "map_saturation": 0.0001220703125,
+              "n_abstract_states": 3,
+              "n_transitions": 2,
+              "n_kgrams": 0,
+              "transition_entropy_bits": 0.37885917153264
+            }
+          },
+          "16": {
+            "D0": {
+              "exact_elements": 5,
+              "mapped_slots_covered": 5,
+              "collision_rate": 0.0,
+              "expected_collisions_birthday": 0.00019073486328125,
+              "map_saturation": 7.62939453125e-05
+            },
+            "D1": {
+              "exact_elements": 5,
+              "mapped_slots_covered": 5,
+              "collision_rate": 0.0,
+              "expected_collisions_birthday": 0.00019073486328125,
+              "map_saturation": 7.62939453125e-05,
+              "distinct_contexts_exact": 1,
+              "max_effective_stack_depth": 1
+            },
+            "D2": {
+              "exact_elements": 51,
+              "mapped_slots_covered": 51,
+              "collision_rate": 0.0,
+              "map_saturation": 0.0007781982421875,
+              "n_value_nodes": 3,
+              "mean_node_entropy_bits": 2.986496480893376
+            },
+            "D3": {
+              "exact_elements": 2,
+              "mapped_slots_covered": 2,
+              "collision_rate": 0.0,
+              "map_saturation": 3.0517578125e-05,
+              "n_abstract_states": 3,
+              "n_transitions": 2,
+              "n_kgrams": 0,
+              "transition_entropy_bits": 0.37885917153264
+            }
+          },
+          "18": {
+            "D0": {
+              "exact_elements": 5,
+              "mapped_slots_covered": 5,
+              "collision_rate": 0.0,
+              "expected_collisions_birthday": 4.76837158203125e-05,
+              "map_saturation": 1.9073486328125e-05
+            },
+            "D1": {
+              "exact_elements": 5,
+              "mapped_slots_covered": 5,
+              "collision_rate": 0.0,
+              "expected_collisions_birthday": 4.76837158203125e-05,
+              "map_saturation": 1.9073486328125e-05,
+              "distinct_contexts_exact": 1,
+              "max_effective_stack_depth": 1
+            },
+            "D2": {
+              "exact_elements": 51,
+              "mapped_slots_covered": 51,
+              "collision_rate": 0.0,
+              "map_saturation": 0.000194549560546875,
+              "n_value_nodes": 3,
+              "mean_node_entropy_bits": 2.986496480893376
+            },
+            "D3": {
+              "exact_elements": 2,
+              "mapped_slots_covered": 2,
+              "collision_rate": 0.0,
+              "map_saturation": 7.62939453125e-06,
+              "n_abstract_states": 3,
+              "n_transitions": 2,
+              "n_kgrams": 0,
+              "transition_entropy_bits": 0.37885917153264
+            }
+          }
+        }
+      },
+      "T3_state_machine": {
+        "n_corpus_inputs": 1500,
+        "by_map_bits": {
+          "10": {
+            "D0": {
+              "exact_elements": 198,
+              "mapped_slots_covered": 186,
+              "collision_rate": 0.06060606060606061,
+              "expected_collisions_birthday": 19.142578125,
+              "map_saturation": 0.181640625
+            },
+            "D1": {
+              "exact_elements": 198,
+              "mapped_slots_covered": 177,
+              "collision_rate": 0.10606060606060606,
+              "expected_collisions_birthday": 19.142578125,
+              "map_saturation": 0.1728515625,
+              "distinct_contexts_exact": 10,
+              "max_effective_stack_depth": 1
+            },
+            "D2": {
+              "exact_elements": 26,
+              "mapped_slots_covered": 26,
+              "collision_rate": 0.0,
+              "map_saturation": 0.025390625,
+              "n_value_nodes": 4,
+              "mean_node_entropy_bits": 1.7091376094771233
+            },
+            "D3": {
+              "exact_elements": 1829,
+              "mapped_slots_covered": 697,
+              "collision_rate": 0.6189174412247129,
+              "map_saturation": 0.6806640625,
+              "n_abstract_states": 155,
+              "n_transitions": 1100,
+              "n_kgrams": 729,
+              "transition_entropy_bits": 7.686567942783901
+            }
+          },
+          "12": {
+            "D0": {
+              "exact_elements": 198,
+              "mapped_slots_covered": 196,
+              "collision_rate": 0.010101010101010102,
+              "expected_collisions_birthday": 4.78564453125,
+              "map_saturation": 0.0478515625
+            },
+            "D1": {
+              "exact_elements": 198,
+              "mapped_slots_covered": 194,
+              "collision_rate": 0.020202020202020204,
+              "expected_collisions_birthday": 4.78564453125,
+              "map_saturation": 0.04736328125,
+              "distinct_contexts_exact": 10,
+              "max_effective_stack_depth": 1
+            },
+            "D2": {
+              "exact_elements": 26,
+              "mapped_slots_covered": 26,
+              "collision_rate": 0.0,
+              "map_saturation": 0.00634765625,
+              "n_value_nodes": 4,
+              "mean_node_entropy_bits": 1.7091376094771233
+            },
+            "D3": {
+              "exact_elements": 1829,
+              "mapped_slots_covered": 955,
+              "collision_rate": 0.47785675232367414,
+              "map_saturation": 0.233154296875,
+              "n_abstract_states": 155,
+              "n_transitions": 1100,
+              "n_kgrams": 729,
+              "transition_entropy_bits": 7.686567942783901
+            }
+          },
+          "14": {
+            "D0": {
+              "exact_elements": 198,
+              "mapped_slots_covered": 198,
+              "collision_rate": 0.0,
+              "expected_collisions_birthday": 1.1964111328125,
+              "map_saturation": 0.0120849609375
+            },
+            "D1": {
+              "exact_elements": 198,
+              "mapped_slots_covered": 198,
+              "collision_rate": 0.0,
+              "expected_collisions_birthday": 1.1964111328125,
+              "map_saturation": 0.0120849609375,
+              "distinct_contexts_exact": 10,
+              "max_effective_stack_depth": 1
+            },
+            "D2": {
+              "exact_elements": 26,
+              "mapped_slots_covered": 26,
+              "collision_rate": 0.0,
+              "map_saturation": 0.0015869140625,
+              "n_value_nodes": 4,
+              "mean_node_entropy_bits": 1.7091376094771233
+            },
+            "D3": {
+              "exact_elements": 1829,
+              "mapped_slots_covered": 1069,
+              "collision_rate": 0.4155276107162384,
+              "map_saturation": 0.06524658203125,
+              "n_abstract_states": 155,
+              "n_transitions": 1100,
+              "n_kgrams": 729,
+              "transition_entropy_bits": 7.686567942783901
+            }
+          },
+          "16": {
+            "D0": {
+              "exact_elements": 198,
+              "mapped_slots_covered": 198,
+              "collision_rate": 0.0,
+              "expected_collisions_birthday": 0.299102783203125,
+              "map_saturation": 0.003021240234375
+            },
+            "D1": {
+              "exact_elements": 198,
+              "mapped_slots_covered": 198,
+              "collision_rate": 0.0,
+              "expected_collisions_birthday": 0.299102783203125,
+              "map_saturation": 0.003021240234375,
+              "distinct_contexts_exact": 10,
+              "max_effective_stack_depth": 1
+            },
+            "D2": {
+              "exact_elements": 26,
+              "mapped_slots_covered": 26,
+              "collision_rate": 0.0,
+              "map_saturation": 0.000396728515625,
+              "n_value_nodes": 4,
+              "mean_node_entropy_bits": 1.7091376094771233
+            },
+            "D3": {
+              "exact_elements": 1829,
+              "mapped_slots_covered": 1090,
+              "collision_rate": 0.40404592673592127,
+              "map_saturation": 0.016632080078125,
+              "n_abstract_states": 155,
+              "n_transitions": 1100,
+              "n_kgrams": 729,
+              "transition_entropy_bits": 7.686567942783901
+            }
+          },
+          "18": {
+            "D0": {
+              "exact_elements": 198,
+              "mapped_slots_covered": 198,
+              "collision_rate": 0.0,
+              "expected_collisions_birthday": 0.07477569580078125,
+              "map_saturation": 0.00075531005859375
+            },
+            "D1": {
+              "exact_elements": 198,
+              "mapped_slots_covered": 198,
+              "collision_rate": 0.0,
+              "expected_collisions_birthday": 0.07477569580078125,
+              "map_saturation": 0.00075531005859375,
+              "distinct_contexts_exact": 10,
+              "max_effective_stack_depth": 1
+            },
+            "D2": {
+              "exact_elements": 26,
+              "mapped_slots_covered": 26,
+              "collision_rate": 0.0,
+              "map_saturation": 9.918212890625e-05,
+              "n_value_nodes": 4,
+              "mean_node_entropy_bits": 1.7091376094771233
+            },
+            "D3": {
+              "exact_elements": 1829,
+              "mapped_slots_covered": 1098,
+              "collision_rate": 0.39967195188627663,
+              "map_saturation": 0.00418853759765625,
+              "n_abstract_states": 155,
+              "n_transitions": 1100,
+              "n_kgrams": 729,
+              "transition_entropy_bits": 7.686567942783901
+            }
+          }
+        }
+      }
+    }
+  },
+  "summary": {
+    "refinement_theorem_verified_on_all_targets": true,
+    "native_fidelity_ok": true,
+    "refinement_witness_certified": true,
+    "n_afl_conflated_groups_in_enumeration": 16,
+    "bug_finding_headlines": [
+      "T1_context: blind_random 0/30, edge_only 29/30, best=d0_d2_valuerange 30/30",
+      "T2_value_range: blind_random 0/30, edge_only 0/30, best=d0_d2_valuerange 24/30",
+      "T3_state_machine: blind_random 3/30, edge_only 20/30, best=d0_d3_statemachine 30/30"
+    ],
+    "mean_refinement_factor_composite_over_D0": 10.891590488429799,
+    "interpretation_caveat": "Partition refinement is a mathematical property and is verified here; it does NOT by itself imply better bug finding. Added sensitivity also inflates the corpus and dilutes mutation effort, and AFL's saturating hit-count classes already encode a surprising amount of path and recursion structure. The per-target results below are reported as measured, including where an added dimension does not help."
+  },
+  "total_wall_seconds": 461.753662835923
+}

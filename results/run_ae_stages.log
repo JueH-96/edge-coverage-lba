@@ -1,0 +1,5 @@
+PASS  1/5  Build native benchmark libraries  (0s)
+PASS  2/5  Invariant suite (75 tests)  (11s)
+PASS  3/5  Fidelity cross-validation (20,000 comparisons)  (1s)
+PASS  4/5  Analysis, statistics and summary tables  (15s)
+PASS  5/5  Regenerate all publication figures  (37s)

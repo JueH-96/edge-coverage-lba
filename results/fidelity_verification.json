@@ -1,0 +1,139 @@
+{
+  "schema": "ae_fidelity_verification/1.0",
+  "description": "Exact native-C vs Python-model cross-validation of the decision trace, milestone index and bug flag for every benchmark target.",
+  "n_comparisons_total": 20000,
+  "n_comparisons_expected": 20000,
+  "n_mismatches_total": 0,
+  "fidelity_ok": true,
+  "compiler": "gcc (Debian 12.2.0-14+deb12u1) 12.2.0",
+  "seeds": {
+    "step1": 20260804,
+    "trigram": 20260811
+  },
+  "max_input_len": 96,
+  "suites": {
+    "step1_targets": {
+      "n_targets": 4,
+      "n_inputs_per_target": 2000,
+      "n_comparisons": 8000,
+      "n_mismatches": 0,
+      "detail": {
+        "n_inputs_per_target": 2000,
+        "seed": 20260804,
+        "max_input_len": 96,
+        "compiler": "gcc (Debian 12.2.0-14+deb12u1) 12.2.0",
+        "native_lib": "/app/sandbox/session_20260804_122155_74854ef04421/artifact_evaluation/native/libtarget.so",
+        "per_target": {
+          "T1_context": {
+            "n_mismatches": 0,
+            "mismatch_examples": [],
+            "random_bug_rate": 0.0,
+            "milestone_histogram": {
+              "0": 1938,
+              "1": 59,
+              "2": 3
+            }
+          },
+          "T2_value_range": {
+            "n_mismatches": 0,
+            "mismatch_examples": [],
+            "random_bug_rate": 0.0,
+            "milestone_histogram": {
+              "0": 2000
+            }
+          },
+          "T3_state_machine": {
+            "n_mismatches": 0,
+            "mismatch_examples": [],
+            "random_bug_rate": 0.0,
+            "milestone_histogram": {
+              "0": 928,
+              "1": 1001,
+              "2": 36,
+              "3": 8,
+              "4": 27
+            }
+          },
+          "T4_trigram": {
+            "n_mismatches": 0,
+            "mismatch_examples": [],
+            "random_bug_rate": 0.0,
+            "milestone_histogram": {
+              "0": 1662,
+              "1": 324,
+              "2": 14
+            }
+          }
+        },
+        "total_mismatches": 0,
+        "fidelity_ok": true
+      }
+    },
+    "trigram_targets": {
+      "n_targets": 3,
+      "n_inputs_per_target": 4000,
+      "n_comparisons": 12000,
+      "n_mismatches": 0,
+      "detail": {
+        "n_inputs_per_target": 4000,
+        "seed": 20260811,
+        "library": "/app/sandbox/session_20260804_122155_74854ef04421/artifact_evaluation/native/libtrigram_target.so",
+        "compiler": "gcc (Debian 12.2.0-14+deb12u1) 12.2.0",
+        "targets": {
+          "TG1_trigram_lock": {
+            "n_inputs": 4000,
+            "n_mismatches": 0,
+            "mismatches": [],
+            "milestone_histogram": {
+              "0": 2512,
+              "1": 51,
+              "2": 79,
+              "3": 75,
+              "4": 35,
+              "5": 40,
+              "6": 1208
+            },
+            "max_milestone_seen": 6,
+            "n_bug_triggering_inputs": 1208
+          },
+          "TG2_value_trigram": {
+            "n_inputs": 4000,
+            "n_mismatches": 0,
+            "mismatches": [],
+            "milestone_histogram": {
+              "0": 2580,
+              "1": 136,
+              "2": 96,
+              "3": 760,
+              "4": 116,
+              "5": 121,
+              "6": 103,
+              "7": 88
+            },
+            "max_milestone_seen": 7,
+            "n_bug_triggering_inputs": 88
+          },
+          "TG3_surprisal_maze": {
+            "n_inputs": 4000,
+            "n_mismatches": 0,
+            "mismatches": [],
+            "milestone_histogram": {
+              "0": 530,
+              "1": 1704,
+              "2": 334,
+              "3": 112,
+              "4": 74,
+              "5": 81,
+              "6": 1165
+            },
+            "max_milestone_seen": 6,
+            "n_bug_triggering_inputs": 1165
+          }
+        },
+        "total_mismatches": 0,
+        "all_match": true
+      }
+    }
+  },
+  "wall_seconds": 0.64
+}

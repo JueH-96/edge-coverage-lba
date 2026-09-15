@@ -1,0 +1,581 @@
+{
+ "title": "corpus-capped ablation on T4 (dilution vs admission quality)",
+ "generated_utc": "2026-08-12T01:23:36Z",
+ "environment": {
+  "python": "3.12.10",
+  "platform": "Linux-6.12.85+-x86_64-with-glibc2.36",
+  "numpy": "2.5.2",
+  "master_seed": 20260804,
+  "workers": 26
+ },
+ "design": {
+  "target": "T4_trigram",
+  "budget_execs": 400000,
+  "n_trials_per_arm": 30,
+  "schedule": "round_robin",
+  "cap_policy": "reservoir replacement of a uniformly random non-seed entry",
+  "cap_levels": {
+   "edge": 2170,
+   "ngram3": 18864
+  },
+  "blocking": "trial i uses the same derived seed in every arm"
+ },
+ "per_arm": {
+  "edge_only": {
+   "config": "edge_only",
+   "cap": null,
+   "n_trials": 30,
+   "n_success": 15,
+   "success_rate": 0.5,
+   "success_ci95": [
+    0.31297028586802744,
+    0.6870297141319726
+   ],
+   "median_execs_to_bug": 213055.0,
+   "median_corpus": 2170.0,
+   "median_elements": 1091.0,
+   "median_max_milestone": 4.5,
+   "median_n_admitted": 2169.0,
+   "admission_rate": 0.006129782283202302,
+   "expected_residence_execs": null
+  },
+  "ngram3": {
+   "config": "ngram3",
+   "cap": null,
+   "n_trials": 30,
+   "n_success": 26,
+   "success_rate": 0.8666666666666667,
+   "success_ci95": [
+    0.6927816497238732,
+    0.9624465036616366
+   ],
+   "median_execs_to_bug": 177619.5,
+   "median_corpus": 18863.5,
+   "median_elements": 34870.0,
+   "median_max_milestone": 5.0,
+   "median_n_admitted": 18862.5,
+   "admission_rate": 0.0889304669234643,
+   "expected_residence_execs": null
+  },
+  "ngram4": {
+   "config": "ngram4",
+   "cap": null,
+   "n_trials": 30,
+   "n_success": 8,
+   "success_rate": 0.26666666666666666,
+   "success_ci95": [
+    0.1227948098723548,
+    0.45889365139475125
+   ],
+   "median_execs_to_bug": 230549.0,
+   "median_corpus": 41533.5,
+   "median_elements": 442713.0,
+   "median_max_milestone": 3.0,
+   "median_n_admitted": 41532.5,
+   "admission_rate": 0.104095,
+   "expected_residence_execs": null
+  },
+  "ngram6": {
+   "config": "ngram6",
+   "cap": null,
+   "n_trials": 30,
+   "n_success": 5,
+   "success_rate": 0.16666666666666666,
+   "success_ci95": [
+    0.056421696468071485,
+    0.34721169883414377
+   ],
+   "median_execs_to_bug": 188411.0,
+   "median_corpus": 36648.5,
+   "median_elements": 1087400.0,
+   "median_max_milestone": 3.0,
+   "median_n_admitted": 36647.5,
+   "admission_rate": 0.09190499999999999,
+   "expected_residence_execs": null
+  },
+  "ngram8": {
+   "config": "ngram8",
+   "cap": null,
+   "n_trials": 30,
+   "n_success": 2,
+   "success_rate": 0.06666666666666667,
+   "success_ci95": [
+    0.008178134460656307,
+    0.22073540152296187
+   ],
+   "median_execs_to_bug": 150385.5,
+   "median_corpus": 38221.0,
+   "median_elements": 1221505.5,
+   "median_max_milestone": 3.0,
+   "median_n_admitted": 38220.0,
+   "admission_rate": 0.09563625,
+   "expected_residence_execs": null
+  },
+  "ngram3_cap_edge": {
+   "config": "ngram3",
+   "cap": 2170,
+   "n_trials": 30,
+   "n_success": 29,
+   "success_rate": 0.9666666666666667,
+   "success_ci95": [
+    0.8278305443665873,
+    0.9991564290733695
+   ],
+   "median_execs_to_bug": 145548.0,
+   "median_corpus": 2170.0,
+   "median_elements": 34799.0,
+   "median_max_milestone": 5.0,
+   "median_n_admitted": 19269.0,
+   "admission_rate": 0.1291002204902181,
+   "expected_residence_execs": 16809.68564864205
+  },
+  "ngram4_cap_edge": {
+   "config": "ngram4",
+   "cap": 2170,
+   "n_trials": 30,
+   "n_success": 9,
+   "success_rate": 0.3,
+   "success_ci95": [
+    0.14734518475470101,
+    0.4939590414625536
+   ],
+   "median_execs_to_bug": 356298.0,
+   "median_corpus": 2170.0,
+   "median_elements": 452232.5,
+   "median_max_milestone": 4.0,
+   "median_n_admitted": 44681.0,
+   "admission_rate": 0.1125,
+   "expected_residence_execs": 19288.88889841427
+  },
+  "ngram6_cap_edge": {
+   "config": "ngram6",
+   "cap": 2170,
+   "n_trials": 30,
+   "n_success": 0,
+   "success_rate": 0.0,
+   "success_ci95": [
+    0.0,
+    0.11570330822202778
+   ],
+   "median_execs_to_bug": null,
+   "median_corpus": 2170.0,
+   "median_elements": 982979.0,
+   "median_max_milestone": 3.0,
+   "median_n_admitted": 39108.5,
+   "admission_rate": 0.09777125,
+   "expected_residence_execs": 22194.663741950208
+  },
+  "ngram8_cap_edge": {
+   "config": "ngram8",
+   "cap": 2170,
+   "n_trials": 30,
+   "n_success": 2,
+   "success_rate": 0.06666666666666667,
+   "success_ci95": [
+    0.008178134460656307,
+    0.22073540152296187
+   ],
+   "median_execs_to_bug": 159467.5,
+   "median_corpus": 2170.0,
+   "median_elements": 1085570.5,
+   "median_max_milestone": 3.0,
+   "median_n_admitted": 43825.5,
+   "admission_rate": 0.1096625,
+   "expected_residence_execs": 19787.989578276913
+  },
+  "ngram4_cap_n3": {
+   "config": "ngram4",
+   "cap": 18864,
+   "n_trials": 30,
+   "n_success": 7,
+   "success_rate": 0.23333333333333334,
+   "success_ci95": [
+    0.09933786495801974,
+    0.4228365229782195
+   ],
+   "median_execs_to_bug": 249855.0,
+   "median_corpus": 18864.0,
+   "median_elements": 442045.0,
+   "median_max_milestone": 3.0,
+   "median_n_admitted": 41612.5,
+   "admission_rate": 0.10437125,
+   "expected_residence_execs": 180739.45599570672
+  },
+  "ngram8_cap_n3": {
+   "config": "ngram8",
+   "cap": 18864,
+   "n_trials": 30,
+   "n_success": 2,
+   "success_rate": 0.06666666666666667,
+   "success_ci95": [
+    0.008178134460656307,
+    0.22073540152296187
+   ],
+   "median_execs_to_bug": 240639.5,
+   "median_corpus": 18864.0,
+   "median_elements": 1208283.5,
+   "median_max_milestone": 3.0,
+   "median_n_admitted": 38549.0,
+   "admission_rate": 0.09644125,
+   "expected_residence_execs": 195600.9487970038
+  }
+ },
+ "contrasts": [
+  {
+   "arm": "ngram3_cap_edge",
+   "vs": "ngram3",
+   "succ_arm": 29,
+   "succ_vs": 26,
+   "win_loss_tie": {
+    "n_pairs": 30,
+    "wins_a": 20,
+    "wins_b": 10,
+    "ties": 0,
+    "indeterminate": 0,
+    "win_ratio": 2.0,
+    "win_fraction_a": 0.6666666666666666
+   },
+   "mcnemar": {
+    "test": "mcnemar_exact",
+    "n_pairs": 30,
+    "n_11": 25,
+    "n_10": 4,
+    "n_01": 1,
+    "n_00": 0,
+    "n_discordant": 5,
+    "p_value": 0.375,
+    "odds_ratio_cond": 4.0,
+    "risk_difference": 0.1
+   },
+   "prob_superiority": {
+    "p_superior": 0.6666666666666666,
+    "ci_lo": 0.5,
+    "ci_hi": 0.8333333333333334,
+    "n_comparable": 30,
+    "n_excluded": 0
+   },
+   "mcnemar_q": 0.625
+  },
+  {
+   "arm": "ngram4_cap_edge",
+   "vs": "ngram4",
+   "succ_arm": 9,
+   "succ_vs": 8,
+   "win_loss_tie": {
+    "n_pairs": 30,
+    "wins_a": 7,
+    "wins_b": 7,
+    "ties": 0,
+    "indeterminate": 16,
+    "win_ratio": 1.0,
+    "win_fraction_a": 0.5
+   },
+   "mcnemar": {
+    "test": "mcnemar_exact",
+    "n_pairs": 30,
+    "n_11": 3,
+    "n_10": 6,
+    "n_01": 5,
+    "n_00": 16,
+    "n_discordant": 11,
+    "p_value": 1.0,
+    "odds_ratio_cond": 1.2,
+    "risk_difference": 0.03333333333333333
+   },
+   "prob_superiority": {
+    "p_superior": 0.5,
+    "ci_lo": 0.21428571428571427,
+    "ci_hi": 0.7857142857142857,
+    "n_comparable": 14,
+    "n_excluded": 16
+   },
+   "mcnemar_q": 1.0
+  },
+  {
+   "arm": "ngram6_cap_edge",
+   "vs": "ngram6",
+   "succ_arm": 0,
+   "succ_vs": 5,
+   "win_loss_tie": {
+    "n_pairs": 30,
+    "wins_a": 0,
+    "wins_b": 5,
+    "ties": 0,
+    "indeterminate": 25,
+    "win_ratio": 0.0,
+    "win_fraction_a": 0.0
+   },
+   "mcnemar": {
+    "test": "mcnemar_exact",
+    "n_pairs": 30,
+    "n_11": 0,
+    "n_10": 0,
+    "n_01": 5,
+    "n_00": 25,
+    "n_discordant": 5,
+    "p_value": 0.0625,
+    "odds_ratio_cond": 0.0,
+    "risk_difference": -0.16666666666666666
+   },
+   "prob_superiority": {
+    "p_superior": 0.0,
+    "ci_lo": 0.0,
+    "ci_hi": 0.0,
+    "n_comparable": 5,
+    "n_excluded": 25
+   },
+   "mcnemar_q": 0.20833333333333334
+  },
+  {
+   "arm": "ngram8_cap_edge",
+   "vs": "ngram8",
+   "succ_arm": 2,
+   "succ_vs": 2,
+   "win_loss_tie": {
+    "n_pairs": 30,
+    "wins_a": 2,
+    "wins_b": 2,
+    "ties": 0,
+    "indeterminate": 26,
+    "win_ratio": 1.0,
+    "win_fraction_a": 0.5
+   },
+   "mcnemar": {
+    "test": "mcnemar_exact",
+    "n_pairs": 30,
+    "n_11": 0,
+    "n_10": 2,
+    "n_01": 2,
+    "n_00": 26,
+    "n_discordant": 4,
+    "p_value": 1.0,
+    "odds_ratio_cond": 1.0,
+    "risk_difference": 0.0
+   },
+   "prob_superiority": {
+    "p_superior": 0.5,
+    "ci_lo": 0.0,
+    "ci_hi": 1.0,
+    "n_comparable": 4,
+    "n_excluded": 26
+   },
+   "mcnemar_q": 1.0
+  },
+  {
+   "arm": "ngram4_cap_n3",
+   "vs": "ngram4",
+   "succ_arm": 7,
+   "succ_vs": 8,
+   "win_loss_tie": {
+    "n_pairs": 30,
+    "wins_a": 5,
+    "wins_b": 8,
+    "ties": 0,
+    "indeterminate": 17,
+    "win_ratio": 0.625,
+    "win_fraction_a": 0.38461538461538464
+   },
+   "mcnemar": {
+    "test": "mcnemar_exact",
+    "n_pairs": 30,
+    "n_11": 2,
+    "n_10": 5,
+    "n_01": 6,
+    "n_00": 17,
+    "n_discordant": 11,
+    "p_value": 1.0,
+    "odds_ratio_cond": 0.8333333333333334,
+    "risk_difference": -0.03333333333333333
+   },
+   "prob_superiority": {
+    "p_superior": 0.38461538461538464,
+    "ci_lo": 0.15384615384615385,
+    "ci_hi": 0.6923076923076923,
+    "n_comparable": 13,
+    "n_excluded": 17
+   },
+   "mcnemar_q": 1.0
+  },
+  {
+   "arm": "ngram8_cap_n3",
+   "vs": "ngram8",
+   "succ_arm": 2,
+   "succ_vs": 2,
+   "win_loss_tie": {
+    "n_pairs": 30,
+    "wins_a": 2,
+    "wins_b": 2,
+    "ties": 0,
+    "indeterminate": 26,
+    "win_ratio": 1.0,
+    "win_fraction_a": 0.5
+   },
+   "mcnemar": {
+    "test": "mcnemar_exact",
+    "n_pairs": 30,
+    "n_11": 0,
+    "n_10": 2,
+    "n_01": 2,
+    "n_00": 26,
+    "n_discordant": 4,
+    "p_value": 1.0,
+    "odds_ratio_cond": 1.0,
+    "risk_difference": 0.0
+   },
+   "prob_superiority": {
+    "p_superior": 0.5,
+    "ci_lo": 0.0,
+    "ci_hi": 1.0,
+    "n_comparable": 4,
+    "n_excluded": 26
+   },
+   "mcnemar_q": 1.0
+  },
+  {
+   "arm": "ngram4_cap_edge",
+   "vs": "edge_only",
+   "succ_arm": 9,
+   "succ_vs": 15,
+   "win_loss_tie": {
+    "n_pairs": 30,
+    "wins_a": 4,
+    "wins_b": 14,
+    "ties": 0,
+    "indeterminate": 12,
+    "win_ratio": 0.2857142857142857,
+    "win_fraction_a": 0.2222222222222222
+   },
+   "mcnemar": {
+    "test": "mcnemar_exact",
+    "n_pairs": 30,
+    "n_11": 6,
+    "n_10": 3,
+    "n_01": 9,
+    "n_00": 12,
+    "n_discordant": 12,
+    "p_value": 0.14599609375,
+    "odds_ratio_cond": 0.3333333333333333,
+    "risk_difference": -0.2
+   },
+   "prob_superiority": {
+    "p_superior": 0.2222222222222222,
+    "ci_lo": 0.05555555555555555,
+    "ci_hi": 0.4444444444444444,
+    "n_comparable": 18,
+    "n_excluded": 12
+   },
+   "mcnemar_q": 0.2919921875
+  },
+  {
+   "arm": "ngram8_cap_edge",
+   "vs": "edge_only",
+   "succ_arm": 2,
+   "succ_vs": 15,
+   "win_loss_tie": {
+    "n_pairs": 30,
+    "wins_a": 1,
+    "wins_b": 15,
+    "ties": 0,
+    "indeterminate": 14,
+    "win_ratio": 0.06666666666666667,
+    "win_fraction_a": 0.0625
+   },
+   "mcnemar": {
+    "test": "mcnemar_exact",
+    "n_pairs": 30,
+    "n_11": 1,
+    "n_10": 1,
+    "n_01": 14,
+    "n_00": 14,
+    "n_discordant": 15,
+    "p_value": 0.0009765625,
+    "odds_ratio_cond": 0.07142857142857142,
+    "risk_difference": -0.43333333333333335
+   },
+   "prob_superiority": {
+    "p_superior": 0.0625,
+    "ci_lo": 0.0,
+    "ci_hi": 0.1875,
+    "n_comparable": 16,
+    "n_excluded": 14
+   },
+   "mcnemar_q": 0.009765625
+  },
+  {
+   "arm": "ngram3",
+   "vs": "edge_only",
+   "succ_arm": 26,
+   "succ_vs": 15,
+   "win_loss_tie": {
+    "n_pairs": 30,
+    "wins_a": 17,
+    "wins_b": 10,
+    "ties": 0,
+    "indeterminate": 3,
+    "win_ratio": 1.7,
+    "win_fraction_a": 0.6296296296296297
+   },
+   "mcnemar": {
+    "test": "mcnemar_exact",
+    "n_pairs": 30,
+    "n_11": 14,
+    "n_10": 12,
+    "n_01": 1,
+    "n_00": 3,
+    "n_discordant": 13,
+    "p_value": 0.00341796875,
+    "odds_ratio_cond": 12.0,
+    "risk_difference": 0.36666666666666664
+   },
+   "prob_superiority": {
+    "p_superior": 0.6296296296296297,
+    "ci_lo": 0.4444444444444444,
+    "ci_hi": 0.8148148148148148,
+    "n_comparable": 27,
+    "n_excluded": 3
+   },
+   "mcnemar_q": 0.01708984375
+  },
+  {
+   "arm": "ngram4",
+   "vs": "edge_only",
+   "succ_arm": 8,
+   "succ_vs": 15,
+   "win_loss_tie": {
+    "n_pairs": 30,
+    "wins_a": 6,
+    "wins_b": 14,
+    "ties": 0,
+    "indeterminate": 10,
+    "win_ratio": 0.42857142857142855,
+    "win_fraction_a": 0.3
+   },
+   "mcnemar": {
+    "test": "mcnemar_exact",
+    "n_pairs": 30,
+    "n_11": 3,
+    "n_10": 5,
+    "n_01": 12,
+    "n_00": 10,
+    "n_discordant": 17,
+    "p_value": 0.143463134765625,
+    "odds_ratio_cond": 0.4166666666666667,
+    "risk_difference": -0.23333333333333334
+   },
+   "prob_superiority": {
+    "p_superior": 0.3,
+    "ci_lo": 0.1,
+    "ci_hi": 0.5,
+    "n_comparable": 20,
+    "n_excluded": 10
+   },
+   "mcnemar_q": 0.2919921875
+  }
+ ],
+ "multiple_testing_correction": {
+  "method": "Benjamini-Hochberg FDR",
+  "family": "all paired contrasts in this ablation",
+  "n_tests": 10
+ },
+ "wall_seconds": 435.3240691599931
+}

@@ -1,0 +1,39 @@
+[project]
+name = "multidim-fuzzing-guidance-ae"
+version = "1.0.0"
+description = "Artifact evaluation package: multidimensional guidance for coverage-guided fuzzing"
+readme = "README.md"
+requires-python = ">=3.11"
+
+# Deliberately minimal. The artifact needs a numeric stack, a plotting backend and
+# a test runner -- nothing else. Lower bounds are the oldest versions the code was
+# checked against; the exact versions used for the reported results are recorded in
+# results/environment.json after a run.
+dependencies = [
+    "numpy>=1.26",
+    "scipy>=1.11",
+    "matplotlib>=3.8",
+    "pytest>=7.4",
+]
+
+[project.optional-dependencies]
+# Only needed to re-run the from-scratch campaigns with progress bars.
+full = ["tqdm>=4.66"]
+
+[tool.pytest.ini_options]
+# Restrict collection to tests/. Without this, pytest would also try to collect
+# targets/test_targets.py -- which is a *target model* module, not a test module,
+# and merely happens to start with "test_".
+testpaths = ["tests"]
+norecursedirs = ["targets", "src", "experiments", "plots", "data", "results",
+                 "figures", "native"]
+python_files = ["test_*.py"]
+addopts = "-q --tb=short"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+# The artifact is run in place rather than installed; no package discovery needed.
+py-modules = []

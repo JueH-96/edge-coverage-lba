@@ -1,0 +1,13 @@
+{
+  "compiler": "gcc (Debian 12.2.0-14+deb12u1) 12.2.0",
+  "libraries": {
+    "libtarget.so": {
+      "path": "native/libtarget.so",
+      "size_bytes": 19776
+    },
+    "libtrigram_target.so": {
+      "path": "native/libtrigram_target.so",
+      "size_bytes": 15640
+    }
+  }
+}

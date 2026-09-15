@@ -1,0 +1,101 @@
+{
+  "schema": "ae_summary/1.0",
+  "generated_utc": "2026-08-18T00:58:26Z",
+  "provenance": {
+    "step2_scheduler_validation.json": {
+      "provenance": "regenerated",
+      "from": "data/step2_trials.json",
+      "description": "Step 2 energy-schedule campaign analysis"
+    },
+    "step1_guidance_validation.json": {
+      "provenance": "bundled",
+      "from": "data/precomputed/step1_guidance_validation.json",
+      "description": "Step 1 guidance-engine validation: refinement witnesses, partition discrimination, 540-trial bug-finding campaign, context-depth sweep, overhead and collision accounting"
+    },
+    "step2_revision.json": {
+      "provenance": "bundled",
+      "from": "data/precomputed/step2_revision.json",
+      "description": "Revision experiments: T4 n-gram order sweep, three-way information-loss decomposition, refinement lattice, paired re-analysis"
+    },
+    "corpus_cap_ablation.json": {
+      "provenance": "bundled",
+      "from": "data/precomputed/corpus_cap_ablation.json",
+      "description": "Fixed-corpus-capacity (K=1000) dilution ablation"
+    }
+  },
+  "recomputation_check": {
+    "document": "results/step2_scheduler_validation.json",
+    "reference": "data/precomputed/step2_scheduler_validation.json",
+    "comparison": "all numeric leaves, exact match on int/bool, rel_tol=1e-9 on float",
+    "n_numeric_leaves_compared": 4168,
+    "n_matching": 4168,
+    "n_differing": 0,
+    "differing_examples": [],
+    "reproduces_reference": true,
+    "note": "Timing fields (wall_seconds and similar) are excluded: they are properties of the machine, not of the analysis."
+  },
+  "json_validation": {
+    "ae_summary.json": {
+      "parses_as_strict_json": true,
+      "n_nonfinite_floats": 0,
+      "nonfinite_paths": [],
+      "size_bytes": 3196
+    },
+    "build_native.json": {
+      "parses_as_strict_json": true,
+      "n_nonfinite_floats": 0,
+      "nonfinite_paths": [],
+      "size_bytes": 278
+    },
+    "corpus_cap_ablation.json": {
+      "parses_as_strict_json": true,
+      "n_nonfinite_floats": 0,
+      "nonfinite_paths": [],
+      "size_bytes": 12814
+    },
+    "fidelity_verification.json": {
+      "parses_as_strict_json": true,
+      "n_nonfinite_floats": 0,
+      "nonfinite_paths": [],
+      "size_bytes": 3921
+    },
+    "figure_manifest.json": {
+      "parses_as_strict_json": true,
+      "n_nonfinite_floats": 0,
+      "nonfinite_paths": [],
+      "size_bytes": 3056
+    },
+    "step1_guidance_validation.json": {
+      "parses_as_strict_json": true,
+      "n_nonfinite_floats": 0,
+      "nonfinite_paths": [],
+      "size_bytes": 145393
+    },
+    "step2_revision.json": {
+      "parses_as_strict_json": true,
+      "n_nonfinite_floats": 0,
+      "nonfinite_paths": [],
+      "size_bytes": 140743
+    },
+    "step2_scheduler_validation.json": {
+      "parses_as_strict_json": true,
+      "n_nonfinite_floats": 0,
+      "nonfinite_paths": [],
+      "size_bytes": 218277
+    }
+  },
+  "all_documents_valid": true,
+  "headline": {
+    "fidelity_comparisons": 20000,
+    "fidelity_mismatches": 0,
+    "step2_fdr_hypotheses": 192,
+    "step2_fdr_rejected": 64,
+    "step1_bug_finding_headlines": [
+      "T1_context: blind_random 0/30, edge_only 29/30, best=d0_d2_valuerange 30/30",
+      "T2_value_range: blind_random 0/30, edge_only 0/30, best=d0_d2_valuerange 24/30",
+      "T3_state_machine: blind_random 3/30, edge_only 20/30, best=d0_d3_statemachine 30/30"
+    ],
+    "blind_spot_witness_target": "TG1_trigram_lock"
+  },
+  "wall_seconds": 13.86
+}

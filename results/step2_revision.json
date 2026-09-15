@@ -1,0 +1,4695 @@
+{
+  "step": 2,
+  "title": "Revision experiments: higher-order blind spot, information-loss decomposition, refinement lattice and matched-design inference",
+  "generated_utc": "2026-08-06T02:42:23Z",
+  "environment": {
+    "python": "3.12.10",
+    "platform": "Linux-6.12.85+-x86_64-with-glibc2.36",
+    "numpy": "2.5.1",
+    "master_seed": 20260804,
+    "workers_used": 12
+  },
+  "pilot_mode": false,
+  "fidelity": {
+    "n_inputs_per_target": 5000,
+    "max_input_len": 96,
+    "compiler": "gcc (Debian 12.2.0-14+deb12u1) 12.2.0",
+    "per_target": {
+      "T1_context": {
+        "mismatches": 0,
+        "bug_rate_random": 0.0,
+        "milestone_histogram": {
+          "0": 4831,
+          "1": 157,
+          "2": 11,
+          "3": 1
+        },
+        "mismatch_examples": []
+      },
+      "T2_value_range": {
+        "mismatches": 0,
+        "bug_rate_random": 0.0,
+        "milestone_histogram": {
+          "0": 5000
+        },
+        "mismatch_examples": []
+      },
+      "T3_state_machine": {
+        "mismatches": 0,
+        "bug_rate_random": 0.0,
+        "milestone_histogram": {
+          "0": 2233,
+          "1": 2593,
+          "2": 104,
+          "3": 25,
+          "4": 45
+        },
+        "mismatch_examples": []
+      },
+      "T4_trigram": {
+        "mismatches": 0,
+        "bug_rate_random": 0.0,
+        "milestone_histogram": {
+          "0": 4178,
+          "1": 805,
+          "2": 17
+        },
+        "mismatch_examples": []
+      }
+    },
+    "claim": "empirically cross-validated over randomly generated executions with zero observed mismatches; not a proof of semantic equivalence",
+    "total_mismatches": 0,
+    "fidelity_ok": true
+  },
+  "t4_witnesses": {
+    "alphabet": 32,
+    "walk_length": 6,
+    "discrimination_by_order": {
+      "2": {
+        "ngram_classes": 370,
+        "context_classes": 500,
+        "afl_conflated_groups_split_by_ngram": 0,
+        "afl_conflated_groups_split_by_context": 133,
+        "residual_milestone_mixing_cells_under_ngram": 31
+      },
+      "3": {
+        "ngram_classes": 717,
+        "context_classes": 681,
+        "afl_conflated_groups_split_by_ngram": 197,
+        "afl_conflated_groups_split_by_context": 203,
+        "residual_milestone_mixing_cells_under_ngram": 0
+      },
+      "4": {
+        "ngram_classes": 729,
+        "context_classes": 681,
+        "afl_conflated_groups_split_by_ngram": 203,
+        "afl_conflated_groups_split_by_context": 203,
+        "residual_milestone_mixing_cells_under_ngram": 0
+      },
+      "5": {
+        "ngram_classes": 729,
+        "context_classes": 681,
+        "afl_conflated_groups_split_by_ngram": 203,
+        "afl_conflated_groups_split_by_context": 203,
+        "residual_milestone_mixing_cells_under_ngram": 0
+      },
+      "6": {
+        "ngram_classes": 729,
+        "context_classes": 681,
+        "afl_conflated_groups_split_by_ngram": 203,
+        "afl_conflated_groups_split_by_context": 203,
+        "residual_milestone_mixing_cells_under_ngram": 0
+      }
+    },
+    "req": [
+      3,
+      12,
+      19,
+      3,
+      12
+    ],
+    "sub_alphabet_enumerated": [
+      3,
+      12,
+      19
+    ],
+    "n_walks_enumerated": 729,
+    "n_d0_counted_classes": 418,
+    "n_conflated_groups": 203,
+    "n_walks_in_conflated_groups": 514,
+    "n_conflated_groups_mixing_milestone": 31,
+    "n_conflated_groups_mixing_bug_flag": 0,
+    "n_pairs_g2_identical_g3_different": 449,
+    "max_milestone_gap_within_a_conflated_group": 2,
+    "witness_hot_cold": {
+      "seq_a": [
+        3,
+        12,
+        19,
+        3,
+        19,
+        12
+      ],
+      "seq_b": [
+        3,
+        19,
+        12,
+        19,
+        3,
+        12
+      ],
+      "input_a_hex": "595649594956",
+      "input_b_hex": "594956495956",
+      "milestone_a": 4,
+      "milestone_b": 2,
+      "bug_a": false,
+      "bug_b": false,
+      "d0_counted_identical": true,
+      "block_bigram_multiset_identical": true,
+      "block_trigram_multiset_differs": true,
+      "ngram3_separates": true,
+      "context_depth3_separates": true
+    },
+    "witness_bug_nobug": {
+      "seq_a": [
+        3,
+        12,
+        19,
+        3,
+        12
+      ],
+      "seq_b": [
+        3,
+        12,
+        3,
+        12,
+        19,
+        3
+      ],
+      "input_a_hex": "5956495956",
+      "input_b_hex": "595659564959",
+      "milestone_a": 5,
+      "milestone_b": 4,
+      "bug_a": true,
+      "bug_b": false,
+      "d0_counted_identical": false,
+      "block_bigram_multiset_identical": false,
+      "block_trigram_multiset_differs": true,
+      "ngram3_separates": true,
+      "context_depth3_separates": true
+    },
+    "note": "the bug/no-bug pair differs in one extra block, the bug block itself, which by construction executes only after the predicate has already been satisfied and therefore supplies no gradient; the hot/cold pair carries the full claim with bit-identical AFL maps"
+  },
+  "information_loss": {
+    "n_exec_per_target": 20000,
+    "map_bits_measured": [
+      16,
+      12,
+      10,
+      8
+    ],
+    "sampling": "coverage-guided mutational loop (not uniform random)",
+    "description": "cardinality chain over a common execution sample: block sequences -> exact bigram count vectors -> classified maps (collision-free) -> bitmap states at 2**b",
+    "per_target": {
+      "T1_context": {
+        "n_distinct_block_sequences": 9031,
+        "n_distinct_bigram_count_vectors": 7490,
+        "n_distinct_classified_maps_collision_free": 6821,
+        "n_distinct_bitmap_states": {
+          "16": 6821,
+          "12": 6821,
+          "10": 6821,
+          "8": 6841
+        },
+        "loss_higher_order_sequence": 0.17063448123131442,
+        "loss_hitcount_quantisation": 0.0893190921228304,
+        "loss_index_collision": {
+          "16": 0.0,
+          "12": 0.0,
+          "10": 0.0,
+          "8": -0.0029321213898254594
+        },
+        "max_raw_edge_count_observed": 58,
+        "frac_executions_with_an_edge_taken_4plus": 0.75145,
+        "n_classified_classes_mixing_milestones": 207,
+        "frac_classified_classes_mixing_milestones": 0.030347456384694327,
+        "context_dimension": {
+          "n_distinct_exact_signatures": 8143,
+          "n_distinct_mapped_signatures": {
+            "16": 8143,
+            "12": 8136,
+            "10": 8132,
+            "8": 8087
+          },
+          "loss_index_collision": {
+            "16": 0.0,
+            "12": 0.0008596340415080173,
+            "10": 0.0013508534937983763,
+            "8": 0.00687707233206436
+          }
+        }
+      },
+      "T2_value_range": {
+        "n_distinct_block_sequences": 2,
+        "n_distinct_bigram_count_vectors": 2,
+        "n_distinct_classified_maps_collision_free": 2,
+        "n_distinct_bitmap_states": {
+          "16": 2,
+          "12": 2,
+          "10": 2,
+          "8": 2
+        },
+        "loss_higher_order_sequence": 0.0,
+        "loss_hitcount_quantisation": 0.0,
+        "loss_index_collision": {
+          "16": 0.0,
+          "12": 0.0,
+          "10": 0.0,
+          "8": 0.0
+        },
+        "max_raw_edge_count_observed": 1,
+        "frac_executions_with_an_edge_taken_4plus": 0.0,
+        "n_classified_classes_mixing_milestones": 0,
+        "frac_classified_classes_mixing_milestones": 0.0,
+        "context_dimension": {
+          "n_distinct_exact_signatures": 2,
+          "n_distinct_mapped_signatures": {
+            "16": 2,
+            "12": 2,
+            "10": 2,
+            "8": 2
+          },
+          "loss_index_collision": {
+            "16": 0.0,
+            "12": 0.0,
+            "10": 0.0,
+            "8": 0.0
+          }
+        }
+      },
+      "T3_state_machine": {
+        "n_distinct_block_sequences": 16556,
+        "n_distinct_bigram_count_vectors": 16475,
+        "n_distinct_classified_maps_collision_free": 16456,
+        "n_distinct_bitmap_states": {
+          "16": 16456,
+          "12": 16456,
+          "10": 16456,
+          "8": 16456
+        },
+        "loss_higher_order_sequence": 0.0048924861077555,
+        "loss_hitcount_quantisation": 0.001153262518968079,
+        "loss_index_collision": {
+          "16": 0.0,
+          "12": 0.0,
+          "10": 0.0,
+          "8": 0.0
+        },
+        "max_raw_edge_count_observed": 16,
+        "frac_executions_with_an_edge_taken_4plus": 0.7438,
+        "n_classified_classes_mixing_milestones": 6,
+        "frac_classified_classes_mixing_milestones": 0.00036460865337870687,
+        "context_dimension": {
+          "n_distinct_exact_signatures": 16017,
+          "n_distinct_mapped_signatures": {
+            "16": 16017,
+            "12": 16017,
+            "10": 16015,
+            "8": 15987
+          },
+          "loss_index_collision": {
+            "16": 0.0,
+            "12": 0.0,
+            "10": 0.00012486732846350712,
+            "8": 0.0018730099269526068
+          }
+        }
+      },
+      "T4_trigram": {
+        "n_distinct_block_sequences": 13323,
+        "n_distinct_bigram_count_vectors": 13242,
+        "n_distinct_classified_maps_collision_free": 13242,
+        "n_distinct_bitmap_states": {
+          "16": 13242,
+          "12": 13242,
+          "10": 13242,
+          "8": 13242
+        },
+        "loss_higher_order_sequence": 0.006079711776626917,
+        "loss_hitcount_quantisation": 0.0,
+        "loss_index_collision": {
+          "16": 0.0,
+          "12": 0.0,
+          "10": 0.0,
+          "8": 0.0
+        },
+        "max_raw_edge_count_observed": 5,
+        "frac_executions_with_an_edge_taken_4plus": 0.0378,
+        "n_classified_classes_mixing_milestones": 0,
+        "frac_classified_classes_mixing_milestones": 0.0,
+        "context_dimension": {
+          "n_distinct_exact_signatures": 13308,
+          "n_distinct_mapped_signatures": {
+            "16": 13308,
+            "12": 13308,
+            "10": 13308,
+            "8": 13308
+          },
+          "loss_index_collision": {
+            "16": 0.0,
+            "12": 0.0,
+            "10": 0.0,
+            "8": 0.0
+          }
+        }
+      }
+    }
+  },
+  "lattice": {
+    "n_exec_per_target": 4000,
+    "description": "two-sided incomparability witnesses over a common execution sample; D1 over D0 additionally carries the structural projection assertion",
+    "per_target": {
+      "T1_context": {
+        "projection_alpha0_eq_pi_alpha1": true,
+        "D0_equal_but_D1_differs": false,
+        "D0_equal_but_D2_differs": true,
+        "D0_equal_but_D3_differs": false,
+        "D1_equal_but_D0_differs": false,
+        "D1_equal_but_D2_differs": true,
+        "D1_equal_but_D3_differs": false,
+        "D2_equal_but_D0_differs": true,
+        "D2_equal_but_D1_differs": true,
+        "D2_equal_but_D3_differs": false,
+        "D3_equal_but_D0_differs": true,
+        "D3_equal_but_D1_differs": true,
+        "D3_equal_but_D2_differs": true,
+        "verdict_D0_vs_D1": "no separation observed",
+        "verdict_D0_vs_D2": "incomparable",
+        "verdict_D0_vs_D3": "D0 refines D3",
+        "verdict_D1_vs_D2": "incomparable",
+        "verdict_D1_vs_D3": "D1 refines D3",
+        "verdict_D2_vs_D3": "D2 refines D3",
+        "n_distinct_classes": {
+          "D0": 32,
+          "D1": 32,
+          "D2": 20,
+          "D3": 1,
+          "composite": 42
+        },
+        "composite_refines_all_constituents": true
+      },
+      "T2_value_range": {
+        "projection_alpha0_eq_pi_alpha1": true,
+        "D0_equal_but_D1_differs": false,
+        "D0_equal_but_D2_differs": true,
+        "D0_equal_but_D3_differs": false,
+        "D1_equal_but_D0_differs": false,
+        "D1_equal_but_D2_differs": true,
+        "D1_equal_but_D3_differs": false,
+        "D2_equal_but_D0_differs": false,
+        "D2_equal_but_D1_differs": false,
+        "D2_equal_but_D3_differs": false,
+        "D3_equal_but_D0_differs": true,
+        "D3_equal_but_D1_differs": true,
+        "D3_equal_but_D2_differs": true,
+        "verdict_D0_vs_D1": "no separation observed",
+        "verdict_D0_vs_D2": "D2 refines D0",
+        "verdict_D0_vs_D3": "D0 refines D3",
+        "verdict_D1_vs_D2": "D2 refines D1",
+        "verdict_D1_vs_D3": "D1 refines D3",
+        "verdict_D2_vs_D3": "D2 refines D3",
+        "n_distinct_classes": {
+          "D0": 2,
+          "D1": 2,
+          "D2": 35,
+          "D3": 1,
+          "composite": 35
+        },
+        "composite_refines_all_constituents": true
+      },
+      "T3_state_machine": {
+        "projection_alpha0_eq_pi_alpha1": true,
+        "D0_equal_but_D1_differs": false,
+        "D0_equal_but_D2_differs": true,
+        "D0_equal_but_D3_differs": true,
+        "D1_equal_but_D0_differs": false,
+        "D1_equal_but_D2_differs": true,
+        "D1_equal_but_D3_differs": true,
+        "D2_equal_but_D0_differs": true,
+        "D2_equal_but_D1_differs": true,
+        "D2_equal_but_D3_differs": true,
+        "D3_equal_but_D0_differs": true,
+        "D3_equal_but_D1_differs": true,
+        "D3_equal_but_D2_differs": true,
+        "verdict_D0_vs_D1": "no separation observed",
+        "verdict_D0_vs_D2": "incomparable",
+        "verdict_D0_vs_D3": "incomparable",
+        "verdict_D1_vs_D2": "incomparable",
+        "verdict_D1_vs_D3": "incomparable",
+        "verdict_D2_vs_D3": "incomparable",
+        "n_distinct_classes": {
+          "D0": 3554,
+          "D1": 3554,
+          "D2": 161,
+          "D3": 3625,
+          "composite": 3634
+        },
+        "composite_refines_all_constituents": true
+      },
+      "T4_trigram": {
+        "projection_alpha0_eq_pi_alpha1": true,
+        "D0_equal_but_D1_differs": false,
+        "D0_equal_but_D2_differs": false,
+        "D0_equal_but_D3_differs": false,
+        "D1_equal_but_D0_differs": false,
+        "D1_equal_but_D2_differs": false,
+        "D1_equal_but_D3_differs": false,
+        "D2_equal_but_D0_differs": true,
+        "D2_equal_but_D1_differs": true,
+        "D2_equal_but_D3_differs": false,
+        "D3_equal_but_D0_differs": true,
+        "D3_equal_but_D1_differs": true,
+        "D3_equal_but_D2_differs": false,
+        "verdict_D0_vs_D1": "no separation observed",
+        "verdict_D0_vs_D2": "D0 refines D2",
+        "verdict_D0_vs_D3": "D0 refines D3",
+        "verdict_D1_vs_D2": "D1 refines D2",
+        "verdict_D1_vs_D3": "D1 refines D3",
+        "verdict_D2_vs_D3": "no separation observed",
+        "n_distinct_classes": {
+          "D0": 3958,
+          "D1": 3958,
+          "D2": 1,
+          "D3": 1,
+          "composite": 3958
+        },
+        "composite_refines_all_constituents": true
+      }
+    }
+  },
+  "order_sweep": {
+    "target": "T4_trigram",
+    "schedule": "score",
+    "budget_execs": 400000,
+    "n_trials_per_cell": 30,
+    "configs": [
+      "blind_random",
+      "edge_only",
+      "ngram2",
+      "ngram3",
+      "ngram4",
+      "ngram6",
+      "ngram8",
+      "ctx2",
+      "ctx3",
+      "ctx4",
+      "ctx6",
+      "ctx8",
+      "ctx16",
+      "full_3d"
+    ],
+    "per_config": {
+      "blind_random": {
+        "order": 0,
+        "n_trials": 30,
+        "n_success": 0,
+        "success_rate": 0.0,
+        "success_ci95": [
+          0.0,
+          0.11570330822202778
+        ],
+        "median_execs_to_bug": null,
+        "iqr_execs_to_bug": null,
+        "median_max_milestone": 3.0,
+        "median_corpus": 1.0,
+        "median_elements": 1090.0,
+        "median_exec_per_s": 17351.040145042425
+      },
+      "edge_only": {
+        "order": 2,
+        "n_trials": 30,
+        "n_success": 5,
+        "success_rate": 0.16666666666666666,
+        "success_ci95": [
+          0.056421696468071485,
+          0.34721169883414377
+        ],
+        "median_execs_to_bug": 159204.0,
+        "iqr_execs_to_bug": [
+          81292.0,
+          264386.0
+        ],
+        "median_max_milestone": 3.0,
+        "median_corpus": 2436.0,
+        "median_elements": 1090.0,
+        "median_exec_per_s": 15924.824888808866
+      },
+      "ngram2": {
+        "order": 2,
+        "n_trials": 30,
+        "n_success": 5,
+        "success_rate": 0.16666666666666666,
+        "success_ci95": [
+          0.056421696468071485,
+          0.34721169883414377
+        ],
+        "median_execs_to_bug": 159204.0,
+        "iqr_execs_to_bug": [
+          81292.0,
+          264386.0
+        ],
+        "median_max_milestone": 3.0,
+        "median_corpus": 2436.0,
+        "median_elements": 1090.0,
+        "median_exec_per_s": 13842.312246356385
+      },
+      "ngram3": {
+        "order": 3,
+        "n_trials": 30,
+        "n_success": 7,
+        "success_rate": 0.23333333333333334,
+        "success_ci95": [
+          0.09933786495801974,
+          0.4228365229782195
+        ],
+        "median_execs_to_bug": 150662.0,
+        "iqr_execs_to_bug": [
+          68748.0,
+          181474.0
+        ],
+        "median_max_milestone": 3.5,
+        "median_corpus": 14407.5,
+        "median_elements": 34880.0,
+        "median_exec_per_s": 12632.456036975651
+      },
+      "ngram4": {
+        "order": 4,
+        "n_trials": 30,
+        "n_success": 5,
+        "success_rate": 0.16666666666666666,
+        "success_ci95": [
+          0.056421696468071485,
+          0.34721169883414377
+        ],
+        "median_execs_to_bug": 224115.0,
+        "iqr_execs_to_bug": [
+          133350.0,
+          226744.0
+        ],
+        "median_max_milestone": 3.5,
+        "median_corpus": 41452.0,
+        "median_elements": 422539.5,
+        "median_exec_per_s": 12312.922274937695
+      },
+      "ngram6": {
+        "order": 6,
+        "n_trials": 30,
+        "n_success": 1,
+        "success_rate": 0.03333333333333333,
+        "success_ci95": [
+          0.0008435709266304788,
+          0.17216945563341265
+        ],
+        "median_execs_to_bug": 177577.0,
+        "iqr_execs_to_bug": [
+          177577.0,
+          177577.0
+        ],
+        "median_max_milestone": 3.0,
+        "median_corpus": 37027.5,
+        "median_elements": 994884.5,
+        "median_exec_per_s": 11721.936395263761
+      },
+      "ngram8": {
+        "order": 8,
+        "n_trials": 30,
+        "n_success": 3,
+        "success_rate": 0.1,
+        "success_ci95": [
+          0.02111713702972257,
+          0.2652884504742081
+        ],
+        "median_execs_to_bug": 29584.0,
+        "iqr_execs_to_bug": [
+          22561.5,
+          64244.5
+        ],
+        "median_max_milestone": 3.0,
+        "median_corpus": 38598.5,
+        "median_elements": 1113395.0,
+        "median_exec_per_s": 11586.679062439165
+      },
+      "ctx2": {
+        "order": 2,
+        "n_trials": 30,
+        "n_success": 3,
+        "success_rate": 0.1,
+        "success_ci95": [
+          0.02111713702972257,
+          0.2652884504742081
+        ],
+        "median_execs_to_bug": 314516.0,
+        "iqr_execs_to_bug": [
+          267430.0,
+          353189.0
+        ],
+        "median_max_milestone": 3.0,
+        "median_corpus": 3000.0,
+        "median_elements": 3172.0,
+        "median_exec_per_s": 7764.800239955297
+      },
+      "ctx3": {
+        "order": 3,
+        "n_trials": 30,
+        "n_success": 2,
+        "success_rate": 0.06666666666666667,
+        "success_ci95": [
+          0.008178134460656307,
+          0.22073540152296187
+        ],
+        "median_execs_to_bug": 333020.5,
+        "iqr_execs_to_bug": [
+          312755.75,
+          353285.25
+        ],
+        "median_max_milestone": 3.0,
+        "median_corpus": 31154.0,
+        "median_elements": 66688.0,
+        "median_exec_per_s": 7148.475896472861
+      },
+      "ctx4": {
+        "order": 4,
+        "n_trials": 30,
+        "n_success": 1,
+        "success_rate": 0.03333333333333333,
+        "success_ci95": [
+          0.0008435709266304788,
+          0.17216945563341265
+        ],
+        "median_execs_to_bug": 388116.0,
+        "iqr_execs_to_bug": [
+          388116.0,
+          388116.0
+        ],
+        "median_max_milestone": 3.0,
+        "median_corpus": 40957.0,
+        "median_elements": 508966.0,
+        "median_exec_per_s": 7007.101614087234
+      },
+      "ctx6": {
+        "order": 6,
+        "n_trials": 30,
+        "n_success": 3,
+        "success_rate": 0.1,
+        "success_ci95": [
+          0.02111713702972257,
+          0.2652884504742081
+        ],
+        "median_execs_to_bug": 303331.0,
+        "iqr_execs_to_bug": [
+          274707.0,
+          348679.5
+        ],
+        "median_max_milestone": 3.0,
+        "median_corpus": 46185.5,
+        "median_elements": 829573.0,
+        "median_exec_per_s": 7080.243674069607
+      },
+      "ctx8": {
+        "order": 8,
+        "n_trials": 30,
+        "n_success": 0,
+        "success_rate": 0.0,
+        "success_ci95": [
+          0.0,
+          0.11570330822202778
+        ],
+        "median_execs_to_bug": null,
+        "iqr_execs_to_bug": null,
+        "median_max_milestone": 3.0,
+        "median_corpus": 46228.0,
+        "median_elements": 830352.0,
+        "median_exec_per_s": 7111.0282104163125
+      },
+      "ctx16": {
+        "order": 16,
+        "n_trials": 30,
+        "n_success": 0,
+        "success_rate": 0.0,
+        "success_ci95": [
+          0.0,
+          0.11570330822202778
+        ],
+        "median_execs_to_bug": null,
+        "iqr_execs_to_bug": null,
+        "median_max_milestone": 3.0,
+        "median_corpus": 46228.0,
+        "median_elements": 830352.0,
+        "median_exec_per_s": 7070.662644116443
+      },
+      "full_3d": {
+        "order": 16,
+        "n_trials": 30,
+        "n_success": 0,
+        "success_rate": 0.0,
+        "success_ci95": [
+          0.0,
+          0.11570330822202778
+        ],
+        "median_execs_to_bug": null,
+        "iqr_execs_to_bug": null,
+        "median_max_milestone": 3.0,
+        "median_corpus": 46228.0,
+        "median_elements": 830352.0,
+        "median_exec_per_s": 6620.491158890613
+      }
+    },
+    "contrasts_vs_edge_only": {
+      "blind_random": {
+        "vs": "edge_only",
+        "paired_primary": {
+          "mcnemar_exact": {
+            "test": "mcnemar_exact",
+            "n_pairs": 30,
+            "n_11": 0,
+            "n_10": 0,
+            "n_01": 5,
+            "n_00": 25,
+            "n_discordant": 5,
+            "p_value": 0.0625,
+            "odds_ratio_cond": 0.0,
+            "risk_difference": -0.16666666666666666
+          },
+          "win_loss_tie": {
+            "n_pairs": 30,
+            "wins_a": 0,
+            "wins_b": 5,
+            "ties": 0,
+            "indeterminate": 25,
+            "win_ratio": 0.0,
+            "win_fraction_a": 0.0
+          },
+          "sign_exact": {
+            "test": "sign_exact",
+            "n_effective": 5,
+            "p_value": 0.0625,
+            "win_prob": 0.0,
+            "win_prob_lo": 0.0,
+            "win_prob_hi": 0.5218237501049814
+          },
+          "paired_permutation": {
+            "test": "paired_permutation",
+            "n_used": 0,
+            "n_dropped": 30,
+            "mean_log_ratio": 0.0,
+            "median_ratio": 1.0,
+            "p_value": 1.0,
+            "exact": 0,
+            "n_perm": 0
+          },
+          "stratified_logrank": {
+            "test": "stratified_logrank",
+            "chi2": 5.0,
+            "p_value": 0.025347318677468325,
+            "score": -2.5,
+            "variance": 1.25,
+            "observed_a": 0.0,
+            "expected_a": 2.5,
+            "n_strata": 30,
+            "n_informative_strata": 5,
+            "hazard_ratio_approx": 0.1353352832366127
+          },
+          "paired_prob_superiority": {
+            "p_superior": 0.0,
+            "ci_lo": 0.0,
+            "ci_hi": 0.0,
+            "n_comparable": 5,
+            "n_excluded": 25
+          }
+        },
+        "unpaired_robustness": {
+          "fisher": {
+            "odds_ratio": 0.0,
+            "odds_ratio_undefined_zero_cell": false,
+            "odds_ratio_haldane_anscombe": 0.07600596125186289,
+            "p_value": 0.052185548617305996,
+            "rate_1": 0.0,
+            "rate_1_ci95": [
+              0.0,
+              0.11570330822202778
+            ],
+            "rate_2": 0.16666666666666666,
+            "rate_2_ci95": [
+              0.056421696468071485,
+              0.34721169883414377
+            ]
+          },
+          "logrank": {
+            "chi2": 5.367178584883759,
+            "p_value": 0.020519141997681567,
+            "observed_1": 0.0,
+            "expected_1": 2.587746030769501,
+            "n_events": 5
+          },
+          "a12_time": 0.5833333333333334
+        },
+        "q_values": {
+          "mcnemar": 0.203125,
+          "sign": 0.203125,
+          "stratified_logrank": 0.203125
+        }
+      },
+      "ngram2": {
+        "vs": "edge_only",
+        "paired_primary": {
+          "mcnemar_exact": {
+            "test": "mcnemar_exact",
+            "n_pairs": 30,
+            "n_11": 5,
+            "n_10": 0,
+            "n_01": 0,
+            "n_00": 25,
+            "n_discordant": 0,
+            "p_value": 1.0,
+            "odds_ratio_cond": 1.0,
+            "risk_difference": 0.0
+          },
+          "win_loss_tie": {
+            "n_pairs": 30,
+            "wins_a": 0,
+            "wins_b": 0,
+            "ties": 5,
+            "indeterminate": 25,
+            "win_ratio": 1.0,
+            "win_fraction_a": 0.5
+          },
+          "sign_exact": {
+            "test": "sign_exact",
+            "n_effective": 0,
+            "p_value": 1.0,
+            "win_prob": 0.5,
+            "win_prob_lo": 0.0,
+            "win_prob_hi": 1.0
+          },
+          "paired_permutation": {
+            "test": "paired_permutation",
+            "n_used": 5,
+            "n_dropped": 25,
+            "mean_log_ratio": 0.0,
+            "median_ratio": 1.0,
+            "p_value": 1.0,
+            "exact": 1,
+            "n_perm": 32
+          },
+          "stratified_logrank": {
+            "test": "stratified_logrank",
+            "chi2": 0.0,
+            "p_value": 1.0,
+            "score": 0.0,
+            "variance": 0.0,
+            "n_strata": 30,
+            "n_informative_strata": 5,
+            "hazard_ratio_approx": 1.0
+          },
+          "paired_prob_superiority": {
+            "p_superior": 0.5,
+            "ci_lo": 0.5,
+            "ci_hi": 0.5,
+            "n_comparable": 5,
+            "n_excluded": 25
+          }
+        },
+        "unpaired_robustness": {
+          "fisher": {
+            "odds_ratio": 1.0,
+            "odds_ratio_undefined_zero_cell": false,
+            "odds_ratio_haldane_anscombe": 1.0,
+            "p_value": 1.0,
+            "rate_1": 0.16666666666666666,
+            "rate_1_ci95": [
+              0.056421696468071485,
+              0.34721169883414377
+            ],
+            "rate_2": 0.16666666666666666,
+            "rate_2_ci95": [
+              0.056421696468071485,
+              0.34721169883414377
+            ]
+          },
+          "logrank": {
+            "chi2": 0.0,
+            "p_value": 1.0,
+            "observed_1": 5.0,
+            "expected_1": 5.0,
+            "n_events": 10
+          },
+          "a12_time": 0.5
+        },
+        "q_values": {
+          "mcnemar": 1.0,
+          "sign": 1.0,
+          "stratified_logrank": 1.0
+        }
+      },
+      "ngram3": {
+        "vs": "edge_only",
+        "paired_primary": {
+          "mcnemar_exact": {
+            "test": "mcnemar_exact",
+            "n_pairs": 30,
+            "n_11": 1,
+            "n_10": 6,
+            "n_01": 4,
+            "n_00": 19,
+            "n_discordant": 10,
+            "p_value": 0.75390625,
+            "odds_ratio_cond": 1.5,
+            "risk_difference": 0.06666666666666667
+          },
+          "win_loss_tie": {
+            "n_pairs": 30,
+            "wins_a": 6,
+            "wins_b": 5,
+            "ties": 0,
+            "indeterminate": 19,
+            "win_ratio": 1.2,
+            "win_fraction_a": 0.5454545454545454
+          },
+          "sign_exact": {
+            "test": "sign_exact",
+            "n_effective": 11,
+            "p_value": 1.0,
+            "win_prob": 0.5454545454545454,
+            "win_prob_lo": 0.23379359765934518,
+            "win_prob_hi": 0.8325119059362929
+          },
+          "paired_permutation": {
+            "test": "paired_permutation",
+            "n_used": 1,
+            "n_dropped": 29,
+            "mean_log_ratio": 1.4161991671111203,
+            "median_ratio": 4.121425782097455,
+            "p_value": 1.0,
+            "exact": 1,
+            "n_perm": 2
+          },
+          "stratified_logrank": {
+            "test": "stratified_logrank",
+            "chi2": 0.09090909090909091,
+            "p_value": 0.763024600552995,
+            "score": 0.5,
+            "variance": 2.75,
+            "observed_a": 6.0,
+            "expected_a": 5.5,
+            "n_strata": 30,
+            "n_informative_strata": 11,
+            "hazard_ratio_approx": 1.1993961020353858
+          },
+          "paired_prob_superiority": {
+            "p_superior": 0.5454545454545454,
+            "ci_lo": 0.2727272727272727,
+            "ci_hi": 0.8181818181818182,
+            "n_comparable": 11,
+            "n_excluded": 19
+          }
+        },
+        "unpaired_robustness": {
+          "fisher": {
+            "odds_ratio": 1.5217391304347827,
+            "odds_ratio_undefined_zero_cell": false,
+            "odds_ratio_haldane_anscombe": 1.4796905222437138,
+            "p_value": 0.7480497930241055,
+            "rate_1": 0.23333333333333334,
+            "rate_1_ci95": [
+              0.09933786495801974,
+              0.4228365229782195
+            ],
+            "rate_2": 0.16666666666666666,
+            "rate_2_ci95": [
+              0.056421696468071485,
+              0.34721169883414377
+            ]
+          },
+          "logrank": {
+            "chi2": 0.44403397090565633,
+            "p_value": 0.5051818281495313,
+            "observed_1": 7.0,
+            "expected_1": 5.846455325196063,
+            "n_events": 12
+          },
+          "a12_time": 0.4638888888888889
+        },
+        "q_values": {
+          "mcnemar": 0.9017563461080851,
+          "sign": 1.0,
+          "stratified_logrank": 0.9017563461080851
+        }
+      },
+      "ngram4": {
+        "vs": "edge_only",
+        "paired_primary": {
+          "mcnemar_exact": {
+            "test": "mcnemar_exact",
+            "n_pairs": 30,
+            "n_11": 1,
+            "n_10": 4,
+            "n_01": 4,
+            "n_00": 21,
+            "n_discordant": 8,
+            "p_value": 1.0,
+            "odds_ratio_cond": 1.0,
+            "risk_difference": 0.0
+          },
+          "win_loss_tie": {
+            "n_pairs": 30,
+            "wins_a": 4,
+            "wins_b": 5,
+            "ties": 0,
+            "indeterminate": 21,
+            "win_ratio": 0.8,
+            "win_fraction_a": 0.4444444444444444
+          },
+          "sign_exact": {
+            "test": "sign_exact",
+            "n_effective": 9,
+            "p_value": 1.0,
+            "win_prob": 0.4444444444444444,
+            "win_prob_lo": 0.1369956622651665,
+            "win_prob_hi": 0.787991493221132
+          },
+          "paired_permutation": {
+            "test": "paired_permutation",
+            "n_used": 1,
+            "n_dropped": 29,
+            "mean_log_ratio": 1.5931388380968752,
+            "median_ratio": 4.919165184188835,
+            "p_value": 1.0,
+            "exact": 1,
+            "n_perm": 2
+          },
+          "stratified_logrank": {
+            "test": "stratified_logrank",
+            "chi2": 0.1111111111111111,
+            "p_value": 0.7388826803635273,
+            "score": -0.5,
+            "variance": 2.25,
+            "observed_a": 4.0,
+            "expected_a": 4.5,
+            "n_strata": 30,
+            "n_informative_strata": 9,
+            "hazard_ratio_approx": 0.8007374029168081
+          },
+          "paired_prob_superiority": {
+            "p_superior": 0.4444444444444444,
+            "ci_lo": 0.1111111111111111,
+            "ci_hi": 0.7777777777777778,
+            "n_comparable": 9,
+            "n_excluded": 21
+          }
+        },
+        "unpaired_robustness": {
+          "fisher": {
+            "odds_ratio": 1.0,
+            "odds_ratio_undefined_zero_cell": false,
+            "odds_ratio_haldane_anscombe": 1.0,
+            "p_value": 1.0,
+            "rate_1": 0.16666666666666666,
+            "rate_1_ci95": [
+              0.056421696468071485,
+              0.34721169883414377
+            ],
+            "rate_2": 0.16666666666666666,
+            "rate_2_ci95": [
+              0.056421696468071485,
+              0.34721169883414377
+            ]
+          },
+          "logrank": {
+            "chi2": 2.0164697829043447e-05,
+            "p_value": 0.9964171018636023,
+            "observed_1": 5.0,
+            "expected_1": 5.007099531353878,
+            "n_events": 10
+          },
+          "a12_time": 0.5005555555555555
+        },
+        "q_values": {
+          "mcnemar": 1.0,
+          "sign": 1.0,
+          "stratified_logrank": 0.9017563461080851
+        }
+      },
+      "ngram6": {
+        "vs": "edge_only",
+        "paired_primary": {
+          "mcnemar_exact": {
+            "test": "mcnemar_exact",
+            "n_pairs": 30,
+            "n_11": 0,
+            "n_10": 1,
+            "n_01": 5,
+            "n_00": 24,
+            "n_discordant": 6,
+            "p_value": 0.21875,
+            "odds_ratio_cond": 0.2,
+            "risk_difference": -0.13333333333333333
+          },
+          "win_loss_tie": {
+            "n_pairs": 30,
+            "wins_a": 1,
+            "wins_b": 5,
+            "ties": 0,
+            "indeterminate": 24,
+            "win_ratio": 0.2,
+            "win_fraction_a": 0.16666666666666666
+          },
+          "sign_exact": {
+            "test": "sign_exact",
+            "n_effective": 6,
+            "p_value": 0.21875,
+            "win_prob": 0.16666666666666666,
+            "win_prob_lo": 0.00421074451448947,
+            "win_prob_hi": 0.6412345789976748
+          },
+          "paired_permutation": {
+            "test": "paired_permutation",
+            "n_used": 0,
+            "n_dropped": 30,
+            "mean_log_ratio": 0.0,
+            "median_ratio": 1.0,
+            "p_value": 1.0,
+            "exact": 0,
+            "n_perm": 0
+          },
+          "stratified_logrank": {
+            "test": "stratified_logrank",
+            "chi2": 2.6666666666666665,
+            "p_value": 0.10247043485974942,
+            "score": -2.0,
+            "variance": 1.5,
+            "observed_a": 1.0,
+            "expected_a": 3.0,
+            "n_strata": 30,
+            "n_informative_strata": 6,
+            "hazard_ratio_approx": 0.26359713811572677
+          },
+          "paired_prob_superiority": {
+            "p_superior": 0.16666666666666666,
+            "ci_lo": 0.0,
+            "ci_hi": 0.5,
+            "n_comparable": 6,
+            "n_excluded": 24
+          }
+        },
+        "unpaired_robustness": {
+          "fisher": {
+            "odds_ratio": 0.1724137931034483,
+            "odds_ratio_undefined_zero_cell": false,
+            "odds_ratio_haldane_anscombe": 0.2357473035439137,
+            "p_value": 0.19450977211904957,
+            "rate_1": 0.03333333333333333,
+            "rate_1_ci95": [
+              0.0008435709266304788,
+              0.17216945563341265
+            ],
+            "rate_2": 0.16666666666666666,
+            "rate_2_ci95": [
+              0.056421696468071485,
+              0.34721169883414377
+            ]
+          },
+          "logrank": {
+            "chi2": 2.9362161306188224,
+            "p_value": 0.08661341273806186,
+            "observed_1": 1.0,
+            "expected_1": 3.0971616151850854,
+            "n_events": 6
+          },
+          "a12_time": 0.5672222222222222
+        },
+        "q_values": {
+          "mcnemar": 0.4739583333333333,
+          "sign": 0.4739583333333333,
+          "stratified_logrank": 0.2854533542521591
+        }
+      },
+      "ngram8": {
+        "vs": "edge_only",
+        "paired_primary": {
+          "mcnemar_exact": {
+            "test": "mcnemar_exact",
+            "n_pairs": 30,
+            "n_11": 1,
+            "n_10": 2,
+            "n_01": 4,
+            "n_00": 23,
+            "n_discordant": 6,
+            "p_value": 0.6875,
+            "odds_ratio_cond": 0.5,
+            "risk_difference": -0.06666666666666667
+          },
+          "win_loss_tie": {
+            "n_pairs": 30,
+            "wins_a": 2,
+            "wins_b": 5,
+            "ties": 0,
+            "indeterminate": 23,
+            "win_ratio": 0.4,
+            "win_fraction_a": 0.2857142857142857
+          },
+          "sign_exact": {
+            "test": "sign_exact",
+            "n_effective": 7,
+            "p_value": 0.453125,
+            "win_prob": 0.2857142857142857,
+            "win_prob_lo": 0.03669256617608555,
+            "win_prob_hi": 0.7095791362626572
+          },
+          "paired_permutation": {
+            "test": "paired_permutation",
+            "n_used": 1,
+            "n_dropped": 29,
+            "mean_log_ratio": 0.196112182739979,
+            "median_ratio": 1.2166633863110767,
+            "p_value": 1.0,
+            "exact": 1,
+            "n_perm": 2
+          },
+          "stratified_logrank": {
+            "test": "stratified_logrank",
+            "chi2": 1.2857142857142858,
+            "p_value": 0.2568392579578533,
+            "score": -1.5,
+            "variance": 1.75,
+            "observed_a": 2.0,
+            "expected_a": 3.5,
+            "n_strata": 30,
+            "n_informative_strata": 7,
+            "hazard_ratio_approx": 0.42437284567695
+          },
+          "paired_prob_superiority": {
+            "p_superior": 0.2857142857142857,
+            "ci_lo": 0.0,
+            "ci_hi": 0.5714285714285714,
+            "n_comparable": 7,
+            "n_excluded": 23
+          }
+        },
+        "unpaired_robustness": {
+          "fisher": {
+            "odds_ratio": 0.5555555555555556,
+            "odds_ratio_undefined_zero_cell": false,
+            "odds_ratio_haldane_anscombe": 0.5900826446280991,
+            "p_value": 0.7064691994252865,
+            "rate_1": 0.1,
+            "rate_1_ci95": [
+              0.02111713702972257,
+              0.2652884504742081
+            ],
+            "rate_2": 0.16666666666666666,
+            "rate_2_ci95": [
+              0.056421696468071485,
+              0.34721169883414377
+            ]
+          },
+          "logrank": {
+            "chi2": 0.4665822005449345,
+            "p_value": 0.4945637324202288,
+            "observed_1": 3.0,
+            "expected_1": 3.965855167767149,
+            "n_events": 8
+          },
+          "a12_time": 0.5272222222222223
+        },
+        "q_values": {
+          "mcnemar": 0.9017563461080851,
+          "sign": 0.706875,
+          "stratified_logrank": 0.476987193350299
+        }
+      },
+      "ctx2": {
+        "vs": "edge_only",
+        "paired_primary": {
+          "mcnemar_exact": {
+            "test": "mcnemar_exact",
+            "n_pairs": 30,
+            "n_11": 1,
+            "n_10": 2,
+            "n_01": 4,
+            "n_00": 23,
+            "n_discordant": 6,
+            "p_value": 0.6875,
+            "odds_ratio_cond": 0.5,
+            "risk_difference": -0.06666666666666667
+          },
+          "win_loss_tie": {
+            "n_pairs": 30,
+            "wins_a": 2,
+            "wins_b": 5,
+            "ties": 0,
+            "indeterminate": 23,
+            "win_ratio": 0.4,
+            "win_fraction_a": 0.2857142857142857
+          },
+          "sign_exact": {
+            "test": "sign_exact",
+            "n_effective": 7,
+            "p_value": 0.453125,
+            "win_prob": 0.2857142857142857,
+            "win_prob_lo": 0.03669256617608555,
+            "win_prob_hi": 0.7095791362626572
+          },
+          "paired_permutation": {
+            "test": "paired_permutation",
+            "n_used": 1,
+            "n_dropped": 29,
+            "mean_log_ratio": 1.3529873385221922,
+            "median_ratio": 3.868966195935642,
+            "p_value": 1.0,
+            "exact": 1,
+            "n_perm": 2
+          },
+          "stratified_logrank": {
+            "test": "stratified_logrank",
+            "chi2": 1.2857142857142858,
+            "p_value": 0.2568392579578533,
+            "score": -1.5,
+            "variance": 1.75,
+            "observed_a": 2.0,
+            "expected_a": 3.5,
+            "n_strata": 30,
+            "n_informative_strata": 7,
+            "hazard_ratio_approx": 0.42437284567695
+          },
+          "paired_prob_superiority": {
+            "p_superior": 0.2857142857142857,
+            "ci_lo": 0.0,
+            "ci_hi": 0.5714285714285714,
+            "n_comparable": 7,
+            "n_excluded": 23
+          }
+        },
+        "unpaired_robustness": {
+          "fisher": {
+            "odds_ratio": 0.5555555555555556,
+            "odds_ratio_undefined_zero_cell": false,
+            "odds_ratio_haldane_anscombe": 0.5900826446280991,
+            "p_value": 0.7064691994252865,
+            "rate_1": 0.1,
+            "rate_1_ci95": [
+              0.02111713702972257,
+              0.2652884504742081
+            ],
+            "rate_2": 0.16666666666666666,
+            "rate_2_ci95": [
+              0.056421696468071485,
+              0.34721169883414377
+            ]
+          },
+          "logrank": {
+            "chi2": 0.6554184561211938,
+            "p_value": 0.41818207548124875,
+            "observed_1": 3.0,
+            "expected_1": 4.143982020496057,
+            "n_events": 8
+          },
+          "a12_time": 0.5383333333333333
+        },
+        "q_values": {
+          "mcnemar": 0.9017563461080851,
+          "sign": 0.706875,
+          "stratified_logrank": 0.476987193350299
+        }
+      },
+      "ctx3": {
+        "vs": "edge_only",
+        "paired_primary": {
+          "mcnemar_exact": {
+            "test": "mcnemar_exact",
+            "n_pairs": 30,
+            "n_11": 0,
+            "n_10": 2,
+            "n_01": 5,
+            "n_00": 23,
+            "n_discordant": 7,
+            "p_value": 0.453125,
+            "odds_ratio_cond": 0.4,
+            "risk_difference": -0.1
+          },
+          "win_loss_tie": {
+            "n_pairs": 30,
+            "wins_a": 2,
+            "wins_b": 5,
+            "ties": 0,
+            "indeterminate": 23,
+            "win_ratio": 0.4,
+            "win_fraction_a": 0.2857142857142857
+          },
+          "sign_exact": {
+            "test": "sign_exact",
+            "n_effective": 7,
+            "p_value": 0.453125,
+            "win_prob": 0.2857142857142857,
+            "win_prob_lo": 0.03669256617608555,
+            "win_prob_hi": 0.7095791362626572
+          },
+          "paired_permutation": {
+            "test": "paired_permutation",
+            "n_used": 0,
+            "n_dropped": 30,
+            "mean_log_ratio": 0.0,
+            "median_ratio": 1.0,
+            "p_value": 1.0,
+            "exact": 0,
+            "n_perm": 0
+          },
+          "stratified_logrank": {
+            "test": "stratified_logrank",
+            "chi2": 1.2857142857142858,
+            "p_value": 0.2568392579578533,
+            "score": -1.5,
+            "variance": 1.75,
+            "observed_a": 2.0,
+            "expected_a": 3.5,
+            "n_strata": 30,
+            "n_informative_strata": 7,
+            "hazard_ratio_approx": 0.42437284567695
+          },
+          "paired_prob_superiority": {
+            "p_superior": 0.2857142857142857,
+            "ci_lo": 0.0,
+            "ci_hi": 0.5714285714285714,
+            "n_comparable": 7,
+            "n_excluded": 23
+          }
+        },
+        "unpaired_robustness": {
+          "fisher": {
+            "odds_ratio": 0.35714285714285715,
+            "odds_ratio_undefined_zero_cell": false,
+            "odds_ratio_haldane_anscombe": 0.4066985645933014,
+            "p_value": 0.42380990998296975,
+            "rate_1": 0.06666666666666667,
+            "rate_1_ci95": [
+              0.008178134460656307,
+              0.22073540152296187
+            ],
+            "rate_2": 0.16666666666666666,
+            "rate_2_ci95": [
+              0.056421696468071485,
+              0.34721169883414377
+            ]
+          },
+          "logrank": {
+            "chi2": 1.52781431064938,
+            "p_value": 0.21644077435206824,
+            "observed_1": 2.0,
+            "expected_1": 3.6335372765607468,
+            "n_events": 7
+          },
+          "a12_time": 0.5533333333333333
+        },
+        "q_values": {
+          "mcnemar": 0.706875,
+          "sign": 0.706875,
+          "stratified_logrank": 0.476987193350299
+        }
+      },
+      "ctx4": {
+        "vs": "edge_only",
+        "paired_primary": {
+          "mcnemar_exact": {
+            "test": "mcnemar_exact",
+            "n_pairs": 30,
+            "n_11": 0,
+            "n_10": 1,
+            "n_01": 5,
+            "n_00": 24,
+            "n_discordant": 6,
+            "p_value": 0.21875,
+            "odds_ratio_cond": 0.2,
+            "risk_difference": -0.13333333333333333
+          },
+          "win_loss_tie": {
+            "n_pairs": 30,
+            "wins_a": 1,
+            "wins_b": 5,
+            "ties": 0,
+            "indeterminate": 24,
+            "win_ratio": 0.2,
+            "win_fraction_a": 0.16666666666666666
+          },
+          "sign_exact": {
+            "test": "sign_exact",
+            "n_effective": 6,
+            "p_value": 0.21875,
+            "win_prob": 0.16666666666666666,
+            "win_prob_lo": 0.00421074451448947,
+            "win_prob_hi": 0.6412345789976748
+          },
+          "paired_permutation": {
+            "test": "paired_permutation",
+            "n_used": 0,
+            "n_dropped": 30,
+            "mean_log_ratio": 0.0,
+            "median_ratio": 1.0,
+            "p_value": 1.0,
+            "exact": 0,
+            "n_perm": 0
+          },
+          "stratified_logrank": {
+            "test": "stratified_logrank",
+            "chi2": 2.6666666666666665,
+            "p_value": 0.10247043485974942,
+            "score": -2.0,
+            "variance": 1.5,
+            "observed_a": 1.0,
+            "expected_a": 3.0,
+            "n_strata": 30,
+            "n_informative_strata": 6,
+            "hazard_ratio_approx": 0.26359713811572677
+          },
+          "paired_prob_superiority": {
+            "p_superior": 0.16666666666666666,
+            "ci_lo": 0.0,
+            "ci_hi": 0.5,
+            "n_comparable": 6,
+            "n_excluded": 24
+          }
+        },
+        "unpaired_robustness": {
+          "fisher": {
+            "odds_ratio": 0.1724137931034483,
+            "odds_ratio_undefined_zero_cell": false,
+            "odds_ratio_haldane_anscombe": 0.2357473035439137,
+            "p_value": 0.19450977211904957,
+            "rate_1": 0.03333333333333333,
+            "rate_1_ci95": [
+              0.0008435709266304788,
+              0.17216945563341265
+            ],
+            "rate_2": 0.16666666666666666,
+            "rate_2_ci95": [
+              0.056421696468071485,
+              0.34721169883414377
+            ]
+          },
+          "logrank": {
+            "chi2": 3.0426280602838096,
+            "p_value": 0.08110451511861565,
+            "observed_1": 1.0,
+            "expected_1": 3.1332005762240462,
+            "n_events": 6
+          },
+          "a12_time": 0.5694444444444445
+        },
+        "q_values": {
+          "mcnemar": 0.4739583333333333,
+          "sign": 0.4739583333333333,
+          "stratified_logrank": 0.2854533542521591
+        }
+      },
+      "ctx6": {
+        "vs": "edge_only",
+        "paired_primary": {
+          "mcnemar_exact": {
+            "test": "mcnemar_exact",
+            "n_pairs": 30,
+            "n_11": 0,
+            "n_10": 3,
+            "n_01": 5,
+            "n_00": 22,
+            "n_discordant": 8,
+            "p_value": 0.7265625,
+            "odds_ratio_cond": 0.6,
+            "risk_difference": -0.06666666666666667
+          },
+          "win_loss_tie": {
+            "n_pairs": 30,
+            "wins_a": 3,
+            "wins_b": 5,
+            "ties": 0,
+            "indeterminate": 22,
+            "win_ratio": 0.6,
+            "win_fraction_a": 0.375
+          },
+          "sign_exact": {
+            "test": "sign_exact",
+            "n_effective": 8,
+            "p_value": 0.7265625,
+            "win_prob": 0.375,
+            "win_prob_lo": 0.08523341413725354,
+            "win_prob_hi": 0.7551367836334484
+          },
+          "paired_permutation": {
+            "test": "paired_permutation",
+            "n_used": 0,
+            "n_dropped": 30,
+            "mean_log_ratio": 0.0,
+            "median_ratio": 1.0,
+            "p_value": 1.0,
+            "exact": 0,
+            "n_perm": 0
+          },
+          "stratified_logrank": {
+            "test": "stratified_logrank",
+            "chi2": 0.5,
+            "p_value": 0.47950012218695337,
+            "score": -1.0,
+            "variance": 2.0,
+            "observed_a": 3.0,
+            "expected_a": 4.0,
+            "n_strata": 30,
+            "n_informative_strata": 8,
+            "hazard_ratio_approx": 0.6065306597126334
+          },
+          "paired_prob_superiority": {
+            "p_superior": 0.375,
+            "ci_lo": 0.125,
+            "ci_hi": 0.75,
+            "n_comparable": 8,
+            "n_excluded": 22
+          }
+        },
+        "unpaired_robustness": {
+          "fisher": {
+            "odds_ratio": 0.5555555555555556,
+            "odds_ratio_undefined_zero_cell": false,
+            "odds_ratio_haldane_anscombe": 0.5900826446280991,
+            "p_value": 0.7064691994252865,
+            "rate_1": 0.1,
+            "rate_1_ci95": [
+              0.02111713702972257,
+              0.2652884504742081
+            ],
+            "rate_2": 0.16666666666666666,
+            "rate_2_ci95": [
+              0.056421696468071485,
+              0.34721169883414377
+            ]
+          },
+          "logrank": {
+            "chi2": 0.6554184561211938,
+            "p_value": 0.41818207548124875,
+            "observed_1": 3.0,
+            "expected_1": 4.143982020496057,
+            "n_events": 8
+          },
+          "a12_time": 0.5383333333333333
+        },
+        "q_values": {
+          "mcnemar": 0.9017563461080851,
+          "sign": 0.9017563461080851,
+          "stratified_logrank": 0.7192501832804301
+        }
+      },
+      "ctx8": {
+        "vs": "edge_only",
+        "paired_primary": {
+          "mcnemar_exact": {
+            "test": "mcnemar_exact",
+            "n_pairs": 30,
+            "n_11": 0,
+            "n_10": 0,
+            "n_01": 5,
+            "n_00": 25,
+            "n_discordant": 5,
+            "p_value": 0.0625,
+            "odds_ratio_cond": 0.0,
+            "risk_difference": -0.16666666666666666
+          },
+          "win_loss_tie": {
+            "n_pairs": 30,
+            "wins_a": 0,
+            "wins_b": 5,
+            "ties": 0,
+            "indeterminate": 25,
+            "win_ratio": 0.0,
+            "win_fraction_a": 0.0
+          },
+          "sign_exact": {
+            "test": "sign_exact",
+            "n_effective": 5,
+            "p_value": 0.0625,
+            "win_prob": 0.0,
+            "win_prob_lo": 0.0,
+            "win_prob_hi": 0.5218237501049814
+          },
+          "paired_permutation": {
+            "test": "paired_permutation",
+            "n_used": 0,
+            "n_dropped": 30,
+            "mean_log_ratio": 0.0,
+            "median_ratio": 1.0,
+            "p_value": 1.0,
+            "exact": 0,
+            "n_perm": 0
+          },
+          "stratified_logrank": {
+            "test": "stratified_logrank",
+            "chi2": 5.0,
+            "p_value": 0.025347318677468325,
+            "score": -2.5,
+            "variance": 1.25,
+            "observed_a": 0.0,
+            "expected_a": 2.5,
+            "n_strata": 30,
+            "n_informative_strata": 5,
+            "hazard_ratio_approx": 0.1353352832366127
+          },
+          "paired_prob_superiority": {
+            "p_superior": 0.0,
+            "ci_lo": 0.0,
+            "ci_hi": 0.0,
+            "n_comparable": 5,
+            "n_excluded": 25
+          }
+        },
+        "unpaired_robustness": {
+          "fisher": {
+            "odds_ratio": 0.0,
+            "odds_ratio_undefined_zero_cell": false,
+            "odds_ratio_haldane_anscombe": 0.07600596125186289,
+            "p_value": 0.052185548617305996,
+            "rate_1": 0.0,
+            "rate_1_ci95": [
+              0.0,
+              0.11570330822202778
+            ],
+            "rate_2": 0.16666666666666666,
+            "rate_2_ci95": [
+              0.056421696468071485,
+              0.34721169883414377
+            ]
+          },
+          "logrank": {
+            "chi2": 5.367178584883759,
+            "p_value": 0.020519141997681567,
+            "observed_1": 0.0,
+            "expected_1": 2.587746030769501,
+            "n_events": 5
+          },
+          "a12_time": 0.5833333333333334
+        },
+        "q_values": {
+          "mcnemar": 0.203125,
+          "sign": 0.203125,
+          "stratified_logrank": 0.203125
+        }
+      },
+      "ctx16": {
+        "vs": "edge_only",
+        "paired_primary": {
+          "mcnemar_exact": {
+            "test": "mcnemar_exact",
+            "n_pairs": 30,
+            "n_11": 0,
+            "n_10": 0,
+            "n_01": 5,
+            "n_00": 25,
+            "n_discordant": 5,
+            "p_value": 0.0625,
+            "odds_ratio_cond": 0.0,
+            "risk_difference": -0.16666666666666666
+          },
+          "win_loss_tie": {
+            "n_pairs": 30,
+            "wins_a": 0,
+            "wins_b": 5,
+            "ties": 0,
+            "indeterminate": 25,
+            "win_ratio": 0.0,
+            "win_fraction_a": 0.0
+          },
+          "sign_exact": {
+            "test": "sign_exact",
+            "n_effective": 5,
+            "p_value": 0.0625,
+            "win_prob": 0.0,
+            "win_prob_lo": 0.0,
+            "win_prob_hi": 0.5218237501049814
+          },
+          "paired_permutation": {
+            "test": "paired_permutation",
+            "n_used": 0,
+            "n_dropped": 30,
+            "mean_log_ratio": 0.0,
+            "median_ratio": 1.0,
+            "p_value": 1.0,
+            "exact": 0,
+            "n_perm": 0
+          },
+          "stratified_logrank": {
+            "test": "stratified_logrank",
+            "chi2": 5.0,
+            "p_value": 0.025347318677468325,
+            "score": -2.5,
+            "variance": 1.25,
+            "observed_a": 0.0,
+            "expected_a": 2.5,
+            "n_strata": 30,
+            "n_informative_strata": 5,
+            "hazard_ratio_approx": 0.1353352832366127
+          },
+          "paired_prob_superiority": {
+            "p_superior": 0.0,
+            "ci_lo": 0.0,
+            "ci_hi": 0.0,
+            "n_comparable": 5,
+            "n_excluded": 25
+          }
+        },
+        "unpaired_robustness": {
+          "fisher": {
+            "odds_ratio": 0.0,
+            "odds_ratio_undefined_zero_cell": false,
+            "odds_ratio_haldane_anscombe": 0.07600596125186289,
+            "p_value": 0.052185548617305996,
+            "rate_1": 0.0,
+            "rate_1_ci95": [
+              0.0,
+              0.11570330822202778
+            ],
+            "rate_2": 0.16666666666666666,
+            "rate_2_ci95": [
+              0.056421696468071485,
+              0.34721169883414377
+            ]
+          },
+          "logrank": {
+            "chi2": 5.367178584883759,
+            "p_value": 0.020519141997681567,
+            "observed_1": 0.0,
+            "expected_1": 2.587746030769501,
+            "n_events": 5
+          },
+          "a12_time": 0.5833333333333334
+        },
+        "q_values": {
+          "mcnemar": 0.203125,
+          "sign": 0.203125,
+          "stratified_logrank": 0.203125
+        }
+      },
+      "full_3d": {
+        "vs": "edge_only",
+        "paired_primary": {
+          "mcnemar_exact": {
+            "test": "mcnemar_exact",
+            "n_pairs": 30,
+            "n_11": 0,
+            "n_10": 0,
+            "n_01": 5,
+            "n_00": 25,
+            "n_discordant": 5,
+            "p_value": 0.0625,
+            "odds_ratio_cond": 0.0,
+            "risk_difference": -0.16666666666666666
+          },
+          "win_loss_tie": {
+            "n_pairs": 30,
+            "wins_a": 0,
+            "wins_b": 5,
+            "ties": 0,
+            "indeterminate": 25,
+            "win_ratio": 0.0,
+            "win_fraction_a": 0.0
+          },
+          "sign_exact": {
+            "test": "sign_exact",
+            "n_effective": 5,
+            "p_value": 0.0625,
+            "win_prob": 0.0,
+            "win_prob_lo": 0.0,
+            "win_prob_hi": 0.5218237501049814
+          },
+          "paired_permutation": {
+            "test": "paired_permutation",
+            "n_used": 0,
+            "n_dropped": 30,
+            "mean_log_ratio": 0.0,
+            "median_ratio": 1.0,
+            "p_value": 1.0,
+            "exact": 0,
+            "n_perm": 0
+          },
+          "stratified_logrank": {
+            "test": "stratified_logrank",
+            "chi2": 5.0,
+            "p_value": 0.025347318677468325,
+            "score": -2.5,
+            "variance": 1.25,
+            "observed_a": 0.0,
+            "expected_a": 2.5,
+            "n_strata": 30,
+            "n_informative_strata": 5,
+            "hazard_ratio_approx": 0.1353352832366127
+          },
+          "paired_prob_superiority": {
+            "p_superior": 0.0,
+            "ci_lo": 0.0,
+            "ci_hi": 0.0,
+            "n_comparable": 5,
+            "n_excluded": 25
+          }
+        },
+        "unpaired_robustness": {
+          "fisher": {
+            "odds_ratio": 0.0,
+            "odds_ratio_undefined_zero_cell": false,
+            "odds_ratio_haldane_anscombe": 0.07600596125186289,
+            "p_value": 0.052185548617305996,
+            "rate_1": 0.0,
+            "rate_1_ci95": [
+              0.0,
+              0.11570330822202778
+            ],
+            "rate_2": 0.16666666666666666,
+            "rate_2_ci95": [
+              0.056421696468071485,
+              0.34721169883414377
+            ]
+          },
+          "logrank": {
+            "chi2": 5.367178584883759,
+            "p_value": 0.020519141997681567,
+            "observed_1": 0.0,
+            "expected_1": 2.587746030769501,
+            "n_events": 5
+          },
+          "a12_time": 0.5833333333333334
+        },
+        "q_values": {
+          "mcnemar": 0.203125,
+          "sign": 0.203125,
+          "stratified_logrank": 0.203125
+        }
+      }
+    },
+    "multiple_testing_correction": {
+      "method": "Benjamini-Hochberg FDR",
+      "family": "all paired contrasts against the edge-coverage control on T4",
+      "n_tests": 39,
+      "alpha": 0.05
+    },
+    "internal_consistency": {
+      "ngram2_equals_edge_only_per_block": true,
+      "n_blocks_compared": 30
+    },
+    "wall_seconds": 1500.2278787709947,
+    "raw_trials_path": "data/t4_order_sweep_trials.json"
+  },
+  "order_sweep_roundrobin": {
+    "target": "T4_trigram",
+    "schedule": "round_robin",
+    "budget_execs": 400000,
+    "n_trials_per_cell": 30,
+    "configs": [
+      "blind_random",
+      "edge_only",
+      "ngram2",
+      "ngram3",
+      "ngram4",
+      "ngram6",
+      "ngram8",
+      "ctx2",
+      "ctx3",
+      "ctx4",
+      "ctx6",
+      "ctx8",
+      "ctx16",
+      "full_3d"
+    ],
+    "per_config": {
+      "blind_random": {
+        "order": 0,
+        "n_trials": 30,
+        "n_success": 0,
+        "success_rate": 0.0,
+        "success_ci95": [
+          0.0,
+          0.11570330822202778
+        ],
+        "median_execs_to_bug": null,
+        "iqr_execs_to_bug": null,
+        "median_max_milestone": 3.0,
+        "median_corpus": 1.0,
+        "median_elements": 1090.0,
+        "median_exec_per_s": 17912.029621788526
+      },
+      "edge_only": {
+        "order": 2,
+        "n_trials": 30,
+        "n_success": 15,
+        "success_rate": 0.5,
+        "success_ci95": [
+          0.31297028586802744,
+          0.6870297141319726
+        ],
+        "median_execs_to_bug": 213055.0,
+        "iqr_execs_to_bug": [
+          71110.5,
+          266385.0
+        ],
+        "median_max_milestone": 4.5,
+        "median_corpus": 2170.0,
+        "median_elements": 1091.0,
+        "median_exec_per_s": 18501.206351298897
+      },
+      "ngram2": {
+        "order": 2,
+        "n_trials": 30,
+        "n_success": 15,
+        "success_rate": 0.5,
+        "success_ci95": [
+          0.31297028586802744,
+          0.6870297141319726
+        ],
+        "median_execs_to_bug": 213055.0,
+        "iqr_execs_to_bug": [
+          71110.5,
+          266385.0
+        ],
+        "median_max_milestone": 4.5,
+        "median_corpus": 2170.0,
+        "median_elements": 1091.0,
+        "median_exec_per_s": 15786.565636560681
+      },
+      "ngram3": {
+        "order": 3,
+        "n_trials": 30,
+        "n_success": 26,
+        "success_rate": 0.8666666666666667,
+        "success_ci95": [
+          0.6927816497238732,
+          0.9624465036616366
+        ],
+        "median_execs_to_bug": 177619.5,
+        "iqr_execs_to_bug": [
+          141077.0,
+          287178.5
+        ],
+        "median_max_milestone": 5.0,
+        "median_corpus": 18863.5,
+        "median_elements": 34870.0,
+        "median_exec_per_s": 14895.989171463458
+      },
+      "ngram4": {
+        "order": 4,
+        "n_trials": 30,
+        "n_success": 8,
+        "success_rate": 0.26666666666666666,
+        "success_ci95": [
+          0.1227948098723548,
+          0.45889365139475125
+        ],
+        "median_execs_to_bug": 230549.0,
+        "iqr_execs_to_bug": [
+          101962.0,
+          331628.0
+        ],
+        "median_max_milestone": 3.0,
+        "median_corpus": 41533.5,
+        "median_elements": 442713.0,
+        "median_exec_per_s": 14330.055833647359
+      },
+      "ngram6": {
+        "order": 6,
+        "n_trials": 30,
+        "n_success": 5,
+        "success_rate": 0.16666666666666666,
+        "success_ci95": [
+          0.056421696468071485,
+          0.34721169883414377
+        ],
+        "median_execs_to_bug": 188411.0,
+        "iqr_execs_to_bug": [
+          57426.0,
+          197149.0
+        ],
+        "median_max_milestone": 3.0,
+        "median_corpus": 36648.5,
+        "median_elements": 1087400.0,
+        "median_exec_per_s": 13601.459463376672
+      },
+      "ngram8": {
+        "order": 8,
+        "n_trials": 30,
+        "n_success": 2,
+        "success_rate": 0.06666666666666667,
+        "success_ci95": [
+          0.008178134460656307,
+          0.22073540152296187
+        ],
+        "median_execs_to_bug": 150385.5,
+        "iqr_execs_to_bug": [
+          98117.75,
+          202653.25
+        ],
+        "median_max_milestone": 3.0,
+        "median_corpus": 38221.0,
+        "median_elements": 1221505.5,
+        "median_exec_per_s": 13352.478857550926
+      },
+      "ctx2": {
+        "order": 2,
+        "n_trials": 30,
+        "n_success": 10,
+        "success_rate": 0.3333333333333333,
+        "success_ci95": [
+          0.17287422152603915,
+          0.5281200447898806
+        ],
+        "median_execs_to_bug": 168582.0,
+        "iqr_execs_to_bug": [
+          69774.75,
+          213236.0
+        ],
+        "median_max_milestone": 3.5,
+        "median_corpus": 2689.5,
+        "median_elements": 3172.0,
+        "median_exec_per_s": 8605.265488745636
+      },
+      "ctx3": {
+        "order": 3,
+        "n_trials": 30,
+        "n_success": 16,
+        "success_rate": 0.5333333333333333,
+        "success_ci95": [
+          0.3432552381607341,
+          0.7165819208164629
+        ],
+        "median_execs_to_bug": 234100.5,
+        "iqr_execs_to_bug": [
+          161264.25,
+          318229.5
+        ],
+        "median_max_milestone": 5.0,
+        "median_corpus": 37854.0,
+        "median_elements": 67043.0,
+        "median_exec_per_s": 8070.041536168468
+      },
+      "ctx4": {
+        "order": 4,
+        "n_trials": 30,
+        "n_success": 3,
+        "success_rate": 0.1,
+        "success_ci95": [
+          0.02111713702972257,
+          0.2652884504742081
+        ],
+        "median_execs_to_bug": 93358.0,
+        "iqr_execs_to_bug": [
+          52760.5,
+          155382.0
+        ],
+        "median_max_milestone": 3.0,
+        "median_corpus": 40607.5,
+        "median_elements": 541481.5,
+        "median_exec_per_s": 7731.655853114753
+      },
+      "ctx6": {
+        "order": 6,
+        "n_trials": 30,
+        "n_success": 2,
+        "success_rate": 0.06666666666666667,
+        "success_ci95": [
+          0.008178134460656307,
+          0.22073540152296187
+        ],
+        "median_execs_to_bug": 136654.0,
+        "iqr_execs_to_bug": [
+          74932.0,
+          198376.0
+        ],
+        "median_max_milestone": 3.0,
+        "median_corpus": 45235.0,
+        "median_elements": 908186.5,
+        "median_exec_per_s": 7731.7316523969075
+      },
+      "ctx8": {
+        "order": 8,
+        "n_trials": 30,
+        "n_success": 4,
+        "success_rate": 0.13333333333333333,
+        "success_ci95": [
+          0.037553496338363315,
+          0.30721835027612676
+        ],
+        "median_execs_to_bug": 166979.5,
+        "iqr_execs_to_bug": [
+          124799.5,
+          212522.75
+        ],
+        "median_max_milestone": 3.0,
+        "median_corpus": 45194.5,
+        "median_elements": 908299.0,
+        "median_exec_per_s": 7622.961902462875
+      },
+      "ctx16": {
+        "order": 16,
+        "n_trials": 30,
+        "n_success": 4,
+        "success_rate": 0.13333333333333333,
+        "success_ci95": [
+          0.037553496338363315,
+          0.30721835027612676
+        ],
+        "median_execs_to_bug": 166979.5,
+        "iqr_execs_to_bug": [
+          124799.5,
+          212522.75
+        ],
+        "median_max_milestone": 3.0,
+        "median_corpus": 45194.5,
+        "median_elements": 908299.0,
+        "median_exec_per_s": 7434.746286141688
+      },
+      "full_3d": {
+        "order": 16,
+        "n_trials": 30,
+        "n_success": 4,
+        "success_rate": 0.13333333333333333,
+        "success_ci95": [
+          0.037553496338363315,
+          0.30721835027612676
+        ],
+        "median_execs_to_bug": 166979.5,
+        "iqr_execs_to_bug": [
+          124799.5,
+          212522.75
+        ],
+        "median_max_milestone": 3.0,
+        "median_corpus": 45194.5,
+        "median_elements": 908299.0,
+        "median_exec_per_s": 6950.2404523292225
+      }
+    },
+    "contrasts_vs_edge_only": {
+      "blind_random": {
+        "vs": "edge_only",
+        "paired_primary": {
+          "mcnemar_exact": {
+            "test": "mcnemar_exact",
+            "n_pairs": 30,
+            "n_11": 0,
+            "n_10": 0,
+            "n_01": 15,
+            "n_00": 15,
+            "n_discordant": 15,
+            "p_value": 6.103515625e-05,
+            "odds_ratio_cond": 0.0,
+            "risk_difference": -0.5
+          },
+          "win_loss_tie": {
+            "n_pairs": 30,
+            "wins_a": 0,
+            "wins_b": 15,
+            "ties": 0,
+            "indeterminate": 15,
+            "win_ratio": 0.0,
+            "win_fraction_a": 0.0
+          },
+          "sign_exact": {
+            "test": "sign_exact",
+            "n_effective": 15,
+            "p_value": 6.103515625e-05,
+            "win_prob": 0.0,
+            "win_prob_lo": 0.0,
+            "win_prob_hi": 0.218019360910534
+          },
+          "paired_permutation": {
+            "test": "paired_permutation",
+            "n_used": 0,
+            "n_dropped": 30,
+            "mean_log_ratio": 0.0,
+            "median_ratio": 1.0,
+            "p_value": 1.0,
+            "exact": 0,
+            "n_perm": 0
+          },
+          "stratified_logrank": {
+            "test": "stratified_logrank",
+            "chi2": 15.0,
+            "p_value": 0.00010751117672950066,
+            "score": -7.5,
+            "variance": 3.75,
+            "observed_a": 0.0,
+            "expected_a": 7.5,
+            "n_strata": 30,
+            "n_informative_strata": 15,
+            "hazard_ratio_approx": 0.1353352832366127
+          },
+          "paired_prob_superiority": {
+            "p_superior": 0.0,
+            "ci_lo": 0.0,
+            "ci_hi": 0.0,
+            "n_comparable": 15,
+            "n_excluded": 15
+          }
+        },
+        "unpaired_robustness": {
+          "fisher": {
+            "odds_ratio": 0.0,
+            "odds_ratio_undefined_zero_cell": false,
+            "odds_ratio_haldane_anscombe": 0.01639344262295082,
+            "p_value": 5.832133695832843e-06,
+            "rate_1": 0.0,
+            "rate_1_ci95": [
+              0.0,
+              0.11570330822202778
+            ],
+            "rate_2": 0.5,
+            "rate_2_ci95": [
+              0.31297028586802744,
+              0.6870297141319726
+            ]
+          },
+          "logrank": {
+            "chi2": 20.050454062795453,
+            "p_value": 7.54256215387576e-06,
+            "observed_1": 0.0,
+            "expected_1": 8.54766892201247,
+            "n_events": 15
+          },
+          "a12_time": 0.75
+        },
+        "q_values": {
+          "mcnemar": 0.001190185546875,
+          "sign": 0.001190185546875,
+          "stratified_logrank": 0.0013976452974835086
+        }
+      },
+      "ngram2": {
+        "vs": "edge_only",
+        "paired_primary": {
+          "mcnemar_exact": {
+            "test": "mcnemar_exact",
+            "n_pairs": 30,
+            "n_11": 15,
+            "n_10": 0,
+            "n_01": 0,
+            "n_00": 15,
+            "n_discordant": 0,
+            "p_value": 1.0,
+            "odds_ratio_cond": 1.0,
+            "risk_difference": 0.0
+          },
+          "win_loss_tie": {
+            "n_pairs": 30,
+            "wins_a": 0,
+            "wins_b": 0,
+            "ties": 15,
+            "indeterminate": 15,
+            "win_ratio": 1.0,
+            "win_fraction_a": 0.5
+          },
+          "sign_exact": {
+            "test": "sign_exact",
+            "n_effective": 0,
+            "p_value": 1.0,
+            "win_prob": 0.5,
+            "win_prob_lo": 0.0,
+            "win_prob_hi": 1.0
+          },
+          "paired_permutation": {
+            "test": "paired_permutation",
+            "n_used": 15,
+            "n_dropped": 15,
+            "mean_log_ratio": 0.0,
+            "median_ratio": 1.0,
+            "p_value": 1.0,
+            "exact": 1,
+            "n_perm": 32768
+          },
+          "stratified_logrank": {
+            "test": "stratified_logrank",
+            "chi2": 0.0,
+            "p_value": 1.0,
+            "score": 0.0,
+            "variance": 0.0,
+            "n_strata": 30,
+            "n_informative_strata": 15,
+            "hazard_ratio_approx": 1.0
+          },
+          "paired_prob_superiority": {
+            "p_superior": 0.5,
+            "ci_lo": 0.5,
+            "ci_hi": 0.5,
+            "n_comparable": 15,
+            "n_excluded": 15
+          }
+        },
+        "unpaired_robustness": {
+          "fisher": {
+            "odds_ratio": 1.0,
+            "odds_ratio_undefined_zero_cell": false,
+            "odds_ratio_haldane_anscombe": 1.0,
+            "p_value": 1.0,
+            "rate_1": 0.5,
+            "rate_1_ci95": [
+              0.31297028586802744,
+              0.6870297141319726
+            ],
+            "rate_2": 0.5,
+            "rate_2_ci95": [
+              0.31297028586802744,
+              0.6870297141319726
+            ]
+          },
+          "logrank": {
+            "chi2": 0.0,
+            "p_value": 1.0,
+            "observed_1": 15.0,
+            "expected_1": 15.0,
+            "n_events": 30
+          },
+          "a12_time": 0.5
+        },
+        "q_values": {
+          "mcnemar": 1.0,
+          "sign": 1.0,
+          "stratified_logrank": 1.0
+        }
+      },
+      "ngram3": {
+        "vs": "edge_only",
+        "paired_primary": {
+          "mcnemar_exact": {
+            "test": "mcnemar_exact",
+            "n_pairs": 30,
+            "n_11": 14,
+            "n_10": 12,
+            "n_01": 1,
+            "n_00": 3,
+            "n_discordant": 13,
+            "p_value": 0.00341796875,
+            "odds_ratio_cond": 12.0,
+            "risk_difference": 0.36666666666666664
+          },
+          "win_loss_tie": {
+            "n_pairs": 30,
+            "wins_a": 17,
+            "wins_b": 10,
+            "ties": 0,
+            "indeterminate": 3,
+            "win_ratio": 1.7,
+            "win_fraction_a": 0.6296296296296297
+          },
+          "sign_exact": {
+            "test": "sign_exact",
+            "n_effective": 27,
+            "p_value": 0.24778856337070465,
+            "win_prob": 0.6296296296296297,
+            "win_prob_lo": 0.42367957250429583,
+            "win_prob_hi": 0.8059928412848649
+          },
+          "paired_permutation": {
+            "test": "paired_permutation",
+            "n_used": 14,
+            "n_dropped": 16,
+            "mean_log_ratio": 0.6499290452466757,
+            "median_ratio": 1.418606843706069,
+            "p_value": 0.131103515625,
+            "exact": 1,
+            "n_perm": 16384
+          },
+          "stratified_logrank": {
+            "test": "stratified_logrank",
+            "chi2": 1.8148148148148149,
+            "p_value": 0.17793172526825074,
+            "score": 3.5,
+            "variance": 6.75,
+            "observed_a": 17.0,
+            "expected_a": 13.5,
+            "n_strata": 30,
+            "n_informative_strata": 27,
+            "hazard_ratio_approx": 1.6795376018198551
+          },
+          "paired_prob_superiority": {
+            "p_superior": 0.6296296296296297,
+            "ci_lo": 0.4444444444444444,
+            "ci_hi": 0.8148148148148148,
+            "n_comparable": 27,
+            "n_excluded": 3
+          }
+        },
+        "unpaired_robustness": {
+          "fisher": {
+            "odds_ratio": 6.5,
+            "odds_ratio_undefined_zero_cell": false,
+            "odds_ratio_haldane_anscombe": 5.888888888888889,
+            "p_value": 0.004788880469513642,
+            "rate_1": 0.8666666666666667,
+            "rate_1_ci95": [
+              0.6927816497238732,
+              0.9624465036616366
+            ],
+            "rate_2": 0.5,
+            "rate_2_ci95": [
+              0.31297028586802744,
+              0.6870297141319726
+            ]
+          },
+          "logrank": {
+            "chi2": 7.400722426031374,
+            "p_value": 0.006519768866398493,
+            "observed_1": 26.0,
+            "expected_1": 17.479680524095617,
+            "n_events": 41
+          },
+          "a12_time": 0.3422222222222222
+        },
+        "q_values": {
+          "mcnemar": 0.008331298828125,
+          "sign": 0.32212513238191604,
+          "stratified_logrank": 0.2392874926021303
+        }
+      },
+      "ngram4": {
+        "vs": "edge_only",
+        "paired_primary": {
+          "mcnemar_exact": {
+            "test": "mcnemar_exact",
+            "n_pairs": 30,
+            "n_11": 3,
+            "n_10": 5,
+            "n_01": 12,
+            "n_00": 10,
+            "n_discordant": 17,
+            "p_value": 0.143463134765625,
+            "odds_ratio_cond": 0.4166666666666667,
+            "risk_difference": -0.23333333333333334
+          },
+          "win_loss_tie": {
+            "n_pairs": 30,
+            "wins_a": 6,
+            "wins_b": 14,
+            "ties": 0,
+            "indeterminate": 10,
+            "win_ratio": 0.42857142857142855,
+            "win_fraction_a": 0.3
+          },
+          "sign_exact": {
+            "test": "sign_exact",
+            "n_effective": 20,
+            "p_value": 0.11531829833984375,
+            "win_prob": 0.3,
+            "win_prob_lo": 0.11893159040572769,
+            "win_prob_hi": 0.5427891822762891
+          },
+          "paired_permutation": {
+            "test": "paired_permutation",
+            "n_used": 3,
+            "n_dropped": 27,
+            "mean_log_ratio": 1.2441302714011904,
+            "median_ratio": 5.564597701149422,
+            "p_value": 0.5,
+            "exact": 1,
+            "n_perm": 8
+          },
+          "stratified_logrank": {
+            "test": "stratified_logrank",
+            "chi2": 3.2,
+            "p_value": 0.07363827012030258,
+            "score": -4.0,
+            "variance": 5.0,
+            "observed_a": 6.0,
+            "expected_a": 10.0,
+            "n_strata": 30,
+            "n_informative_strata": 20,
+            "hazard_ratio_approx": 0.44932896411722156
+          },
+          "paired_prob_superiority": {
+            "p_superior": 0.3,
+            "ci_lo": 0.1,
+            "ci_hi": 0.5,
+            "n_comparable": 20,
+            "n_excluded": 10
+          }
+        },
+        "unpaired_robustness": {
+          "fisher": {
+            "odds_ratio": 0.36363636363636365,
+            "odds_ratio_undefined_zero_cell": false,
+            "odds_ratio_haldane_anscombe": 0.37777777777777777,
+            "p_value": 0.1102404124875744,
+            "rate_1": 0.26666666666666666,
+            "rate_1_ci95": [
+              0.1227948098723548,
+              0.45889365139475125
+            ],
+            "rate_2": 0.5,
+            "rate_2_ci95": [
+              0.31297028586802744,
+              0.6870297141319726
+            ]
+          },
+          "logrank": {
+            "chi2": 3.9343562438885975,
+            "p_value": 0.04730924442708216,
+            "observed_1": 8.0,
+            "expected_1": 12.717555048784403,
+            "n_events": 23
+          },
+          "a12_time": 0.6344444444444444
+        },
+        "q_values": {
+          "mcnemar": 0.19982365199497767,
+          "sign": 0.1665708753797743,
+          "stratified_logrank": 0.11045740518045387
+        }
+      },
+      "ngram6": {
+        "vs": "edge_only",
+        "paired_primary": {
+          "mcnemar_exact": {
+            "test": "mcnemar_exact",
+            "n_pairs": 30,
+            "n_11": 2,
+            "n_10": 3,
+            "n_01": 13,
+            "n_00": 12,
+            "n_discordant": 16,
+            "p_value": 0.021270751953125,
+            "odds_ratio_cond": 0.23076923076923078,
+            "risk_difference": -0.3333333333333333
+          },
+          "win_loss_tie": {
+            "n_pairs": 30,
+            "wins_a": 4,
+            "wins_b": 14,
+            "ties": 0,
+            "indeterminate": 12,
+            "win_ratio": 0.2857142857142857,
+            "win_fraction_a": 0.2222222222222222
+          },
+          "sign_exact": {
+            "test": "sign_exact",
+            "n_effective": 18,
+            "p_value": 0.0308837890625,
+            "win_prob": 0.2222222222222222,
+            "win_prob_lo": 0.0640920477176665,
+            "win_prob_hi": 0.4763727657364801
+          },
+          "paired_permutation": {
+            "test": "paired_permutation",
+            "n_used": 2,
+            "n_dropped": 28,
+            "mean_log_ratio": 0.47252185158633786,
+            "median_ratio": 1.6040342331610955,
+            "p_value": 1.0,
+            "exact": 1,
+            "n_perm": 4
+          },
+          "stratified_logrank": {
+            "test": "stratified_logrank",
+            "chi2": 5.555555555555555,
+            "p_value": 0.01842212545409897,
+            "score": -5.0,
+            "variance": 4.5,
+            "observed_a": 4.0,
+            "expected_a": 9.0,
+            "n_strata": 30,
+            "n_informative_strata": 18,
+            "hazard_ratio_approx": 0.32919298780790557
+          },
+          "paired_prob_superiority": {
+            "p_superior": 0.2222222222222222,
+            "ci_lo": 0.05555555555555555,
+            "ci_hi": 0.4444444444444444,
+            "n_comparable": 18,
+            "n_excluded": 12
+          }
+        },
+        "unpaired_robustness": {
+          "fisher": {
+            "odds_ratio": 0.2,
+            "odds_ratio_undefined_zero_cell": false,
+            "odds_ratio_haldane_anscombe": 0.21568627450980393,
+            "p_value": 0.01269894629179263,
+            "rate_1": 0.16666666666666666,
+            "rate_1_ci95": [
+              0.056421696468071485,
+              0.34721169883414377
+            ],
+            "rate_2": 0.5,
+            "rate_2_ci95": [
+              0.31297028586802744,
+              0.6870297141319726
+            ]
+          },
+          "logrank": {
+            "chi2": 6.873329423366056,
+            "p_value": 0.008749150228750897,
+            "observed_1": 5.0,
+            "expected_1": 10.832356925788462,
+            "n_events": 20
+          },
+          "a12_time": 0.6572222222222223
+        },
+        "q_values": {
+          "mcnemar": 0.034564971923828125,
+          "sign": 0.0481787109375,
+          "stratified_logrank": 0.032657404214084536
+        }
+      },
+      "ngram8": {
+        "vs": "edge_only",
+        "paired_primary": {
+          "mcnemar_exact": {
+            "test": "mcnemar_exact",
+            "n_pairs": 30,
+            "n_11": 0,
+            "n_10": 2,
+            "n_01": 15,
+            "n_00": 13,
+            "n_discordant": 17,
+            "p_value": 0.002349853515625,
+            "odds_ratio_cond": 0.13333333333333333,
+            "risk_difference": -0.43333333333333335
+          },
+          "win_loss_tie": {
+            "n_pairs": 30,
+            "wins_a": 2,
+            "wins_b": 15,
+            "ties": 0,
+            "indeterminate": 13,
+            "win_ratio": 0.13333333333333333,
+            "win_fraction_a": 0.11764705882352941
+          },
+          "sign_exact": {
+            "test": "sign_exact",
+            "n_effective": 17,
+            "p_value": 0.002349853515625,
+            "win_prob": 0.11764705882352941,
+            "win_prob_lo": 0.014579316840302493,
+            "win_prob_hi": 0.36440916210125024
+          },
+          "paired_permutation": {
+            "test": "paired_permutation",
+            "n_used": 0,
+            "n_dropped": 30,
+            "mean_log_ratio": 0.0,
+            "median_ratio": 1.0,
+            "p_value": 1.0,
+            "exact": 0,
+            "n_perm": 0
+          },
+          "stratified_logrank": {
+            "test": "stratified_logrank",
+            "chi2": 9.941176470588236,
+            "p_value": 0.0016162222150599877,
+            "score": -6.5,
+            "variance": 4.25,
+            "observed_a": 2.0,
+            "expected_a": 8.5,
+            "n_strata": 30,
+            "n_informative_strata": 17,
+            "hazard_ratio_approx": 0.21666307870822266
+          },
+          "paired_prob_superiority": {
+            "p_superior": 0.11764705882352941,
+            "ci_lo": 0.0,
+            "ci_hi": 0.29411764705882354,
+            "n_comparable": 17,
+            "n_excluded": 13
+          }
+        },
+        "unpaired_robustness": {
+          "fisher": {
+            "odds_ratio": 0.07142857142857142,
+            "odds_ratio_undefined_zero_cell": false,
+            "odds_ratio_haldane_anscombe": 0.08771929824561403,
+            "p_value": 0.0003716659746162567,
+            "rate_1": 0.06666666666666667,
+            "rate_1_ci95": [
+              0.008178134460656307,
+              0.22073540152296187
+            ],
+            "rate_2": 0.5,
+            "rate_2_ci95": [
+              0.31297028586802744,
+              0.6870297141319726
+            ]
+          },
+          "logrank": {
+            "chi2": 13.61530155351328,
+            "p_value": 0.00022434944661622972,
+            "observed_1": 2.0,
+            "expected_1": 9.525884481853621,
+            "n_events": 17
+          },
+          "a12_time": 0.7144444444444443
+        },
+        "q_values": {
+          "mcnemar": 0.0065460205078125,
+          "sign": 0.0065460205078125,
+          "stratified_logrank": 0.0065460205078125
+        }
+      },
+      "ctx2": {
+        "vs": "edge_only",
+        "paired_primary": {
+          "mcnemar_exact": {
+            "test": "mcnemar_exact",
+            "n_pairs": 30,
+            "n_11": 4,
+            "n_10": 6,
+            "n_01": 11,
+            "n_00": 9,
+            "n_discordant": 17,
+            "p_value": 0.332305908203125,
+            "odds_ratio_cond": 0.5454545454545454,
+            "risk_difference": -0.16666666666666666
+          },
+          "win_loss_tie": {
+            "n_pairs": 30,
+            "wins_a": 9,
+            "wins_b": 12,
+            "ties": 0,
+            "indeterminate": 9,
+            "win_ratio": 0.75,
+            "win_fraction_a": 0.42857142857142855
+          },
+          "sign_exact": {
+            "test": "sign_exact",
+            "n_effective": 21,
+            "p_value": 0.6636238098144531,
+            "win_prob": 0.42857142857142855,
+            "win_prob_lo": 0.2181968568851302,
+            "win_prob_hi": 0.6597936907197254
+          },
+          "paired_permutation": {
+            "test": "paired_permutation",
+            "n_used": 4,
+            "n_dropped": 26,
+            "mean_log_ratio": -0.9698040325500681,
+            "median_ratio": 0.8344741029124776,
+            "p_value": 0.625,
+            "exact": 1,
+            "n_perm": 16
+          },
+          "stratified_logrank": {
+            "test": "stratified_logrank",
+            "chi2": 0.42857142857142855,
+            "p_value": 0.5126907602619235,
+            "score": -1.5,
+            "variance": 5.25,
+            "observed_a": 9.0,
+            "expected_a": 10.5,
+            "n_strata": 30,
+            "n_informative_strata": 21,
+            "hazard_ratio_approx": 0.751477293075286
+          },
+          "paired_prob_superiority": {
+            "p_superior": 0.42857142857142855,
+            "ci_lo": 0.23809523809523808,
+            "ci_hi": 0.6190476190476191,
+            "n_comparable": 21,
+            "n_excluded": 9
+          }
+        },
+        "unpaired_robustness": {
+          "fisher": {
+            "odds_ratio": 0.5,
+            "odds_ratio_undefined_zero_cell": false,
+            "odds_ratio_haldane_anscombe": 0.5121951219512195,
+            "p_value": 0.29491247843871987,
+            "rate_1": 0.3333333333333333,
+            "rate_1_ci95": [
+              0.17287422152603915,
+              0.5281200447898806
+            ],
+            "rate_2": 0.5,
+            "rate_2_ci95": [
+              0.31297028586802744,
+              0.6870297141319726
+            ]
+          },
+          "logrank": {
+            "chi2": 1.5300387582549388,
+            "p_value": 0.21610662791124952,
+            "observed_1": 10.0,
+            "expected_1": 13.084052560014047,
+            "n_events": 25
+          },
+          "a12_time": 0.5766666666666665
+        },
+        "q_values": {
+          "mcnemar": 0.41806227161038306,
+          "sign": 0.7842826843261719,
+          "stratified_logrank": 0.6248418640692193
+        }
+      },
+      "ctx3": {
+        "vs": "edge_only",
+        "paired_primary": {
+          "mcnemar_exact": {
+            "test": "mcnemar_exact",
+            "n_pairs": 30,
+            "n_11": 8,
+            "n_10": 8,
+            "n_01": 7,
+            "n_00": 7,
+            "n_discordant": 15,
+            "p_value": 1.0,
+            "odds_ratio_cond": 1.1428571428571428,
+            "risk_difference": 0.03333333333333333
+          },
+          "win_loss_tie": {
+            "n_pairs": 30,
+            "wins_a": 11,
+            "wins_b": 12,
+            "ties": 0,
+            "indeterminate": 7,
+            "win_ratio": 0.9166666666666666,
+            "win_fraction_a": 0.4782608695652174
+          },
+          "sign_exact": {
+            "test": "sign_exact",
+            "n_effective": 23,
+            "p_value": 1.0,
+            "win_prob": 0.4782608695652174,
+            "win_prob_lo": 0.26819618617555346,
+            "win_prob_hi": 0.694121998508626
+          },
+          "paired_permutation": {
+            "test": "paired_permutation",
+            "n_used": 8,
+            "n_dropped": 22,
+            "mean_log_ratio": 0.28139567693570244,
+            "median_ratio": 1.51100981973643,
+            "p_value": 0.609375,
+            "exact": 1,
+            "n_perm": 256
+          },
+          "stratified_logrank": {
+            "test": "stratified_logrank",
+            "chi2": 0.043478260869565216,
+            "p_value": 0.8348273291852392,
+            "score": -0.5,
+            "variance": 5.75,
+            "observed_a": 11.0,
+            "expected_a": 11.5,
+            "n_strata": 30,
+            "n_informative_strata": 23,
+            "hazard_ratio_approx": 0.9167169520254864
+          },
+          "paired_prob_superiority": {
+            "p_superior": 0.4782608695652174,
+            "ci_lo": 0.2608695652173913,
+            "ci_hi": 0.6956521739130435,
+            "n_comparable": 23,
+            "n_excluded": 7
+          }
+        },
+        "unpaired_robustness": {
+          "fisher": {
+            "odds_ratio": 1.1428571428571428,
+            "odds_ratio_undefined_zero_cell": false,
+            "odds_ratio_haldane_anscombe": 1.1379310344827587,
+            "p_value": 1.0,
+            "rate_1": 0.5333333333333333,
+            "rate_1_ci95": [
+              0.3432552381607341,
+              0.7165819208164629
+            ],
+            "rate_2": 0.5,
+            "rate_2_ci95": [
+              0.31297028586802744,
+              0.6870297141319726
+            ]
+          },
+          "logrank": {
+            "chi2": 0.0026569877263141017,
+            "p_value": 0.9588904663172604,
+            "observed_1": 16.0,
+            "expected_1": 16.143316262783987,
+            "n_events": 31
+          },
+          "a12_time": 0.5222222222222223
+        },
+        "q_values": {
+          "mcnemar": 1.0,
+          "sign": 1.0,
+          "stratified_logrank": 0.9575960540654215
+        }
+      },
+      "ctx4": {
+        "vs": "edge_only",
+        "paired_primary": {
+          "mcnemar_exact": {
+            "test": "mcnemar_exact",
+            "n_pairs": 30,
+            "n_11": 2,
+            "n_10": 1,
+            "n_01": 13,
+            "n_00": 14,
+            "n_discordant": 14,
+            "p_value": 0.0018310546875,
+            "odds_ratio_cond": 0.07692307692307693,
+            "risk_difference": -0.4
+          },
+          "win_loss_tie": {
+            "n_pairs": 30,
+            "wins_a": 3,
+            "wins_b": 13,
+            "ties": 0,
+            "indeterminate": 14,
+            "win_ratio": 0.23076923076923078,
+            "win_fraction_a": 0.1875
+          },
+          "sign_exact": {
+            "test": "sign_exact",
+            "n_effective": 16,
+            "p_value": 0.021270751953125,
+            "win_prob": 0.1875,
+            "win_prob_lo": 0.040473733905945886,
+            "win_prob_hi": 0.4564565462316117
+          },
+          "paired_permutation": {
+            "test": "paired_permutation",
+            "n_used": 2,
+            "n_dropped": 28,
+            "mean_log_ratio": -1.9432110783219443,
+            "median_ratio": 0.14324324521487247,
+            "p_value": 0.5,
+            "exact": 1,
+            "n_perm": 4
+          },
+          "stratified_logrank": {
+            "test": "stratified_logrank",
+            "chi2": 6.25,
+            "p_value": 0.01241933065155227,
+            "score": -5.0,
+            "variance": 4.0,
+            "observed_a": 3.0,
+            "expected_a": 8.0,
+            "n_strata": 30,
+            "n_informative_strata": 16,
+            "hazard_ratio_approx": 0.2865047968601901
+          },
+          "paired_prob_superiority": {
+            "p_superior": 0.1875,
+            "ci_lo": 0.0,
+            "ci_hi": 0.375,
+            "n_comparable": 16,
+            "n_excluded": 14
+          }
+        },
+        "unpaired_robustness": {
+          "fisher": {
+            "odds_ratio": 0.1111111111111111,
+            "odds_ratio_undefined_zero_cell": false,
+            "odds_ratio_haldane_anscombe": 0.12727272727272726,
+            "p_value": 0.0015063632760577872,
+            "rate_1": 0.1,
+            "rate_1_ci95": [
+              0.02111713702972257,
+              0.2652884504742081
+            ],
+            "rate_2": 0.5,
+            "rate_2_ci95": [
+              0.31297028586802744,
+              0.6870297141319726
+            ]
+          },
+          "logrank": {
+            "chi2": 10.77513222328698,
+            "p_value": 0.001028728668633772,
+            "observed_1": 3.0,
+            "expected_1": 9.908926181059456,
+            "n_events": 18
+          },
+          "a12_time": 0.6916666666666667
+        },
+        "q_values": {
+          "mcnemar": 0.0065460205078125,
+          "sign": 0.034564971923828125,
+          "stratified_logrank": 0.023064471210025646
+        }
+      },
+      "ctx6": {
+        "vs": "edge_only",
+        "paired_primary": {
+          "mcnemar_exact": {
+            "test": "mcnemar_exact",
+            "n_pairs": 30,
+            "n_11": 1,
+            "n_10": 1,
+            "n_01": 14,
+            "n_00": 14,
+            "n_discordant": 15,
+            "p_value": 0.0009765625,
+            "odds_ratio_cond": 0.07142857142857142,
+            "risk_difference": -0.43333333333333335
+          },
+          "win_loss_tie": {
+            "n_pairs": 30,
+            "wins_a": 2,
+            "wins_b": 14,
+            "ties": 0,
+            "indeterminate": 14,
+            "win_ratio": 0.14285714285714285,
+            "win_fraction_a": 0.125
+          },
+          "sign_exact": {
+            "test": "sign_exact",
+            "n_effective": 16,
+            "p_value": 0.004180908203125,
+            "win_prob": 0.125,
+            "win_prob_lo": 0.015513603815413885,
+            "win_prob_hi": 0.38347623684926346
+          },
+          "paired_permutation": {
+            "test": "paired_permutation",
+            "n_used": 1,
+            "n_dropped": 29,
+            "mean_log_ratio": -1.6422326191307839,
+            "median_ratio": 0.19354744183320646,
+            "p_value": 1.0,
+            "exact": 1,
+            "n_perm": 2
+          },
+          "stratified_logrank": {
+            "test": "stratified_logrank",
+            "chi2": 9.0,
+            "p_value": 0.0026997960632601883,
+            "score": -6.0,
+            "variance": 4.0,
+            "observed_a": 2.0,
+            "expected_a": 8.0,
+            "n_strata": 30,
+            "n_informative_strata": 16,
+            "hazard_ratio_approx": 0.22313016014842982
+          },
+          "paired_prob_superiority": {
+            "p_superior": 0.125,
+            "ci_lo": 0.0,
+            "ci_hi": 0.3125,
+            "n_comparable": 16,
+            "n_excluded": 14
+          }
+        },
+        "unpaired_robustness": {
+          "fisher": {
+            "odds_ratio": 0.07142857142857142,
+            "odds_ratio_undefined_zero_cell": false,
+            "odds_ratio_haldane_anscombe": 0.08771929824561403,
+            "p_value": 0.0003716659746162567,
+            "rate_1": 0.06666666666666667,
+            "rate_1_ci95": [
+              0.008178134460656307,
+              0.22073540152296187
+            ],
+            "rate_2": 0.5,
+            "rate_2_ci95": [
+              0.31297028586802744,
+              0.6870297141319726
+            ]
+          },
+          "logrank": {
+            "chi2": 13.63799449457728,
+            "p_value": 0.0002216540665058689,
+            "observed_1": 2.0,
+            "expected_1": 9.529173955537834,
+            "n_events": 17
+          },
+          "a12_time": 0.7144444444444443
+        },
+        "q_values": {
+          "mcnemar": 0.0065460205078125,
+          "sign": 0.00959149528952206,
+          "stratified_logrank": 0.00701946976447649
+        }
+      },
+      "ctx8": {
+        "vs": "edge_only",
+        "paired_primary": {
+          "mcnemar_exact": {
+            "test": "mcnemar_exact",
+            "n_pairs": 30,
+            "n_11": 2,
+            "n_10": 2,
+            "n_01": 13,
+            "n_00": 13,
+            "n_discordant": 15,
+            "p_value": 0.00738525390625,
+            "odds_ratio_cond": 0.15384615384615385,
+            "risk_difference": -0.36666666666666664
+          },
+          "win_loss_tie": {
+            "n_pairs": 30,
+            "wins_a": 2,
+            "wins_b": 15,
+            "ties": 0,
+            "indeterminate": 13,
+            "win_ratio": 0.13333333333333333,
+            "win_fraction_a": 0.11764705882352941
+          },
+          "sign_exact": {
+            "test": "sign_exact",
+            "n_effective": 17,
+            "p_value": 0.002349853515625,
+            "win_prob": 0.11764705882352941,
+            "win_prob_lo": 0.014579316840302493,
+            "win_prob_hi": 0.36440916210125024
+          },
+          "paired_permutation": {
+            "test": "paired_permutation",
+            "n_used": 2,
+            "n_dropped": 28,
+            "mean_log_ratio": 1.8303512350295685,
+            "median_ratio": 6.236076602459549,
+            "p_value": 0.5,
+            "exact": 1,
+            "n_perm": 4
+          },
+          "stratified_logrank": {
+            "test": "stratified_logrank",
+            "chi2": 9.941176470588236,
+            "p_value": 0.0016162222150599877,
+            "score": -6.5,
+            "variance": 4.25,
+            "observed_a": 2.0,
+            "expected_a": 8.5,
+            "n_strata": 30,
+            "n_informative_strata": 17,
+            "hazard_ratio_approx": 0.21666307870822266
+          },
+          "paired_prob_superiority": {
+            "p_superior": 0.11764705882352941,
+            "ci_lo": 0.0,
+            "ci_hi": 0.29411764705882354,
+            "n_comparable": 17,
+            "n_excluded": 13
+          }
+        },
+        "unpaired_robustness": {
+          "fisher": {
+            "odds_ratio": 0.15384615384615385,
+            "odds_ratio_undefined_zero_cell": false,
+            "odds_ratio_haldane_anscombe": 0.16981132075471697,
+            "p_value": 0.004788880469513642,
+            "rate_1": 0.13333333333333333,
+            "rate_1_ci95": [
+              0.037553496338363315,
+              0.30721835027612676
+            ],
+            "rate_2": 0.5,
+            "rate_2_ci95": [
+              0.31297028586802744,
+              0.6870297141319726
+            ]
+          },
+          "logrank": {
+            "chi2": 9.011460778263105,
+            "p_value": 0.00268291903619654,
+            "observed_1": 4.0,
+            "expected_1": 10.493351311892175,
+            "n_events": 19
+          },
+          "a12_time": 0.681111111111111
+        },
+        "q_values": {
+          "mcnemar": 0.0144012451171875,
+          "sign": 0.0065460205078125,
+          "stratified_logrank": 0.0065460205078125
+        }
+      },
+      "ctx16": {
+        "vs": "edge_only",
+        "paired_primary": {
+          "mcnemar_exact": {
+            "test": "mcnemar_exact",
+            "n_pairs": 30,
+            "n_11": 2,
+            "n_10": 2,
+            "n_01": 13,
+            "n_00": 13,
+            "n_discordant": 15,
+            "p_value": 0.00738525390625,
+            "odds_ratio_cond": 0.15384615384615385,
+            "risk_difference": -0.36666666666666664
+          },
+          "win_loss_tie": {
+            "n_pairs": 30,
+            "wins_a": 2,
+            "wins_b": 15,
+            "ties": 0,
+            "indeterminate": 13,
+            "win_ratio": 0.13333333333333333,
+            "win_fraction_a": 0.11764705882352941
+          },
+          "sign_exact": {
+            "test": "sign_exact",
+            "n_effective": 17,
+            "p_value": 0.002349853515625,
+            "win_prob": 0.11764705882352941,
+            "win_prob_lo": 0.014579316840302493,
+            "win_prob_hi": 0.36440916210125024
+          },
+          "paired_permutation": {
+            "test": "paired_permutation",
+            "n_used": 2,
+            "n_dropped": 28,
+            "mean_log_ratio": 1.8303512350295685,
+            "median_ratio": 6.236076602459549,
+            "p_value": 0.5,
+            "exact": 1,
+            "n_perm": 4
+          },
+          "stratified_logrank": {
+            "test": "stratified_logrank",
+            "chi2": 9.941176470588236,
+            "p_value": 0.0016162222150599877,
+            "score": -6.5,
+            "variance": 4.25,
+            "observed_a": 2.0,
+            "expected_a": 8.5,
+            "n_strata": 30,
+            "n_informative_strata": 17,
+            "hazard_ratio_approx": 0.21666307870822266
+          },
+          "paired_prob_superiority": {
+            "p_superior": 0.11764705882352941,
+            "ci_lo": 0.0,
+            "ci_hi": 0.29411764705882354,
+            "n_comparable": 17,
+            "n_excluded": 13
+          }
+        },
+        "unpaired_robustness": {
+          "fisher": {
+            "odds_ratio": 0.15384615384615385,
+            "odds_ratio_undefined_zero_cell": false,
+            "odds_ratio_haldane_anscombe": 0.16981132075471697,
+            "p_value": 0.004788880469513642,
+            "rate_1": 0.13333333333333333,
+            "rate_1_ci95": [
+              0.037553496338363315,
+              0.30721835027612676
+            ],
+            "rate_2": 0.5,
+            "rate_2_ci95": [
+              0.31297028586802744,
+              0.6870297141319726
+            ]
+          },
+          "logrank": {
+            "chi2": 9.011460778263105,
+            "p_value": 0.00268291903619654,
+            "observed_1": 4.0,
+            "expected_1": 10.493351311892175,
+            "n_events": 19
+          },
+          "a12_time": 0.681111111111111
+        },
+        "q_values": {
+          "mcnemar": 0.0144012451171875,
+          "sign": 0.0065460205078125,
+          "stratified_logrank": 0.0065460205078125
+        }
+      },
+      "full_3d": {
+        "vs": "edge_only",
+        "paired_primary": {
+          "mcnemar_exact": {
+            "test": "mcnemar_exact",
+            "n_pairs": 30,
+            "n_11": 2,
+            "n_10": 2,
+            "n_01": 13,
+            "n_00": 13,
+            "n_discordant": 15,
+            "p_value": 0.00738525390625,
+            "odds_ratio_cond": 0.15384615384615385,
+            "risk_difference": -0.36666666666666664
+          },
+          "win_loss_tie": {
+            "n_pairs": 30,
+            "wins_a": 2,
+            "wins_b": 15,
+            "ties": 0,
+            "indeterminate": 13,
+            "win_ratio": 0.13333333333333333,
+            "win_fraction_a": 0.11764705882352941
+          },
+          "sign_exact": {
+            "test": "sign_exact",
+            "n_effective": 17,
+            "p_value": 0.002349853515625,
+            "win_prob": 0.11764705882352941,
+            "win_prob_lo": 0.014579316840302493,
+            "win_prob_hi": 0.36440916210125024
+          },
+          "paired_permutation": {
+            "test": "paired_permutation",
+            "n_used": 2,
+            "n_dropped": 28,
+            "mean_log_ratio": 1.8303512350295685,
+            "median_ratio": 6.236076602459549,
+            "p_value": 0.5,
+            "exact": 1,
+            "n_perm": 4
+          },
+          "stratified_logrank": {
+            "test": "stratified_logrank",
+            "chi2": 9.941176470588236,
+            "p_value": 0.0016162222150599877,
+            "score": -6.5,
+            "variance": 4.25,
+            "observed_a": 2.0,
+            "expected_a": 8.5,
+            "n_strata": 30,
+            "n_informative_strata": 17,
+            "hazard_ratio_approx": 0.21666307870822266
+          },
+          "paired_prob_superiority": {
+            "p_superior": 0.11764705882352941,
+            "ci_lo": 0.0,
+            "ci_hi": 0.29411764705882354,
+            "n_comparable": 17,
+            "n_excluded": 13
+          }
+        },
+        "unpaired_robustness": {
+          "fisher": {
+            "odds_ratio": 0.15384615384615385,
+            "odds_ratio_undefined_zero_cell": false,
+            "odds_ratio_haldane_anscombe": 0.16981132075471697,
+            "p_value": 0.004788880469513642,
+            "rate_1": 0.13333333333333333,
+            "rate_1_ci95": [
+              0.037553496338363315,
+              0.30721835027612676
+            ],
+            "rate_2": 0.5,
+            "rate_2_ci95": [
+              0.31297028586802744,
+              0.6870297141319726
+            ]
+          },
+          "logrank": {
+            "chi2": 9.011460778263105,
+            "p_value": 0.00268291903619654,
+            "observed_1": 4.0,
+            "expected_1": 10.493351311892175,
+            "n_events": 19
+          },
+          "a12_time": 0.681111111111111
+        },
+        "q_values": {
+          "mcnemar": 0.0144012451171875,
+          "sign": 0.0065460205078125,
+          "stratified_logrank": 0.0065460205078125
+        }
+      }
+    },
+    "multiple_testing_correction": {
+      "method": "Benjamini-Hochberg FDR",
+      "family": "all paired contrasts against the edge-coverage control on T4",
+      "n_tests": 39,
+      "alpha": 0.05
+    },
+    "internal_consistency": {
+      "ngram2_equals_edge_only_per_block": true,
+      "n_blocks_compared": 30
+    },
+    "wall_seconds": 1225.7315784340026,
+    "raw_trials_path": "data/t4_order_sweep_trials.json"
+  },
+  "paired_reanalysis": {
+    "description": "same per-trial records as the original campaign, re-analysed with matched-design procedures; no new executions",
+    "bug_finding_per_target": {
+      "T1_context": {
+        "blind_random": {
+          "mcnemar_exact": {
+            "test": "mcnemar_exact",
+            "n_pairs": 30,
+            "n_11": 0,
+            "n_10": 0,
+            "n_01": 29,
+            "n_00": 1,
+            "n_discordant": 29,
+            "p_value": 3.725290298461914e-09,
+            "odds_ratio_cond": 0.0,
+            "risk_difference": -0.9666666666666667
+          },
+          "win_loss_tie": {
+            "n_pairs": 30,
+            "wins_a": 0,
+            "wins_b": 29,
+            "ties": 0,
+            "indeterminate": 1,
+            "win_ratio": 0.0,
+            "win_fraction_a": 0.0
+          },
+          "sign_exact": {
+            "test": "sign_exact",
+            "n_effective": 29,
+            "p_value": 3.725290298461914e-09,
+            "win_prob": 0.0,
+            "win_prob_lo": 0.0,
+            "win_prob_hi": 0.11944486906950269
+          },
+          "paired_permutation": {
+            "test": "paired_permutation",
+            "n_used": 0,
+            "n_dropped": 30,
+            "mean_log_ratio": 0.0,
+            "median_ratio": 1.0,
+            "p_value": 1.0,
+            "exact": 0,
+            "n_perm": 0
+          },
+          "stratified_logrank": {
+            "test": "stratified_logrank",
+            "chi2": 29.0,
+            "p_value": 7.23782987174e-08,
+            "score": -14.5,
+            "variance": 7.25,
+            "observed_a": 0.0,
+            "expected_a": 14.5,
+            "n_strata": 30,
+            "n_informative_strata": 29,
+            "hazard_ratio_approx": 0.1353352832366127
+          },
+          "paired_prob_superiority": {
+            "p_superior": 0.0,
+            "ci_lo": 0.0,
+            "ci_hi": 0.0,
+            "n_comparable": 29,
+            "n_excluded": 1
+          },
+          "q_values": {
+            "mcnemar": 8.381903171539307e-08,
+            "sign": 8.381903171539307e-08,
+            "stratified_logrank": 6.705522537231445e-07
+          }
+        },
+        "d0_d1_context": {
+          "mcnemar_exact": {
+            "test": "mcnemar_exact",
+            "n_pairs": 30,
+            "n_11": 29,
+            "n_10": 1,
+            "n_01": 0,
+            "n_00": 0,
+            "n_discordant": 1,
+            "p_value": 1.0,
+            "odds_ratio_cond": null,
+            "odds_ratio_cond_unbounded": "+inf",
+            "risk_difference": 0.03333333333333333
+          },
+          "win_loss_tie": {
+            "n_pairs": 30,
+            "wins_a": 9,
+            "wins_b": 21,
+            "ties": 0,
+            "indeterminate": 0,
+            "win_ratio": 0.42857142857142855,
+            "win_fraction_a": 0.3
+          },
+          "sign_exact": {
+            "test": "sign_exact",
+            "n_effective": 30,
+            "p_value": 0.042773945257067694,
+            "win_prob": 0.3,
+            "win_prob_lo": 0.14734518475470101,
+            "win_prob_hi": 0.4939590414625536
+          },
+          "paired_permutation": {
+            "test": "paired_permutation",
+            "n_used": 29,
+            "n_dropped": 1,
+            "mean_log_ratio": 0.438170217020725,
+            "median_ratio": 1.7419859265050823,
+            "p_value": 0.062069379306206936,
+            "exact": 0,
+            "n_perm": 100000
+          },
+          "stratified_logrank": {
+            "test": "stratified_logrank",
+            "chi2": 4.8,
+            "p_value": 0.028459736916310638,
+            "score": -6.0,
+            "variance": 7.5,
+            "observed_a": 9.0,
+            "expected_a": 15.0,
+            "n_strata": 30,
+            "n_informative_strata": 30,
+            "hazard_ratio_approx": 0.44932896411722156
+          },
+          "paired_prob_superiority": {
+            "p_superior": 0.3,
+            "ci_lo": 0.13333333333333333,
+            "ci_hi": 0.4666666666666667,
+            "n_comparable": 30,
+            "n_excluded": 0
+          },
+          "q_values": {
+            "mcnemar": 1.0,
+            "sign": 0.08749216075309302,
+            "stratified_logrank": 0.06403440806169894
+          }
+        },
+        "d0_d2_valuerange": {
+          "mcnemar_exact": {
+            "test": "mcnemar_exact",
+            "n_pairs": 30,
+            "n_11": 29,
+            "n_10": 1,
+            "n_01": 0,
+            "n_00": 0,
+            "n_discordant": 1,
+            "p_value": 1.0,
+            "odds_ratio_cond": null,
+            "odds_ratio_cond_unbounded": "+inf",
+            "risk_difference": 0.03333333333333333
+          },
+          "win_loss_tie": {
+            "n_pairs": 30,
+            "wins_a": 21,
+            "wins_b": 9,
+            "ties": 0,
+            "indeterminate": 0,
+            "win_ratio": 2.3333333333333335,
+            "win_fraction_a": 0.7
+          },
+          "sign_exact": {
+            "test": "sign_exact",
+            "n_effective": 30,
+            "p_value": 0.042773945257067694,
+            "win_prob": 0.7,
+            "win_prob_lo": 0.5060409585374464,
+            "win_prob_hi": 0.8526548152452988
+          },
+          "paired_permutation": {
+            "test": "paired_permutation",
+            "n_used": 29,
+            "n_dropped": 1,
+            "mean_log_ratio": -0.47649598882783534,
+            "median_ratio": 0.7477863046044866,
+            "p_value": 0.015189848101518985,
+            "exact": 0,
+            "n_perm": 100000
+          },
+          "stratified_logrank": {
+            "test": "stratified_logrank",
+            "chi2": 4.8,
+            "p_value": 0.028459736916310638,
+            "score": 6.0,
+            "variance": 7.5,
+            "observed_a": 21.0,
+            "expected_a": 15.0,
+            "n_strata": 30,
+            "n_informative_strata": 30,
+            "hazard_ratio_approx": 2.225540928492468
+          },
+          "paired_prob_superiority": {
+            "p_superior": 0.7,
+            "ci_lo": 0.5333333333333333,
+            "ci_hi": 0.8666666666666667,
+            "n_comparable": 30,
+            "n_excluded": 0
+          },
+          "q_values": {
+            "mcnemar": 1.0,
+            "sign": 0.08749216075309302,
+            "stratified_logrank": 0.06403440806169894
+          }
+        },
+        "d0_d3_statemachine": {
+          "mcnemar_exact": {
+            "test": "mcnemar_exact",
+            "n_pairs": 30,
+            "n_11": 29,
+            "n_10": 0,
+            "n_01": 0,
+            "n_00": 1,
+            "n_discordant": 0,
+            "p_value": 1.0,
+            "odds_ratio_cond": 1.0,
+            "risk_difference": 0.0
+          },
+          "win_loss_tie": {
+            "n_pairs": 30,
+            "wins_a": 0,
+            "wins_b": 0,
+            "ties": 29,
+            "indeterminate": 1,
+            "win_ratio": 1.0,
+            "win_fraction_a": 0.5
+          },
+          "sign_exact": {
+            "test": "sign_exact",
+            "n_effective": 0,
+            "p_value": 1.0,
+            "win_prob": 0.5,
+            "win_prob_lo": 0.0,
+            "win_prob_hi": 1.0
+          },
+          "paired_permutation": {
+            "test": "paired_permutation",
+            "n_used": 29,
+            "n_dropped": 1,
+            "mean_log_ratio": 0.0,
+            "median_ratio": 1.0,
+            "p_value": 1.0,
+            "exact": 0,
+            "n_perm": 100000
+          },
+          "stratified_logrank": {
+            "test": "stratified_logrank",
+            "chi2": 0.0,
+            "p_value": 1.0,
+            "score": 0.0,
+            "variance": 0.0,
+            "n_strata": 30,
+            "n_informative_strata": 29,
+            "hazard_ratio_approx": 1.0
+          },
+          "paired_prob_superiority": {
+            "p_superior": 0.5,
+            "ci_lo": 0.5,
+            "ci_hi": 0.5,
+            "n_comparable": 29,
+            "n_excluded": 1
+          },
+          "q_values": {
+            "mcnemar": 1.0,
+            "sign": 1.0,
+            "stratified_logrank": 1.0
+          }
+        },
+        "full_3d": {
+          "mcnemar_exact": {
+            "test": "mcnemar_exact",
+            "n_pairs": 30,
+            "n_11": 29,
+            "n_10": 1,
+            "n_01": 0,
+            "n_00": 0,
+            "n_discordant": 1,
+            "p_value": 1.0,
+            "odds_ratio_cond": null,
+            "odds_ratio_cond_unbounded": "+inf",
+            "risk_difference": 0.03333333333333333
+          },
+          "win_loss_tie": {
+            "n_pairs": 30,
+            "wins_a": 13,
+            "wins_b": 17,
+            "ties": 0,
+            "indeterminate": 0,
+            "win_ratio": 0.7647058823529411,
+            "win_fraction_a": 0.43333333333333335
+          },
+          "sign_exact": {
+            "test": "sign_exact",
+            "n_effective": 30,
+            "p_value": 0.5846647117286922,
+            "win_prob": 0.43333333333333335,
+            "win_prob_lo": 0.254607549903263,
+            "win_prob_hi": 0.6257265493907793
+          },
+          "paired_permutation": {
+            "test": "paired_permutation",
+            "n_used": 29,
+            "n_dropped": 1,
+            "mean_log_ratio": 0.45964682388361405,
+            "median_ratio": 1.7423804452558451,
+            "p_value": 0.04295957040429596,
+            "exact": 0,
+            "n_perm": 100000
+          },
+          "stratified_logrank": {
+            "test": "stratified_logrank",
+            "chi2": 0.5333333333333333,
+            "p_value": 0.4652088184521417,
+            "score": -2.0,
+            "variance": 7.5,
+            "observed_a": 13.0,
+            "expected_a": 15.0,
+            "n_strata": 30,
+            "n_informative_strata": 30,
+            "hazard_ratio_approx": 0.7659283383646487
+          },
+          "paired_prob_superiority": {
+            "p_superior": 0.43333333333333335,
+            "ci_lo": 0.26666666666666666,
+            "ci_hi": 0.6,
+            "n_comparable": 30,
+            "n_excluded": 0
+          },
+          "q_values": {
+            "mcnemar": 1.0,
+            "sign": 1.0,
+            "stratified_logrank": 0.910191166536799
+          }
+        }
+      },
+      "T2_value_range": {
+        "blind_random": {
+          "mcnemar_exact": {
+            "test": "mcnemar_exact",
+            "n_pairs": 30,
+            "n_11": 0,
+            "n_10": 0,
+            "n_01": 0,
+            "n_00": 30,
+            "n_discordant": 0,
+            "p_value": 1.0,
+            "odds_ratio_cond": 1.0,
+            "risk_difference": 0.0
+          },
+          "win_loss_tie": {
+            "n_pairs": 30,
+            "wins_a": 0,
+            "wins_b": 0,
+            "ties": 0,
+            "indeterminate": 30,
+            "win_ratio": 1.0,
+            "win_fraction_a": 0.5
+          },
+          "sign_exact": {
+            "test": "sign_exact",
+            "n_effective": 0,
+            "p_value": 1.0,
+            "win_prob": 0.5,
+            "win_prob_lo": 0.0,
+            "win_prob_hi": 1.0
+          },
+          "paired_permutation": {
+            "test": "paired_permutation",
+            "n_used": 0,
+            "n_dropped": 30,
+            "mean_log_ratio": 0.0,
+            "median_ratio": 1.0,
+            "p_value": 1.0,
+            "exact": 0,
+            "n_perm": 0
+          },
+          "stratified_logrank": {
+            "test": "stratified_logrank",
+            "chi2": 0.0,
+            "p_value": 1.0,
+            "score": 0.0,
+            "variance": 0.0,
+            "n_strata": 30,
+            "n_informative_strata": 0,
+            "hazard_ratio_approx": 1.0
+          },
+          "paired_prob_superiority": {
+            "p_superior": 0.5,
+            "ci_lo": 0.0,
+            "ci_hi": 1.0,
+            "n_comparable": 0,
+            "n_excluded": 30
+          },
+          "q_values": {
+            "mcnemar": 1.0,
+            "sign": 1.0,
+            "stratified_logrank": 1.0
+          }
+        },
+        "d0_d1_context": {
+          "mcnemar_exact": {
+            "test": "mcnemar_exact",
+            "n_pairs": 30,
+            "n_11": 0,
+            "n_10": 0,
+            "n_01": 0,
+            "n_00": 30,
+            "n_discordant": 0,
+            "p_value": 1.0,
+            "odds_ratio_cond": 1.0,
+            "risk_difference": 0.0
+          },
+          "win_loss_tie": {
+            "n_pairs": 30,
+            "wins_a": 0,
+            "wins_b": 0,
+            "ties": 0,
+            "indeterminate": 30,
+            "win_ratio": 1.0,
+            "win_fraction_a": 0.5
+          },
+          "sign_exact": {
+            "test": "sign_exact",
+            "n_effective": 0,
+            "p_value": 1.0,
+            "win_prob": 0.5,
+            "win_prob_lo": 0.0,
+            "win_prob_hi": 1.0
+          },
+          "paired_permutation": {
+            "test": "paired_permutation",
+            "n_used": 0,
+            "n_dropped": 30,
+            "mean_log_ratio": 0.0,
+            "median_ratio": 1.0,
+            "p_value": 1.0,
+            "exact": 0,
+            "n_perm": 0
+          },
+          "stratified_logrank": {
+            "test": "stratified_logrank",
+            "chi2": 0.0,
+            "p_value": 1.0,
+            "score": 0.0,
+            "variance": 0.0,
+            "n_strata": 30,
+            "n_informative_strata": 0,
+            "hazard_ratio_approx": 1.0
+          },
+          "paired_prob_superiority": {
+            "p_superior": 0.5,
+            "ci_lo": 0.0,
+            "ci_hi": 1.0,
+            "n_comparable": 0,
+            "n_excluded": 30
+          },
+          "q_values": {
+            "mcnemar": 1.0,
+            "sign": 1.0,
+            "stratified_logrank": 1.0
+          }
+        },
+        "d0_d2_valuerange": {
+          "mcnemar_exact": {
+            "test": "mcnemar_exact",
+            "n_pairs": 30,
+            "n_11": 0,
+            "n_10": 24,
+            "n_01": 0,
+            "n_00": 6,
+            "n_discordant": 24,
+            "p_value": 1.1920928955078125e-07,
+            "odds_ratio_cond": null,
+            "odds_ratio_cond_unbounded": "+inf",
+            "risk_difference": 0.8
+          },
+          "win_loss_tie": {
+            "n_pairs": 30,
+            "wins_a": 24,
+            "wins_b": 0,
+            "ties": 0,
+            "indeterminate": 6,
+            "win_ratio": null,
+            "win_ratio_unbounded": "+inf",
+            "win_fraction_a": 1.0
+          },
+          "sign_exact": {
+            "test": "sign_exact",
+            "n_effective": 24,
+            "p_value": 1.1920928955078125e-07,
+            "win_prob": 1.0,
+            "win_prob_lo": 0.8575264022774743,
+            "win_prob_hi": 1.0
+          },
+          "paired_permutation": {
+            "test": "paired_permutation",
+            "n_used": 0,
+            "n_dropped": 30,
+            "mean_log_ratio": 0.0,
+            "median_ratio": 1.0,
+            "p_value": 1.0,
+            "exact": 0,
+            "n_perm": 0
+          },
+          "stratified_logrank": {
+            "test": "stratified_logrank",
+            "chi2": 24.0,
+            "p_value": 9.63357008643095e-07,
+            "score": 12.0,
+            "variance": 6.0,
+            "observed_a": 24.0,
+            "expected_a": 12.0,
+            "n_strata": 30,
+            "n_informative_strata": 24,
+            "hazard_ratio_approx": 7.38905609893065
+          },
+          "paired_prob_superiority": {
+            "p_superior": 1.0,
+            "ci_lo": 1.0,
+            "ci_hi": 1.0,
+            "n_comparable": 24,
+            "n_excluded": 6
+          },
+          "q_values": {
+            "mcnemar": 6.705522537231445e-07,
+            "sign": 6.705522537231445e-07,
+            "stratified_logrank": 3.6125887824116065e-06
+          }
+        },
+        "d0_d3_statemachine": {
+          "mcnemar_exact": {
+            "test": "mcnemar_exact",
+            "n_pairs": 30,
+            "n_11": 0,
+            "n_10": 0,
+            "n_01": 0,
+            "n_00": 30,
+            "n_discordant": 0,
+            "p_value": 1.0,
+            "odds_ratio_cond": 1.0,
+            "risk_difference": 0.0
+          },
+          "win_loss_tie": {
+            "n_pairs": 30,
+            "wins_a": 0,
+            "wins_b": 0,
+            "ties": 0,
+            "indeterminate": 30,
+            "win_ratio": 1.0,
+            "win_fraction_a": 0.5
+          },
+          "sign_exact": {
+            "test": "sign_exact",
+            "n_effective": 0,
+            "p_value": 1.0,
+            "win_prob": 0.5,
+            "win_prob_lo": 0.0,
+            "win_prob_hi": 1.0
+          },
+          "paired_permutation": {
+            "test": "paired_permutation",
+            "n_used": 0,
+            "n_dropped": 30,
+            "mean_log_ratio": 0.0,
+            "median_ratio": 1.0,
+            "p_value": 1.0,
+            "exact": 0,
+            "n_perm": 0
+          },
+          "stratified_logrank": {
+            "test": "stratified_logrank",
+            "chi2": 0.0,
+            "p_value": 1.0,
+            "score": 0.0,
+            "variance": 0.0,
+            "n_strata": 30,
+            "n_informative_strata": 0,
+            "hazard_ratio_approx": 1.0
+          },
+          "paired_prob_superiority": {
+            "p_superior": 0.5,
+            "ci_lo": 0.0,
+            "ci_hi": 1.0,
+            "n_comparable": 0,
+            "n_excluded": 30
+          },
+          "q_values": {
+            "mcnemar": 1.0,
+            "sign": 1.0,
+            "stratified_logrank": 1.0
+          }
+        },
+        "full_3d": {
+          "mcnemar_exact": {
+            "test": "mcnemar_exact",
+            "n_pairs": 30,
+            "n_11": 0,
+            "n_10": 24,
+            "n_01": 0,
+            "n_00": 6,
+            "n_discordant": 24,
+            "p_value": 1.1920928955078125e-07,
+            "odds_ratio_cond": null,
+            "odds_ratio_cond_unbounded": "+inf",
+            "risk_difference": 0.8
+          },
+          "win_loss_tie": {
+            "n_pairs": 30,
+            "wins_a": 24,
+            "wins_b": 0,
+            "ties": 0,
+            "indeterminate": 6,
+            "win_ratio": null,
+            "win_ratio_unbounded": "+inf",
+            "win_fraction_a": 1.0
+          },
+          "sign_exact": {
+            "test": "sign_exact",
+            "n_effective": 24,
+            "p_value": 1.1920928955078125e-07,
+            "win_prob": 1.0,
+            "win_prob_lo": 0.8575264022774743,
+            "win_prob_hi": 1.0
+          },
+          "paired_permutation": {
+            "test": "paired_permutation",
+            "n_used": 0,
+            "n_dropped": 30,
+            "mean_log_ratio": 0.0,
+            "median_ratio": 1.0,
+            "p_value": 1.0,
+            "exact": 0,
+            "n_perm": 0
+          },
+          "stratified_logrank": {
+            "test": "stratified_logrank",
+            "chi2": 24.0,
+            "p_value": 9.63357008643095e-07,
+            "score": 12.0,
+            "variance": 6.0,
+            "observed_a": 24.0,
+            "expected_a": 12.0,
+            "n_strata": 30,
+            "n_informative_strata": 24,
+            "hazard_ratio_approx": 7.38905609893065
+          },
+          "paired_prob_superiority": {
+            "p_superior": 1.0,
+            "ci_lo": 1.0,
+            "ci_hi": 1.0,
+            "n_comparable": 24,
+            "n_excluded": 6
+          },
+          "q_values": {
+            "mcnemar": 6.705522537231445e-07,
+            "sign": 6.705522537231445e-07,
+            "stratified_logrank": 3.6125887824116065e-06
+          }
+        }
+      },
+      "T3_state_machine": {
+        "blind_random": {
+          "mcnemar_exact": {
+            "test": "mcnemar_exact",
+            "n_pairs": 30,
+            "n_11": 3,
+            "n_10": 0,
+            "n_01": 17,
+            "n_00": 10,
+            "n_discordant": 17,
+            "p_value": 1.52587890625e-05,
+            "odds_ratio_cond": 0.0,
+            "risk_difference": -0.5666666666666667
+          },
+          "win_loss_tie": {
+            "n_pairs": 30,
+            "wins_a": 1,
+            "wins_b": 19,
+            "ties": 0,
+            "indeterminate": 10,
+            "win_ratio": 0.05263157894736842,
+            "win_fraction_a": 0.05
+          },
+          "sign_exact": {
+            "test": "sign_exact",
+            "n_effective": 20,
+            "p_value": 4.00543212890625e-05,
+            "win_prob": 0.05,
+            "win_prob_lo": 0.0012650894979498038,
+            "win_prob_hi": 0.24873276277202777
+          },
+          "paired_permutation": {
+            "test": "paired_permutation",
+            "n_used": 3,
+            "n_dropped": 27,
+            "mean_log_ratio": 0.19784091554246017,
+            "median_ratio": 1.3080908071009048,
+            "p_value": 0.75,
+            "exact": 1,
+            "n_perm": 8
+          },
+          "stratified_logrank": {
+            "test": "stratified_logrank",
+            "chi2": 16.2,
+            "p_value": 5.699411623331848e-05,
+            "score": -9.0,
+            "variance": 5.0,
+            "observed_a": 1.0,
+            "expected_a": 10.0,
+            "n_strata": 30,
+            "n_informative_strata": 20,
+            "hazard_ratio_approx": 0.16529888822158653
+          },
+          "paired_prob_superiority": {
+            "p_superior": 0.05,
+            "ci_lo": 0.0,
+            "ci_hi": 0.15,
+            "n_comparable": 20,
+            "n_excluded": 10
+          },
+          "q_values": {
+            "mcnemar": 4.904610770089286e-05,
+            "sign": 0.0001201629638671875,
+            "stratified_logrank": 0.00016029595190620823
+          }
+        },
+        "d0_d1_context": {
+          "mcnemar_exact": {
+            "test": "mcnemar_exact",
+            "n_pairs": 30,
+            "n_11": 20,
+            "n_10": 0,
+            "n_01": 0,
+            "n_00": 10,
+            "n_discordant": 0,
+            "p_value": 1.0,
+            "odds_ratio_cond": 1.0,
+            "risk_difference": 0.0
+          },
+          "win_loss_tie": {
+            "n_pairs": 30,
+            "wins_a": 0,
+            "wins_b": 0,
+            "ties": 20,
+            "indeterminate": 10,
+            "win_ratio": 1.0,
+            "win_fraction_a": 0.5
+          },
+          "sign_exact": {
+            "test": "sign_exact",
+            "n_effective": 0,
+            "p_value": 1.0,
+            "win_prob": 0.5,
+            "win_prob_lo": 0.0,
+            "win_prob_hi": 1.0
+          },
+          "paired_permutation": {
+            "test": "paired_permutation",
+            "n_used": 20,
+            "n_dropped": 10,
+            "mean_log_ratio": 0.0,
+            "median_ratio": 1.0,
+            "p_value": 1.0,
+            "exact": 1,
+            "n_perm": 1048576
+          },
+          "stratified_logrank": {
+            "test": "stratified_logrank",
+            "chi2": 0.0,
+            "p_value": 1.0,
+            "score": 0.0,
+            "variance": 0.0,
+            "n_strata": 30,
+            "n_informative_strata": 20,
+            "hazard_ratio_approx": 1.0
+          },
+          "paired_prob_superiority": {
+            "p_superior": 0.5,
+            "ci_lo": 0.5,
+            "ci_hi": 0.5,
+            "n_comparable": 20,
+            "n_excluded": 10
+          },
+          "q_values": {
+            "mcnemar": 1.0,
+            "sign": 1.0,
+            "stratified_logrank": 1.0
+          }
+        },
+        "d0_d2_valuerange": {
+          "mcnemar_exact": {
+            "test": "mcnemar_exact",
+            "n_pairs": 30,
+            "n_11": 12,
+            "n_10": 8,
+            "n_01": 8,
+            "n_00": 2,
+            "n_discordant": 16,
+            "p_value": 1.0,
+            "odds_ratio_cond": 1.0,
+            "risk_difference": 0.0
+          },
+          "win_loss_tie": {
+            "n_pairs": 30,
+            "wins_a": 14,
+            "wins_b": 14,
+            "ties": 0,
+            "indeterminate": 2,
+            "win_ratio": 1.0,
+            "win_fraction_a": 0.5
+          },
+          "sign_exact": {
+            "test": "sign_exact",
+            "n_effective": 28,
+            "p_value": 1.0,
+            "win_prob": 0.5,
+            "win_prob_lo": 0.306470961532318,
+            "win_prob_hi": 0.693529038467682
+          },
+          "paired_permutation": {
+            "test": "paired_permutation",
+            "n_used": 12,
+            "n_dropped": 18,
+            "mean_log_ratio": -0.028345396650476234,
+            "median_ratio": 1.0417648152803796,
+            "p_value": 0.92919921875,
+            "exact": 1,
+            "n_perm": 4096
+          },
+          "stratified_logrank": {
+            "test": "stratified_logrank",
+            "chi2": 0.0,
+            "p_value": 1.0,
+            "score": 0.0,
+            "variance": 7.0,
+            "observed_a": 14.0,
+            "expected_a": 14.0,
+            "n_strata": 30,
+            "n_informative_strata": 28,
+            "hazard_ratio_approx": 1.0
+          },
+          "paired_prob_superiority": {
+            "p_superior": 0.5,
+            "ci_lo": 0.32142857142857145,
+            "ci_hi": 0.6785714285714286,
+            "n_comparable": 28,
+            "n_excluded": 2
+          },
+          "q_values": {
+            "mcnemar": 1.0,
+            "sign": 1.0,
+            "stratified_logrank": 1.0
+          }
+        },
+        "d0_d3_statemachine": {
+          "mcnemar_exact": {
+            "test": "mcnemar_exact",
+            "n_pairs": 30,
+            "n_11": 20,
+            "n_10": 10,
+            "n_01": 0,
+            "n_00": 0,
+            "n_discordant": 10,
+            "p_value": 0.001953125,
+            "odds_ratio_cond": null,
+            "odds_ratio_cond_unbounded": "+inf",
+            "risk_difference": 0.3333333333333333
+          },
+          "win_loss_tie": {
+            "n_pairs": 30,
+            "wins_a": 29,
+            "wins_b": 1,
+            "ties": 0,
+            "indeterminate": 0,
+            "win_ratio": 29.0,
+            "win_fraction_a": 0.9666666666666667
+          },
+          "sign_exact": {
+            "test": "sign_exact",
+            "n_effective": 30,
+            "p_value": 5.774199962615967e-08,
+            "win_prob": 0.9666666666666667,
+            "win_prob_lo": 0.8278305443665873,
+            "win_prob_hi": 0.9991564290733695
+          },
+          "paired_permutation": {
+            "test": "paired_permutation",
+            "n_used": 20,
+            "n_dropped": 10,
+            "mean_log_ratio": -1.3872161131697636,
+            "median_ratio": 0.2440075827831242,
+            "p_value": 1.1444091796875e-05,
+            "exact": 1,
+            "n_perm": 1048576
+          },
+          "stratified_logrank": {
+            "test": "stratified_logrank",
+            "chi2": 26.133333333333333,
+            "p_value": 3.186355462846913e-07,
+            "score": 14.0,
+            "variance": 7.5,
+            "observed_a": 29.0,
+            "expected_a": 15.0,
+            "n_strata": 30,
+            "n_informative_strata": 30,
+            "hazard_ratio_approx": 6.466704750695671
+          },
+          "paired_prob_superiority": {
+            "p_superior": 0.9666666666666667,
+            "ci_lo": 0.9,
+            "ci_hi": 1.0,
+            "n_comparable": 30,
+            "n_excluded": 0
+          },
+          "q_values": {
+            "mcnemar": 0.0048828125,
+            "sign": 6.705522537231445e-07,
+            "stratified_logrank": 1.5931777314234564e-06
+          }
+        },
+        "full_3d": {
+          "mcnemar_exact": {
+            "test": "mcnemar_exact",
+            "n_pairs": 30,
+            "n_11": 20,
+            "n_10": 10,
+            "n_01": 0,
+            "n_00": 0,
+            "n_discordant": 10,
+            "p_value": 0.001953125,
+            "odds_ratio_cond": null,
+            "odds_ratio_cond_unbounded": "+inf",
+            "risk_difference": 0.3333333333333333
+          },
+          "win_loss_tie": {
+            "n_pairs": 30,
+            "wins_a": 28,
+            "wins_b": 2,
+            "ties": 0,
+            "indeterminate": 0,
+            "win_ratio": 14.0,
+            "win_fraction_a": 0.9333333333333333
+          },
+          "sign_exact": {
+            "test": "sign_exact",
+            "n_effective": 30,
+            "p_value": 8.67992639541626e-07,
+            "win_prob": 0.9333333333333333,
+            "win_prob_lo": 0.7792645984770381,
+            "win_prob_hi": 0.9918218655393437
+          },
+          "paired_permutation": {
+            "test": "paired_permutation",
+            "n_used": 20,
+            "n_dropped": 10,
+            "mean_log_ratio": -1.3470921675190604,
+            "median_ratio": 0.2548920236716964,
+            "p_value": 4.9591064453125e-05,
+            "exact": 1,
+            "n_perm": 1048576
+          },
+          "stratified_logrank": {
+            "test": "stratified_logrank",
+            "chi2": 22.533333333333335,
+            "p_value": 2.0652857961262046e-06,
+            "score": 13.0,
+            "variance": 7.5,
+            "observed_a": 28.0,
+            "expected_a": 15.0,
+            "n_strata": 30,
+            "n_informative_strata": 30,
+            "hazard_ratio_approx": 5.659487459937126
+          },
+          "paired_prob_superiority": {
+            "p_superior": 0.9333333333333333,
+            "ci_lo": 0.8333333333333334,
+            "ci_hi": 1.0,
+            "n_comparable": 30,
+            "n_excluded": 0
+          },
+          "q_values": {
+            "mcnemar": 0.0048828125,
+            "sign": 3.6125887824116065e-06,
+            "stratified_logrank": 7.149066217359939e-06
+          }
+        }
+      }
+    },
+    "bug_finding_correction": {
+      "method": "Benjamini-Hochberg FDR",
+      "n_tests": 45,
+      "family": "all paired contrasts against edge_only across T1-T3"
+    },
+    "depth_sweep_paired": {
+      "baseline_arm": "N=1",
+      "arms": {
+        "N=16": {
+          "win_loss_tie": {
+            "n_pairs": 30,
+            "wins_a": 8,
+            "wins_b": 22,
+            "ties": 0,
+            "indeterminate": 0,
+            "win_ratio": 0.36363636363636365,
+            "win_fraction_a": 0.26666666666666666
+          },
+          "sign_exact": {
+            "test": "sign_exact",
+            "n_effective": 30,
+            "p_value": 0.016124801710247997,
+            "win_prob": 0.26666666666666666,
+            "win_prob_lo": 0.1227948098723548,
+            "win_prob_hi": 0.45889365139475125
+          },
+          "stratified_logrank": {
+            "test": "stratified_logrank",
+            "chi2": 6.533333333333333,
+            "p_value": 0.010587137334056926,
+            "score": -7.0,
+            "variance": 7.5,
+            "observed_a": 8.0,
+            "expected_a": 15.0,
+            "n_strata": 30,
+            "n_informative_strata": 30,
+            "hazard_ratio_approx": 0.39324072086859824
+          },
+          "paired_permutation": {
+            "test": "paired_permutation",
+            "n_used": 30,
+            "n_dropped": 0,
+            "mean_log_ratio": 0.4056936873669421,
+            "median_ratio": 1.6250516401484167,
+            "p_value": 0.05932940670593294,
+            "exact": 0,
+            "n_perm": 100000
+          },
+          "median_execs": 16147.5,
+          "n_success": 30,
+          "n_trials": 30,
+          "q_values": {
+            "sign": 0.06449920684099199,
+            "stratified_logrank": 0.06449920684099199
+          }
+        },
+        "N=2": {
+          "win_loss_tie": {
+            "n_pairs": 30,
+            "wins_a": 16,
+            "wins_b": 14,
+            "ties": 0,
+            "indeterminate": 0,
+            "win_ratio": 1.1428571428571428,
+            "win_fraction_a": 0.5333333333333333
+          },
+          "sign_exact": {
+            "test": "sign_exact",
+            "n_effective": 30,
+            "p_value": 0.8555355519056321,
+            "win_prob": 0.5333333333333333,
+            "win_prob_lo": 0.3432552381607341,
+            "win_prob_hi": 0.7165819208164629
+          },
+          "stratified_logrank": {
+            "test": "stratified_logrank",
+            "chi2": 0.13333333333333333,
+            "p_value": 0.7150006546880892,
+            "score": 1.0,
+            "variance": 7.5,
+            "observed_a": 16.0,
+            "expected_a": 15.0,
+            "n_strata": 30,
+            "n_informative_strata": 30,
+            "hazard_ratio_approx": 1.1426308117957227
+          },
+          "paired_permutation": {
+            "test": "paired_permutation",
+            "n_used": 30,
+            "n_dropped": 0,
+            "mean_log_ratio": -0.1517715727505349,
+            "median_ratio": 0.9224556677601679,
+            "p_value": 0.43868561314386856,
+            "exact": 0,
+            "n_perm": 100000
+          },
+          "median_execs": 8251.5,
+          "n_success": 30,
+          "n_trials": 30,
+          "q_values": {
+            "sign": 0.8555355519056321,
+            "stratified_logrank": 0.8555355519056321
+          }
+        },
+        "N=4": {
+          "win_loss_tie": {
+            "n_pairs": 30,
+            "wins_a": 21,
+            "wins_b": 9,
+            "ties": 0,
+            "indeterminate": 0,
+            "win_ratio": 2.3333333333333335,
+            "win_fraction_a": 0.7
+          },
+          "sign_exact": {
+            "test": "sign_exact",
+            "n_effective": 30,
+            "p_value": 0.042773945257067694,
+            "win_prob": 0.7,
+            "win_prob_lo": 0.5060409585374464,
+            "win_prob_hi": 0.8526548152452988
+          },
+          "stratified_logrank": {
+            "test": "stratified_logrank",
+            "chi2": 4.8,
+            "p_value": 0.028459736916310638,
+            "score": 6.0,
+            "variance": 7.5,
+            "observed_a": 21.0,
+            "expected_a": 15.0,
+            "n_strata": 30,
+            "n_informative_strata": 30,
+            "hazard_ratio_approx": 2.225540928492468
+          },
+          "paired_permutation": {
+            "test": "paired_permutation",
+            "n_used": 30,
+            "n_dropped": 0,
+            "mean_log_ratio": -0.41957917357394703,
+            "median_ratio": 0.571765323637978,
+            "p_value": 0.02145978540214598,
+            "exact": 0,
+            "n_perm": 100000
+          },
+          "median_execs": 6379.0,
+          "n_success": 30,
+          "n_trials": 30,
+          "q_values": {
+            "sign": 0.08554789051413539,
+            "stratified_logrank": 0.07589263177682837
+          }
+        },
+        "N=8": {
+          "win_loss_tie": {
+            "n_pairs": 30,
+            "wins_a": 16,
+            "wins_b": 14,
+            "ties": 0,
+            "indeterminate": 0,
+            "win_ratio": 1.1428571428571428,
+            "win_fraction_a": 0.5333333333333333
+          },
+          "sign_exact": {
+            "test": "sign_exact",
+            "n_effective": 30,
+            "p_value": 0.8555355519056321,
+            "win_prob": 0.5333333333333333,
+            "win_prob_lo": 0.3432552381607341,
+            "win_prob_hi": 0.7165819208164629
+          },
+          "stratified_logrank": {
+            "test": "stratified_logrank",
+            "chi2": 0.13333333333333333,
+            "p_value": 0.7150006546880892,
+            "score": 1.0,
+            "variance": 7.5,
+            "observed_a": 16.0,
+            "expected_a": 15.0,
+            "n_strata": 30,
+            "n_informative_strata": 30,
+            "hazard_ratio_approx": 1.1426308117957227
+          },
+          "paired_permutation": {
+            "test": "paired_permutation",
+            "n_used": 30,
+            "n_dropped": 0,
+            "mean_log_ratio": -0.11006210598902187,
+            "median_ratio": 0.9405139509386258,
+            "p_value": 0.5586344136558634,
+            "exact": 0,
+            "n_perm": 100000
+          },
+          "median_execs": 9161.5,
+          "n_success": 30,
+          "n_trials": 30,
+          "q_values": {
+            "sign": 0.8555355519056321,
+            "stratified_logrank": 0.8555355519056321
+          }
+        }
+      },
+      "correction": {
+        "method": "Benjamini-Hochberg FDR",
+        "n_tests": 8
+      }
+    }
+  },
+  "total_wall_seconds": 54.561349003983196
+}

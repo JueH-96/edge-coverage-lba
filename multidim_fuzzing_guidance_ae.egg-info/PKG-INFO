@@ -1,3 +1,16 @@
+Metadata-Version: 2.4
+Name: multidim-fuzzing-guidance-ae
+Version: 1.0.0
+Summary: Artifact evaluation package: multidimensional guidance for coverage-guided fuzzing
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+Requires-Dist: numpy>=1.26
+Requires-Dist: scipy>=1.11
+Requires-Dist: matplotlib>=3.8
+Requires-Dist: pytest>=7.4
+Provides-Extra: full
+Requires-Dist: tqdm>=4.66; extra == "full"
+
 # Artifact Evaluation — Multidimensional Guidance for Coverage-Guided Fuzzing
 
 This artifact reproduces every theoretical invariant, fidelity check, statistical
