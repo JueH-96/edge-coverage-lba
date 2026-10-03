@@ -1,306 +1,478 @@
-# Artifact Evaluation — Multidimensional Guidance for Coverage-Guided Fuzzing
+# Multidimensional Guidance for Coverage-Guided Fuzzing
 
-This artifact reproduces every theoretical invariant, fidelity check, statistical
-analysis and figure in the paper. It is entirely self-contained: there are no
-absolute paths, no network access, no external data downloads, and no dependencies
-beyond a C compiler and a numeric Python stack.
+This repository provides a self-contained implementation and evaluation of multidimensional guidance for coverage-guided fuzzing.
+
+It includes invariant tests, fidelity validation, fuzzing experiments, statistical analysis, and reproducible result generation. There are no absolute paths, network dependencies, or external data downloads. The project requires only a C compiler and a numeric Python stack.
+
+## Quick Start
 
 ```bash
-./run_ae.sh --quick        # everything, from bundled trial records — about 70 seconds
+./run_ae.sh --quick
 ```
 
-Expected verdict:
+A successful run should report:
 
-```
+```text
 PASS  1/5  Build native benchmark libraries
 PASS  2/5  Invariant suite (75 tests)
 PASS  3/5  Fidelity cross-validation (20,000 comparisons)
 PASS  4/5  Analysis, statistics and summary tables
-PASS  5/5  Regenerate all publication figures
+PASS  5/5  Generate result visualisations
 
 RESULT: ALL STAGES PASSED
 ```
 
-Setup instructions are in [`INSTALL.md`](INSTALL.md).
+Setup instructions are available in [`INSTALL.md`](INSTALL.md).
 
 ---
 
-## 1. What the two modes actually do
+## 1. Execution Modes
 
-`--quick` is **not** a smoke test or a reduced version of the evaluation. It runs
-the complete invariant suite, the complete fidelity campaign, the complete
-statistical analysis, and redraws every figure. The one thing it does not do is
-re-execute the fuzzing campaigns that produced the raw per-trial records — those
-records ship in `data/`.
+Two execution modes are provided: `--quick` and `--full`.
+
+`--quick` runs the complete invariant suite, fidelity campaign, and statistical analysis using the bundled per-trial records.
+
+`--full` additionally re-executes the fuzzing campaigns from scratch.
 
 | | `--quick` | `--full` |
 |---|---|---|
 | Build native C libraries | yes | yes |
 | 75 invariant tests | yes | yes |
 | 20,000 fidelity comparisons | yes | yes |
-| Fuzzing campaigns (810 + 540 + sweep trials) | uses bundled `data/*.json` | **re-executed from scratch** |
-| Statistical analysis and FDR family | recomputed from trial records | recomputed |
-| All figures | redrawn | redrawn |
-| Wall time | **~70 s** | hours (scales with `--workers`) |
+| Fuzzing campaigns | uses bundled `data/*.json` | re-executed from scratch |
+| Statistical analysis and FDR family | recomputed | recomputed |
+| Result visualisations | regenerated | regenerated |
+| Typical wall time | ~70 s | hours, depending on `--workers` |
 
-Run `--full` with:
+Run the full evaluation with:
 
 ```bash
 ./run_ae.sh --full --workers 26 --trials 30
 ```
 
-This **overwrites** the bundled records in `data/`. Copy the directory first if you
-want to keep the originals for comparison.
+The full run overwrites bundled records in `data/`.
 
-### Provenance is tracked, not assumed
+Copy the directory first if you want to preserve the original records for comparison.
 
-`results/ae_summary.json` records, for each result document, whether it was
-**regenerated** in your run or **bundled** with the artifact. The distinction is
-decided by comparing content hashes against `data/precomputed/`, so a document
-staged by an earlier quick run is never reported as freshly computed.
+### Provenance tracking
 
-Two documents are bundled under `--quick` (`step1_guidance_validation.json` and
-`step2_revision.json`) because their analysis is interleaved with fresh sampling
-and cannot be separated from a multi-hour re-execution. Everything else is
-recomputed from raw trial records every time you run.
+`results/ae_summary.json` records whether each result document was regenerated during the current run or obtained from the bundled data.
 
-### The recomputation check
+The distinction is determined by comparing content hashes against `data/precomputed/`, preventing data copied by an earlier run from being incorrectly reported as newly generated.
 
-Because `results/step2_scheduler_validation.json` is regenerated from
-`data/step2_trials.json` on every run, the artifact compares it against the copy
-shipped in `data/precomputed/`. On the reference machine this reports:
+Two documents are bundled under `--quick`:
 
-```
+- `step1_guidance_validation.json`
+- `step2_revision.json`
+
+Their analyses are interleaved with fresh sampling and therefore cannot be separated from the multi-hour experiment execution.
+
+Other analyses are recomputed from the raw trial records.
+
+### Recomputation check
+
+`results/step2_scheduler_validation.json` is regenerated from `data/step2_trials.json` on every run.
+
+The regenerated result is compared with the reference copy stored in `data/precomputed/`.
+
+On the reference machine:
+
+```text
 [analyze] recomputation vs shipped analysis: reproduces (4168/4168 numeric leaves match)
 ```
 
-That is the specific property an artifact evaluation should establish: the
-statistics reported in the paper follow from the bundled data, by the bundled code.
-Timing fields are excluded from the comparison — they are properties of the machine,
-not of the analysis.
+Timing fields are excluded because they depend on the execution environment rather than the analysis itself.
 
 ---
 
-## 2. Claim-to-artifact mapping
+## 2. Components and Validation
 
-### Theory
+### Guidance dimensions
 
-| Paper claim | Where it is checked | How to run it |
-|---|---|---|
-| **Prop. 1** (Factorisation) — the AFL signal factors into four stages | `tests/test_invariants.py`, factorisation and partition tests; `src/guidance_engine.py` | `make test` |
-| **Thm. 1** (Lossy bigram characterisation) — AFL edge coverage with hit-count classes *is* a bigram statistic over the executed block sequence | `tests/test_invariants.py` (AFL-bigram tests); constructive witness in `results/step2_scheduler_validation.json` → `blind_spot_verification` | `make test`, then Table 6 of `results/summary_tables.md` |
-| **Prop. 2** (Three separable loss mechanisms) | `results/step2_revision.json` → `information_loss` | `figures/fig9_information_loss.pdf`, `figures/paper/fig2_infoloss.pdf` |
-| **Cor. 1** (No-go, stated correctly) — behaviour that is a function of bigram counts is already visible to AFL | Predicted, and borne out by, the T1 negative result: `d0_d1_context` gives no time-to-bug advantage at N=16 | Table 1 of `results/summary_tables.md` |
-| **Cor. 2** (The structural blind spot is at order ≥ 3) | Exhaustive enumeration: `results/step2_revision.json` → `t4_witnesses.discrimination_by_order` | `figures/paper/fig3_discrimination.pdf` |
-| **Thm. 2** (Refinement and incomparability) | `tests/test_invariants.py` Refinement-Theorem tests; certificate in `results/step2_revision.json` → `lattice` | `figures/fig10_refinement_lattice.pdf` |
-| **Prop. 3** (Interior optimum under an order-*L* gate) | T4 order sweep, NGRAM 2–8 | `figures/paper/fig4_ordersweep.pdf`, Table 4 of `results/summary_tables.md` |
-| **O(1) prefix hashing** — the rolling context hash equals the O(N) reference | `tests/test_invariants.py`, differential test against a naive implementation | `make test` |
+The implementation contains four feedback dimensions:
 
-### Tables
+- **D0 — AFL edge coverage**
+- **D1 — Calling context**
+- **D2 — Value-range information**
+- **D3 — Abstract state information**
 
-| Paper table | Artifact source | Regenerated by |
-|---|---|---|
-| Tab. `dims` — the four feedback dimensions | `src/guidance_engine.py` (the trackers themselves) | — |
-| Tab. `targets` — benchmarks and headline paired outcomes | `results/step1_guidance_validation.json`, `results/fidelity_verification.json` | Table 1 + Table 5 of `results/summary_tables.md` |
-| Tab. `infoloss` — the three mechanisms separated | `results/step2_revision.json` → `information_loss` | — |
-| Tab. `paired` — matched analysis on T1–T3 | `results/step2_revision.json` → `paired_reanalysis` | `figures/fig13_paired_outcomes.pdf` |
-| Tab. `ordersweep` — the order sweep on T4 | `results/step2_revision.json` → `order_sweep_roundrobin` | Table 4 of `results/summary_tables.md` |
-| Tab. `cap` — corpus-capped ablation | `results/corpus_cap_ablation.json` | `figures/paper/fig5_capablation.pdf` |
+The corresponding implementations are located in:
 
-### Figures
+```text
+src/guidance_engine.py
+```
 
-The five **consolidated figures that appear in the submission** are written to
-`figures/paper/`. The extended-manuscript figures, which show the same data at
-lower density, are written to `figures/` directly. They are kept separate because
-both families use the prefixes `fig1`–`fig5` for different content.
+### Core invariant checks
 
-| Submission figure | File | Reads |
-|---|---|---|
-| Fig. `factor` | `figures/paper/fig1_factorisation.pdf` | `results/step2_revision.json` |
-| Fig. `loss` | `figures/paper/fig2_infoloss.pdf` | `results/step2_revision.json` |
-| Fig. `disc` | `figures/paper/fig3_discrimination.pdf` | `results/step2_revision.json` |
-| Fig. `sweep` | `figures/paper/fig4_ordersweep.pdf` | `results/step2_revision.json`, `data/t4_order_sweep.json` |
-| Fig. `cap` | `figures/paper/fig5_capablation.pdf` | `results/corpus_cap_ablation.json` |
+The invariant suite validates properties including:
 
-Extended figures in `figures/`: `fig1_bug_discovery_rate`, `fig2_time_to_bug_cdf`,
-`fig3_progress_curves`, `fig4_partition_refinement`, `fig5_overhead`,
-`fig6_context_depth_sweep`, `fig7_collision_rates`, `fig8_state_machine_graph`,
-`fig9_information_loss`, `fig10_refinement_lattice`, `fig11_order_sweep`,
-`fig12_discrimination_by_order`, `fig13_paired_outcomes`, `fig14_t4_survival`,
-`fig15_order_dilution`, and the campaign figures `step2_survival_curves`,
-`step2_coverage_growth`, `step2_energy_allocation`, `step2_corpus_dilution`,
-`step2_context_depth_adaptation` — each as both PDF and PNG.
+- factorisation of the feedback signal;
+- AFL edge coverage as a bigram statistic over executed block sequences;
+- separable information-loss mechanisms;
+- refinement relationships between guidance dimensions;
+- order-sensitive structural blind spots;
+- O(1) rolling prefix hashing against an O(N) reference implementation.
 
-**Not regenerated by this artifact:** the paper's graphical abstract
-(`fig:abstract`) is an illustrative schematic produced with a generative image tool,
-not a data plot. No number in the paper depends on it.
+Run the suite with:
+
+```bash
+make test
+```
+
+or:
+
+```bash
+python -m pytest tests/test_invariants.py -v
+```
+
+### Main result sources
+
+Important result documents include:
+
+```text
+results/step1_guidance_validation.json
+results/fidelity_verification.json
+results/step2_revision.json
+results/step2_scheduler_validation.json
+results/corpus_cap_ablation.json
+results/summary_tables.md
+```
+
+They contain the outputs of the guidance experiments, paired analyses, order sweeps, scheduler experiments, fidelity checks, and corpus-capacity ablations.
 
 ---
 
-## 3. The two headline verification claims
+## 3. Verification
 
 ### 75/75 invariant tests
 
-```bash
-make test        # or: python -m pytest tests/test_invariants.py -v
-```
-
-`tests/test_invariants.py` aggregates two suites that are shipped as non-collected
-modules so each invariant has exactly one definition:
-
-- `_invariants_step1.py` — 22 tests on the guidance engine: the Refinement Theorem,
-  the O(1) rolling prefix-hash against an O(N) reference, value-range bucketing
-  semantics, the Miller–Madow entropy estimator, Jeffreys-smoothed surprisal, and
-  the AFL-bigram characterisation.
-- `_invariants_step2.py` — 53 tests (38 functions, some parametrised over the three
-  trigram targets) on the energy schedules, the trigram targets, state transitions,
-  and the dilution metrics.
-
-### 20,000/20,000 fidelity comparisons, 0 mismatches
+Run:
 
 ```bash
-make fidelity    # or: python tests/test_fidelity.py
+make test
 ```
 
-Every experiment runs against *Python* models of the benchmark targets, because the
-guidance probes need to observe calling context, value ranges and abstract state at
-a granularity a compiled binary does not expose. That substitution is only
-admissible if the models are behaviourally identical to the native C ground truth.
+or:
 
-For each of the seven targets, random inputs are pushed through both
-implementations and the **full decision trace**, the **milestone index** and the
-**bug flag** are compared exactly:
+```bash
+python -m pytest tests/test_invariants.py -v
+```
 
-| Suite | targets | inputs/target | comparisons |
-|---|---|---|---|
+`tests/test_invariants.py` aggregates two invariant suites.
+
+#### `_invariants_step1.py`
+
+Contains 22 tests covering:
+
+- guidance engine behaviour;
+- refinement relationships;
+- O(1) rolling prefix hashing against an O(N) implementation;
+- value-range bucketing;
+- Miller–Madow entropy estimation;
+- Jeffreys-smoothed surprisal;
+- AFL bigram characterisation.
+
+#### `_invariants_step2.py`
+
+Contains 53 tests covering:
+
+- energy schedules;
+- trigram targets;
+- state transitions;
+- dilution metrics.
+
+Some tests are parametrised over multiple trigram targets.
+
+### 20,000/20,000 fidelity comparisons
+
+Run:
+
+```bash
+make fidelity
+```
+
+or:
+
+```bash
+python tests/test_fidelity.py
+```
+
+The experiments use Python models of the benchmark targets because the guidance probes require access to calling context, value ranges, and abstract state at a finer granularity than the compiled binaries expose.
+
+To validate these models, random inputs are executed against both the Python implementation and the native C implementation.
+
+For each input, the following are compared exactly:
+
+- full decision trace;
+- milestone index;
+- bug flag.
+
+| Suite | Targets | Inputs per target | Comparisons |
+|---|---:|---:|---:|
 | Step 1 (T1–T4) | 4 | 2,000 | 8,000 |
 | Trigram (TG1–TG3) | 3 | 4,000 | 12,000 |
 | **Total** | **7** | | **20,000** |
 
-The trigram suite gets the larger share because its input distribution is mixed
-(uniform bytes plus perturbations of the key word). Uniform bytes essentially never
-satisfy a trigram lock, so a uniform-only sample would certify agreement on the
-*failing* path and say nothing about the triggering one. `test_fidelity.py` includes
-an explicit guard against exactly that vacuous pass: it fails if the sample never
-drove any target past its first milestone.
+The trigram suite uses a mixture of uniform-byte inputs and perturbations of the target key word.
+
+This prevents the validation from testing only non-triggering inputs.
+
+`test_fidelity.py` also contains a guard that fails the test if no sampled input passes the first target milestone.
 
 ---
 
-## 4. Layout
+## 4. Repository Layout
 
-```
+```text
 artifact_evaluation/
-├── run_ae.sh              one-click runner (--quick / --full)
-├── Makefile               build / test / quick / full / figures / clean
-├── ae_paths.py            the only path resolution in the package
-├── PORT_LOG.json          exact edits applied when porting from the research tree
+├── run_ae.sh
+├── Makefile
+├── ae_paths.py
+├── PORT_LOG.json
 │
-├── src/                   guidance engine, schedulers, statistics
-│   ├── guidance_engine.py       AFLEdgeTracker (D0), CallingContextTracker (D1),
-│   │                            ValueRangeTracker (D2), StateMachineTracker (D3),
-│   │                            MultiDimGuidanceEngine
-│   ├── energy_scheduler.py      round-robin, AFLFast-style, static/adaptive novelty,
-│   │                            dynamic depth escalation; dilution metrics
-│   ├── fuzz_harness.py          AFL-style havoc mutator, blocked-seed trial runner
-│   ├── step2_harness.py         trial runner for the trigram campaign
-│   ├── stats_utils.py           A12, Mann-Whitney, Wilcoxon, Clopper-Pearson,
-│   │                            Fisher, log-rank, bootstrap CIs, BH-FDR
-│   └── stats_paired.py          matched-design inference
+├── src/
+│   ├── guidance_engine.py
+│   ├── energy_scheduler.py
+│   ├── fuzz_harness.py
+│   ├── step2_harness.py
+│   ├── stats_utils.py
+│   └── stats_paired.py
 │
-├── native/                C ground truth + compiled shared objects
-│   ├── target_lib.c             T1–T4 benchmarks with seeded bugs
-│   ├── trigram_target_lib.c     TG1–TG3 trigram blind-spot benchmarks
-│   └── *.so                     built by `make build`
+├── native/
+│   ├── target_lib.c
+│   ├── trigram_target_lib.c
+│   └── *.so
 │
-├── targets/               instrumented Python models + ctypes bridges
-├── tests/                 test_invariants.py (75), test_fidelity.py (20,000)
-├── experiments/           build_native, run_scheduler_matrix, run_order_sweep,
-│                          run_corpus_ablation, analyze_results
-├── plots/                 generate_all_figures.py
-├── data/                  bundled raw trial records + precomputed/ reference copies
-├── results/               generated result documents, summary tables, logs
-└── figures/               regenerated figures; figures/paper/ = submission figures
+├── targets/
+├── tests/
+├── experiments/
+├── plots/
+├── data/
+└── results/
 ```
 
-### Bundled datasets
+### Key modules
+
+#### `src/guidance_engine.py`
+
+Implements:
+
+- `AFLEdgeTracker` (D0)
+- `CallingContextTracker` (D1)
+- `ValueRangeTracker` (D2)
+- `StateMachineTracker` (D3)
+- `MultiDimGuidanceEngine`
+
+#### `src/energy_scheduler.py`
+
+Implements:
+
+- round-robin scheduling;
+- AFLFast-style scheduling;
+- static novelty scheduling;
+- adaptive novelty scheduling;
+- dynamic depth escalation;
+- dilution metrics.
+
+#### `src/fuzz_harness.py`
+
+Provides the AFL-style havoc mutator and blocked-seed trial runner.
+
+#### `src/step2_harness.py`
+
+Provides the trial runner for the trigram experiments.
+
+#### `src/stats_utils.py`
+
+Implements statistical procedures including:
+
+- Vargha–Delaney A12;
+- Mann–Whitney tests;
+- Wilcoxon tests;
+- Clopper–Pearson intervals;
+- Fisher's exact test;
+- log-rank tests;
+- bootstrap confidence intervals;
+- Benjamini–Hochberg FDR correction.
+
+#### `src/stats_paired.py`
+
+Contains inference procedures for matched experimental designs.
+
+### Native targets
+
+The `native/` directory contains the native C implementations used as ground truth.
+
+```text
+native/target_lib.c
+native/trigram_target_lib.c
+```
+
+Shared libraries are generated with:
+
+```bash
+make build
+```
+
+### Tests
+
+The `tests/` directory contains:
+
+```text
+test_invariants.py
+test_fidelity.py
+```
+
+The complete validation consists of:
+
+- 75 invariant tests;
+- 20,000 Python-vs-C fidelity comparisons.
+
+### Experiments
+
+The `experiments/` directory contains scripts for:
+
+- native target construction;
+- scheduler matrices;
+- order sweeps;
+- corpus-capacity ablations;
+- result analysis.
+
+---
+
+## 5. Bundled Data
+
+The repository includes the raw trial records required to reproduce the statistical analyses.
 
 | File | Contents |
 |---|---|
-| `data/step1_trials.json` | 540-trial Step 1 bug-finding campaign (T1–T3 × 6 configs × 30) |
+| `data/step1_trials.json` | 540-trial Step 1 bug-finding campaign |
 | `data/context_depth_trials.json` | 150-trial context-depth sweep |
-| `data/step2_trials.json` | 810-trial scheduler matrix (3 targets × 9 arms × 30) |
-| `data/t4_order_sweep.json` | T4 n-gram order sweep, both energy schedules |
-| `data/corpus_cap_trials.json` | fixed-capacity (K=1000) dilution ablation |
-| `data/precomputed/` | reference copies of the analysed documents, used for the provenance and recomputation checks |
+| `data/step2_trials.json` | 810-trial scheduler matrix |
+| `data/t4_order_sweep.json` | T4 n-gram order sweep under both energy schedules |
+| `data/corpus_cap_trials.json` | fixed-capacity dilution ablation |
+| `data/precomputed/` | reference copies used for provenance and recomputation checks |
 
 ---
 
-## 5. Reproducibility
+## 6. Reproducibility
 
-All randomness is driven by explicitly seeded `random.Random` and
-`numpy.random.Generator` instances; no library-internal or wall-clock entropy enters
-any experiment.
+All randomness is controlled through explicitly seeded `random.Random` and `numpy.random.Generator` instances.
 
-- **Master seeds:** 20260804 (Step 1), 20260811 (Step 2).
-- **Trial seed derivation:** an FNV-1a-style hash of (master seed, target name,
-  trial index), computed identically across configurations. This makes the design
-  *blocked on seed*: every arm sees the same seed sequence, so arm-to-arm
-  differences are attributable to the feedback function and the energy schedule
-  rather than to seed luck.
-- **Protocol:** Klees et al. (CCS'18) — ≥ 30 independent trials per cell,
-  right-censoring recorded explicitly, log-rank tests for censored comparisons,
-  Vargha–Delaney A12 effect sizes, and Benjamini–Hochberg FDR across the whole
-  hypothesis family (192 hypotheses in the Step 2 campaign).
-- **Fidelity seeds:** fixed in `tests/test_fidelity.py`, so the 20,000-comparison
-  campaign is bit-reproducible.
+No library-internal or wall-clock entropy is used by the experiments.
 
-Floating-point summation order can vary across BLAS builds, so the recomputation
-check compares floats at a relative tolerance of 1e-9 rather than bit-exactly.
-Integer counts and booleans must match exactly.
+### Master seeds
+
+```text
+Step 1: 20260804
+Step 2: 20260811
+```
+
+### Trial seed derivation
+
+Trial seeds are generated using an FNV-1a-style hash of:
+
+```text
+(master seed, target name, trial index)
+```
+
+The derivation is identical across configurations.
+
+As a result, each experimental arm receives the same seed sequence.
+
+This blocked design reduces differences caused by random seed selection and makes comparisons primarily reflect the feedback mechanism and energy schedule.
+
+### Statistical protocol
+
+The experimental protocol uses:
+
+- at least 30 independent trials per cell;
+- explicit right censoring;
+- log-rank tests for censored comparisons;
+- Vargha–Delaney A12 effect sizes;
+- Benjamini–Hochberg FDR correction.
+
+The Step 2 analysis contains 192 hypotheses in its FDR family.
+
+### Fidelity seeds
+
+Seeds used by `tests/test_fidelity.py` are fixed so that the 20,000-comparison fidelity campaign is reproducible.
+
+### Floating-point comparison
+
+Floating-point summation order may vary between BLAS implementations.
+
+For this reason, recomputation checks compare floating-point values using a relative tolerance of:
+
+```text
+1e-9
+```
+
+Integer counts and Boolean values must match exactly.
 
 ---
 
-## 6. Reading the results honestly
+## 7. Interpreting the Results
 
-The paper reports several **negative** results, and the artifact reproduces them
-rather than hiding them. A reviewer checking the tables should expect to see:
+Several experiments produce null or weak effects that should be interpreted carefully.
 
-- **T1 (`d0_d1_context`)** — context sensitivity gives *no* significant time-to-bug
-  advantage at depth N=16 (log-rank p = 0.72). This is predicted by Cor. 1, not an
-  anomaly.
-- **TG1 and TG2 — floor effects.** At most 1/30 successes in any arm on TG1 and
-  0/30 across all nine arms on TG2. These cells are under-powered and **must not be
-  read as evidence of equivalence between arms**; only TG3 has enough events to rank
-  arms.
-- **The adaptive energy schedule did not help.** On TG3, `d3d_adaptive_n4` (26/30)
-  vs the `d3d_rr_n4` control (29/30): log-rank p = 0.785, A12 = 0.443 (negligible).
-  The dilution *mechanism* is confirmed and quantified, but the proposed adaptive
-  schedule is not an effective remedy at this budget.
+### T1 context sensitivity
 
-Known limitations, stated in the paper and repeated here:
+For `d0_d1_context`, context sensitivity does not produce a statistically significant time-to-bug advantage at depth N=16:
 
-1. Floor effects on TG1/TG2 leave the trigram bug endpoint under-powered.
-2. The adaptive schedule was tested in a single parameterisation; a null for this
-   schedule is not a null for adaptive scheduling in general.
-3. Experiments execute Python models validated against a C ground truth. There is
-   no compiler-pass instrumentation or sanitizer, so the reported overheads
-   (3D ≈ 3,200 execs/s vs D0 ≈ 8,450 execs/s) are *relative*, not deployable
-   numbers.
-4. The targets are synthetic and each isolates one sensitivity axis; real-world CVE
-   distributions are not represented.
+```text
+log-rank p = 0.72
+```
+
+### TG1 and TG2 floor effects
+
+TG1 and TG2 contain very few successful bug discoveries:
+
+```text
+TG1: at most 1/30 successes in any arm
+TG2: 0/30 successes across all nine arms
+```
+
+These configurations therefore contain insufficient events for strong comparisons between scheduling strategies.
+
+TG3 contains substantially more successful events and provides more informative comparisons.
+
+### Adaptive energy scheduling
+
+On TG3:
+
+```text
+d3d_adaptive_n4: 26/30
+d3d_rr_n4:       29/30
+
+log-rank p = 0.785
+A12 = 0.443
+```
+
+Under the evaluated configuration and budget, the adaptive schedule does not improve over the corresponding round-robin control.
+
+### Limitations
+
+The current evaluation has several limitations:
+
+1. Floor effects on TG1 and TG2 reduce statistical power for the trigram bug endpoint.
+2. The adaptive scheduler is evaluated using one parameterisation.
+3. Experiments execute Python models validated against native C implementations.
+4. There is no compiler-pass instrumentation or sanitizer integration.
+5. Reported execution rates represent this experimental implementation rather than production deployment performance.
+6. The targets are synthetic and isolate individual sensitivity dimensions rather than modelling real-world CVE distributions.
 
 ---
 
-## 7. Troubleshooting
+## 8. Troubleshooting
 
 | Symptom | Cause and fix |
 |---|---|
-| `no usable Python interpreter found` | numpy/scipy/matplotlib/pytest are missing. See `INSTALL.md`, or point at an interpreter with `AE_PYTHON=/path/to/python ./run_ae.sh --quick`. |
-| `gcc: command not found` | Install a C toolchain (`build-essential` on Debian/Ubuntu, `xcode-select --install` on macOS). |
-| Figures render but look different | Check the matplotlib version. Layout may shift slightly across versions; the plotted *values* come from the result documents and do not change. |
-| `--full` is slow | It re-executes ~1,400 fuzzing trials. Raise `--workers` (the campaign is embarrassingly parallel across trials) or stay with `--quick`. |
-| Want a clean slate | `make clean` removes `results/` and `figures/` but keeps the bundled `data/`. `make distclean` also removes the compiled `.so` files. |
+| `no usable Python interpreter found` | Install `numpy`, `scipy`, `matplotlib`, and `pytest`, or specify an interpreter with `AE_PYTHON=/path/to/python ./run_ae.sh --quick`. |
+| `gcc: command not found` | Install a C toolchain such as `build-essential` on Debian/Ubuntu or Xcode command-line tools on macOS. |
+| `--full` is slow | The full mode re-executes approximately 1,400 fuzzing trials. Increase `--workers` to parallelise trials. |
+| Want a clean slate | `make clean` removes generated results. `make distclean` additionally removes compiled `.so` files. |
 
-A note on hardware: the campaigns are CPU-bound, branch-heavy interpreted work
-driving a ctypes-loaded C library. There is no GPU-amenable kernel anywhere in this
-workload, so the runners parallelise across processes and no GPU is used or needed.
+The workloads are CPU-bound and branch-heavy.
+
+Experiment runners therefore parallelise across processes. No GPU is required.
